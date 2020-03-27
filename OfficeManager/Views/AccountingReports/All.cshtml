@@ -1,0 +1,39 @@
+﻿@using OfficeManager.ViewModels.AccountingReports
+@model AllAccountingReportsViewModel
+
+@{
+    ViewData["Title"] = "All Accounting Reports";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">All Accounting Reports</h1>
+<div style="padding: 5%;">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Number</th>
+                <th scope="col">Created On</th>
+                <th scope="col">Company Name</th>
+                <th scope="col">Period</th>
+                <th scope="col" colspan="2">Total Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var accountingReport in Model.AccountingReports)
+            {
+                <tr>
+                    <td>@accountingReport.Number</td>
+                    <td>@accountingReport.CreatedOn</td>
+                    <td>@accountingReport.CompanyName</td>
+                    <td>@accountingReport.Period</td>
+                    <td>@accountingReport.TotalAmount</td>
+
+                    <td>
+                        <div class="button-holder text-right">
+                            <a href="/AccountingReports/Details?id=@accountingReport.Id" class="btn btn-primary">View</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

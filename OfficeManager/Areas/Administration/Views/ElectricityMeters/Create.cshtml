@@ -1,0 +1,27 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters
+@model CreateElectricityMeterViewModel
+
+@{
+    ViewData["Title"] = "Create Electricity Meter";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">Create Electricity Meter</h1>
+<div style="padding: 5%;">
+    <form asp-area="Administration" asp-controller="ElectricityMeters" asp-action="Create" method="post">
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-4">
+                <label asp-for="Name"><i>Electricity Meter Number</i></label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="PowerSupply"><i>Power Supply</i></label>
+                <input asp-for="PowerSupply" class="form-control">
+                <span asp-validation-for="PowerSupply" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary" style="width:195px">Create</button>
+        <a class="btn btn-dark" href="/Administration/ElectricityMeters/All" role="button" style="width:195px">Back</a>
+    </form>
+</div>

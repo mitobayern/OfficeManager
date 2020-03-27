@@ -1,0 +1,161 @@
+﻿@using OfficeManager.ViewModels.AccountingReports
+@model AccountingReportViewModel
+@{
+    ViewData["Title"] = "Generate Accounting Report";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <div class="col-7">
+            <p><i><b>ПОЛУЧАТЕЛ</b></i></p>
+            <p>
+                <i>@Model.Tenant.CompanyName.ToUpper()</i><br>
+                ЕИК: <b>@Model.Tenant.EIK</b><br>
+                AДРЕС: <b>@Model.Tenant.Address</b><br>
+                ИН по ЗДДС: <b>@Model.Tenant.Bulstat</b>
+            </p>
+        </div>
+        <div class="col-5">
+            <p><i><b>ДОСТАВЧИК</b></i></p>
+            <p>
+                <i>@Model.Landlord.LandlordName.ToUpper()</i><br>
+                ЕИК: <b>@Model.Landlord.Bulstat.Substring(2)</b><br>
+                AДРЕС: <b>@Model.Landlord.Address</b><br>
+                ИН по ЗДДС: <b>@Model.Landlord.Bulstat</b>
+            </p>
+        </div>
+    </div>
+    <br />
+    <h1 class="display-4" style="margin: 2%; text-align: center;">Счетоводна справка</h1>
+    <p style="font-size:20px; text-align:center;"><i>№ <b>@Model.Number</b> / <b>@Model.CreatedOn.ToString("d.MM.yyyy") </b>г.</i></p>
+    <p style="font-size:17px; text-align:center; line-height:35px"><i>Относно режийни разходи на <b>@Model.Tenant.Offices</b> в сграда на ул. Осогово №86 (дог. от <b>@Model.Tenant.StartOfContract.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG")) г.</b>)<br /> за периода: <b>@Model.Period г.</b></i></p>
+    <br />
+    <br />
+    <br />
+    <p><i>Консумация на електрическа енергия</i></p>
+    <table>
+        <tr>
+            <th>Наименование</th>
+            <th style="text-align:center">Количество</th>
+            <th style="text-align:center">Мярка</th>
+            <th style="text-align:center">Ед. Цена <br /> без ДДС</th>
+            <th style="text-align:center">Стойност в лева</th>
+        </tr>
+        <tr>
+            <td>Консумирана ел. енергия - дневна тарифа</td>
+            <td style="text-align:center">@Model.DayTimeElectricityConsummation</td>
+            <td style="text-align:center">кВтч</td>
+            <td style="text-align:center">@Model.PricesInformation.ElectricityPerKWh</td>
+            <td style="text-align:right">@((Model.DayTimeElectricityConsummation * Model.PricesInformation.ElectricityPerKWh).ToString("F2")) лв.</td>
+        </tr>
+        <tr>
+            <td>Консумирана ел. енергия - нощна тарифа</td>
+            <td style="text-align:center">@Model.NightTimeElectricityConsummation</td>
+            <td style="text-align:center">кВтч</td>
+            <td style="text-align:center">@Model.PricesInformation.ElectricityPerKWh</td>
+            <td style="text-align:right">@((Model.NightTimeElectricityConsummation * Model.PricesInformation.ElectricityPerKWh).ToString("F2")) лв.</td>
+        </tr>
+        <tr>
+            <td>Акциз</td>
+            <td style="text-align:center">@(Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation)</td>
+            <td style="text-align:center">кВтч</td>
+            <td style="text-align:center">@Model.PricesInformation.Excise</td>
+            <td style="text-align:right">@(((Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation) * Model.PricesInformation.Excise).ToString("F2")) лв.</td>
+        </tr>
+        <tr>
+            <td>Мрежови такси и услуги</td>
+            <td style="text-align:center">@(Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation)</td>
+            <td style="text-align:center">кВтч</td>
+            <td style="text-align:center">@(Model.PricesInformation.AccessToDistributionGrid + Model.PricesInformation.NetworkTaxesAndUtilities)</td>
+            <td style="text-align:right">@(((Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation) * (Model.PricesInformation.AccessToDistributionGrid + Model.PricesInformation.NetworkTaxesAndUtilities)).ToString("F2")) лв.</td>
+        </tr>
+    </table>
+    <br />
+    <p style="text-align:right"><i>Стойност за консумация на електрическа енергия:   <b>@(Model.AmountForElectricity.ToString("F2")) лв.</b></i></p>
+    <br />
+    @if (Model.HeatingConsummation > 0)
+    {
+        <p><i>Снабдяване с енергия за отопление</i></p>
+        <table>
+            <tr>
+                <th>Наименование</th>
+                <th style="text-align:center">Количество</th>
+                <th style="text-align:center">Мярка</th>
+                <th style="text-align:center">Ед. Цена <br /> без ДДС</th>
+                <th style="text-align:center">Стойност в лева</th>
+            </tr>
+            <tr>
+                <td>Консумирана енергия за отопление</td>
+                <td style="text-align:center">@Model.HeatingConsummation</td>
+                <td style="text-align:center">кВтч</td>
+                <td style="text-align:center">@Model.PricesInformation.HeatingPerKWh</td>
+                <td style="text-align:right">@(Model.AmountForHeating.ToString("F2")) лв.</td>
+            </tr>
+        </table>
+        <br />
+        <p style="text-align:right"><i>Стойност за консумация на енергия за отопление:   <b>@((Model.AmountForHeating).ToString("F2")) лв.</b></i></p>
+        <br />
+    }
+    @if (Model.CoolingConsummation > 0)
+    {
+        <p><i>Снабдяване с енергия за охлаждане</i></p>
+        <table>
+            <tr>
+                <th>Наименование</th>
+                <th style="text-align:center">Количество</th>
+                <th style="text-align:center">Мярка</th>
+                <th style="text-align:center">Ед. Цена <br /> без ДДС</th>
+                <th style="text-align:center">Стойност в лева</th>
+            </tr>
+            <tr>
+                <td>Консумирана енергия за охлаждане</td>
+                <td style="text-align:center">@Model.CoolingConsummation</td>
+                <td style="text-align:center">кВтч</td>
+                <td style="text-align:center">@Model.PricesInformation.CoolingPerKWh</td>
+                <td style="text-align:right">@(Model.AmountForCooling.ToString("F2")) лв.</td>
+            </tr>
+        </table>
+        <br />
+        <p style="text-align:right"><i>Стойност за консумация на енергия за охлаждане:   <b>@((Model.AmountForCooling).ToString("F2")) лв.</b></i></p>
+        <br />
+    }
+    <br />
+    <br />
+    <p style="text-align:right"><i>Данъчна основа: <b>@((Model.AmountForElectricity + Model.AmountForHeating + Model.AmountForCooling).ToString("F2")) лв.</b></i></p>
+    <p style="text-align:right"><i>Размер на ДДС 20%: <b>@(((Model.AmountForElectricity + Model.AmountForHeating + Model.AmountForCooling) * 0.20M).ToString("F2")) лв.</b></i></p>
+    <p style="text-align:right"><i>Обща стойност на сделката: <b>@Model.TotalAmount.ToString("F2") лв.</b></i></p>
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-9">
+            <p>
+                Дата: <b>@Model.CreatedOn.ToString("d.MM.yyyy") г.</b><br>
+                гр. София
+            </p>
+        </div>
+        <div class="col-3">
+            <p>
+                Съставил: ......................................<br>
+                (Теодор Опренов)
+            </p>
+        </div>
+    </div>
+    <a href="/AccountingReports/All" class="btn btn-dark btn-lg btn-block" style="margin-top:50px">Back</a>
+</body>
+</html>

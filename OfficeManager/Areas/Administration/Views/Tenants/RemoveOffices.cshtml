@@ -1,0 +1,23 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.Tenants
+@model TenantWithAllOfficesViewModel
+@{
+    ViewData["Title"] = "Remove Offices";
+}
+
+<h1 class="display-4" style="text-align:center;">Remove Offices from Tenant</h1>
+<h5 style="margin-top:50px; margin-bottom:20px" ; text-align:left;">Curent Tennant Offices</h5>
+<form asp-area="Administration" asp-controller="Tenants" asp-action="RemoveOffices" method="post" class="form">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <tr>
+        <th>Office Number</th>
+    </tr>
+    @{var tenantOffices = Model.CurrentOffices.OrderBy(x => x.Name).ToList(); }
+    @for (var i = 0; i < tenantOffices.Count(); i++)
+    {
+        <li>
+            <input name="AreChecked" type="checkbox" value="@tenantOffices[i].Name" /> @tenantOffices[i].Name<br />
+        </li>
+    }
+    <button type="submit" class="btn btn-outline-primary">Remove</button>
+    <a class="btn btn-outline-dark" href="/Administration/Tenants/Details?id=@Model.Id" role="button" style="width:150px">Back</a>
+</form>

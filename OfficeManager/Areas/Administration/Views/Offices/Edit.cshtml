@@ -1,0 +1,96 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.Offices
+@model EditOfficeViewModel
+@{
+    ViewData["Title"] = "Office Details";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">Office Details</h1>
+<div style="padding: 5%;">
+    <form asp-area="Administration" asp-controller="Offices" asp-action="Edit" method="post">
+        <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
+        <div class="row" style="margin-bottom:20px">
+            <div class="col">
+                <label asp-for="Name"><i>Office Number</i></label>
+                <input asp-for="Name" class="form-control" placeholder="Office number">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col">
+                <label asp-for="Area"><i>Office Area</i></label>
+                <input asp-for="Area" class="form-control" placeholder="Office area">
+                <span asp-validation-for="Area" class="text-danger"></span>
+            </div>
+            <div class="col">
+                <label asp-for="RentPerSqMeter"><i>Rent per Square Meter</i></label>
+                <input asp-for="RentPerSqMeter" class="form-control" placeholder="Rent Per Suqre Meter">
+                <span asp-validation-for="RentPerSqMeter" class="text-danger"></span>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a class="btn btn-dark" href="/Administration/Offices/All" role="button" style="width:150px">Back</a>
+    </form>
+    <br />
+    <br />
+    @if (Model.ElectricityMeter == "No electricity meter available")
+    {
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-8">
+                <h5><i>Electricity meter: <b style="color:brown">No electricity meter available.</b></i></h5>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-8">
+                <h5><i>Electricity meter: <b style="color:brown">@Model.ElectricityMeter</b></i></h5>
+            </div>
+        </div>
+    }
+    <div class="row">
+        @if (Model.ElectricityMeter == "No electricity meter available")
+        {
+            <div class="col-md-3">
+                <a href="/Administration/Offices/AddElectricityMeter?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
+            </div>
+            <div class="col-md-3">
+                <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-3">
+
+                <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
+            </div>
+            <div class="col-md-3">
+                <a href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
+            </div>
+        }
+    </div>
+    <br />
+    <br />
+    @if (Model.TemperatureMeters.Count() == 0)
+    {
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-8">
+                <h5><i>Temperature meters: <b style="color:brown">No temperature meters available.</b></i></h5>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-8">
+                <h5><i>Temperature meters: <b style="color:brown">@String.Join(", ", Model.TemperatureMeters)</b></i></h5>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-3">
+            <a href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Temperature Meters</a>
+        </div>
+        <div class="col-md-3">
+            <a href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Temperature Meters</a>
+        </div>
+    </div>
+</div>

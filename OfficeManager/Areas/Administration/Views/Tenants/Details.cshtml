@@ -1,0 +1,77 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.Tenants
+@model TenantToEditViewModel
+
+@{
+    ViewData["Title"] = "Tenant Details";
+}
+
+<h1 class="display-4" style="text-align:center;">Tenant Details</h1>
+<div style="padding: 5%;">
+    <form asp-area="Administration" asp-controller="Tenants" asp-action="Details" method="post">
+        <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-5">
+                <label asp-for="CompanyName"><i>Company Name</i></label>
+                <input asp-for="CompanyName" class="form-control" placeholder="Company Name">
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="CompanyOwner"><i>Company Owner</i></label>
+                <input asp-for="CompanyOwner" class="form-control" placeholder="Company Owner">
+                <span asp-validation-for="CompanyOwner" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Bulstat"><i>Bulstat</i></label>
+                <input asp-for="Bulstat" class="form-control" placeholder="Bulstat">
+                <span asp-validation-for="Bulstat" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-5">
+                <label asp-for="Address"><i>Address</i></label>
+                <input asp-for="Address" class="form-control" placeholder="Address">
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Email"><i>Email</i></label>
+                <input asp-for="Email" type="email" class="form-control" placeholder="Email" validate>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Phone"><i>Phone</i></label>
+                <input asp-for="Phone" class="form-control" placeholder="Phone">
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-4">
+                <label asp-for="StartOfContract"><i>Sart Of Contract</i></label>
+                <input asp-for="StartOfContract" class="form-control" placeholder="@Model.StartOfContract">
+                <span asp-validation-for="StartOfContract" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary" style="width:165px">Save Changes</button>
+            </div>
+            <div class="col-md-2">
+                <a href="/Administration/Tenants/All" class="btn btn-dark" role="button" style="width:165px">Back</a>
+            </div>
+        </div>
+    </form>
+    <br />
+    <br />
+    <div class="row" style="margin-bottom:20px">
+        <div class="col-md-4">
+            <h5><i>Rented Offices: <b style="color:brown">@String.Join(", ", Model.Offices)</b></i></h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <a href="/Administration/Tenants/AddOffices?id=@Model.Id" class="btn btn-primary" style="width:165px">Add Offices</a>
+        </div>
+        <div class="col-md-2">
+            <a href="/Administration/Tenants/RemoveOffices?id=@Model.Id" class="btn btn-danger" style="width:165px">Remove Offices</a>
+        </div>
+    </div>
+</div>

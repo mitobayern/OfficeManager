@@ -1,0 +1,23 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.Offices
+@model OfficeWithAllTemperatureMetersViewModel
+@{
+    ViewData["Title"] = "Add Temperature Meters";
+}
+
+<h1 class="display-4" style="text-align:center;">Add Temperature Meters to Office</h1>
+<h5 style="margin-top:50px; margin-bottom:20px" ; text-align:left;">Available Temperature Meters</h5>
+<form asp-area="Administration" asp-controller="Offices" asp-action="AddTemperatureMeters" method="post" class="form">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <tr>
+        <th>Temperature Meter Number</th>
+    </tr>
+    @{var availaleTemperatureMeters = Model.AvailavleTemperatureMeters.OrderBy(x => x.Name).ToList(); }
+    @for (var i = 0; i < availaleTemperatureMeters.Count(); i++)
+    {
+        <li>
+            <input name="AreChecked" type="checkbox" value="@availaleTemperatureMeters[i].Name" /> @availaleTemperatureMeters[i].Name<br />
+        </li>
+    }
+    <button type="submit" class="btn btn-outline-primary">Add</button>
+    <a class="btn btn-outline-dark" href="/Administration/Offices/Edit?id=@Model.Id" role="button" style="width:150px">Back</a>
+</form>

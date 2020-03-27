@@ -1,0 +1,32 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.Offices
+@model CreateOfficeViewModel
+
+@{
+    ViewData["Title"] = "Create Office";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">Create Office</h1>
+<div style="padding: 5%;">
+    <form asp-area="Administration" asp-controller="Offices" asp-action="Create" method="post">
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-4">
+                <label asp-for="Name"><i>Office Number</i></label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Area"><i>Office Area</i></label>
+                <input asp-for="Area" class="form-control">
+                <span asp-validation-for="Area" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="RentPerSqMeter"><i>Rent per Square Meter</i></label>
+                <input asp-for="RentPerSqMeter" class="form-control">
+                <span asp-validation-for="RentPerSqMeter" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary" style="width:195px">Create Office</button>
+        <a class="btn btn-dark" href="/Administration/Offices/All" role="button" style="width:195px">Back</a>
+    </form>
+</div>

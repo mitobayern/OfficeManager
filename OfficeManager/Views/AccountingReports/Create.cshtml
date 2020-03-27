@@ -1,0 +1,29 @@
+﻿@using OfficeManager.ViewModels.AccountingReports
+@model TenantsAndPeriodsViewModel
+
+@{
+    ViewData["Title"] = "Create Accounting Report";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">Create Accounting Report</h1>
+<br />
+<br />
+<form asp-controller="AccountingReports" asp-action="Generate" method="get">
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="Model.Tenant"><i>Select Tenant</i></label>
+                @Html.DropDownListFor(Model => Model.Tenant, Model.Tenants, "--  Select Tenant  --", new { @class = "form-control custom-select" })
+            </div>
+        </div>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="Model.Period"><i>Select Period</i></label>
+                @Html.DropDownListFor(Model => Model.Period, Model.Periods, "--  Select Period  --", new { @class = "form-control custom-select" })
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-primary" style="width:210px">Create Acounting Report</button>
+</form>

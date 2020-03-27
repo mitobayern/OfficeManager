@@ -1,0 +1,36 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.Tenants
+@model AllTenantsViewModel
+
+@{
+    ViewData["Title"] = "All Tenants";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">All Tenants</h1>
+<div style="padding: 5%;">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Company Name</th>
+                <th scope="col">Company Owner</th>
+                <th scope="col">Bulstat</th>
+                <th scope="col" colspan="2">Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tenant in Model.Tenants)
+            {
+                <tr>
+                    <td>@tenant.CompanyName</td>
+                    <td>@tenant.CompanyOwner</td>
+                    <td>@tenant.Bulstat</td>
+                    <td>@tenant.Address</td>
+                    <td>
+                        <div class="button-holder text-right">
+                            <a href="/Administration/Tenants/Details?id=@tenant.Id" class="btn btn-primary">Details</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

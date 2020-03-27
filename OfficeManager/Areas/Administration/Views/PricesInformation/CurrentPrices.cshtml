@@ -1,0 +1,47 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.PricesInformation
+@model CurrentPricesOutputViewModel
+
+@{
+    ViewData["Title"] = "Current Prices";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">Current Prices</h1>
+<div style="padding: 5%;">
+    <p><i>Created on: @Model.CreatedOn</i></p>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Desctiption </th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Price per KWh for heating</td>
+                <td>@Model.HeatingPerKWh лв.</td>
+            </tr>
+            <tr>
+                <td>Price per KWh for cooling</td>
+                <td>@Model.CoolingPerKWh лв.</td>
+            </tr>
+            <tr>
+                <td>Price per KWh for electricity</td>
+                <td>@Model.ElectricityPerKWh лв.</td>
+            </tr>
+            <tr>
+                <td>Price for Excise</td>
+                <td>@Model.Excise лв.</td>
+            </tr>
+            <tr>
+                <td>Price for Access to distribution grid</td>
+                <td>@Model.AccessToDistributionGrid лв.</td>
+            </tr>
+            <tr>
+                <td>Price for Network taxes and utilities</td>
+                <td>@Model.NetworkTaxesAndUtilities лв.</td>
+            </tr>
+        </tbody>
+    </table>
+    <br />
+    <a class="btn btn-primary" href="/Administration/PricesInformation/CreatePricelist" role="button" style="width:195px">Create new pricelist</a>
+</div>

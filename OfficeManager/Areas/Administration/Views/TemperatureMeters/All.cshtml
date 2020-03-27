@@ -1,0 +1,32 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters
+@model AllTemperatureMetersViewModel
+
+@{
+    ViewData["Title"] = "All Temperature Meters";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">All Temperature Meters</h1>
+<div style="padding: 5%;">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Temperature Meter Number</th>
+                <th scope="col" colspan="2">Office Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var temperatureMeter in Model.TemperatureMeters.OrderBy(x => x.Name))
+            {
+                <tr>
+                    <td>@temperatureMeter.Name</td>
+                    <td>@temperatureMeter.OfficeNumber</td>
+                    <td>
+                        <div class="button-holder text-right">
+                            <a href="/Administration/TemperatureMeters/Edit?id=@temperatureMeter.Id" class="btn btn-primary">Edit</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,22 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters
+@model EditTemperatreMeterViewModel
+
+@{
+    ViewData["Title"] = "Edit Temperature Meter";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">Edit Temperature Meter</h1>
+<div style="padding: 5%;">
+    <form asp-area="Administration" asp-controller="TemperatureMeters" asp-action="Edit" method="post">
+        <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-5">
+                <label asp-for="Name"><i>Temperature Meter Name</i></label>
+                <input asp-for="Name" class="form-control">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:195px">Save Changes</button>
+        <a class="btn btn-dark" href="/Administration/TemperatureMeters/All" role="button" style="width:195px">Back</a>
+    </form>
+</div>

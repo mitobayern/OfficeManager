@@ -1,0 +1,32 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters
+@model AllElectricityMetersViewModel
+
+@{
+    ViewData["Title"] = "All Electricity Meters";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">All Electricity Meters</h1>
+<div style="padding: 5%;">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Electricity Meter Number</th>
+                <th scope="col" colspan="2">Power Supply</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var electricityMeter in Model.ElectricityMeters.OrderBy(x => x.Name))
+            {
+                <tr>
+                    <td>@electricityMeter.Name</td>
+                    <td>@electricityMeter.PowerSupply</td>
+                    <td>
+                        <div class="button-holder text-right">
+                            <a href="/Administration/ElectricityMeters/Edit?id=@electricityMeter.Id" class="btn btn-primary">Edit</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

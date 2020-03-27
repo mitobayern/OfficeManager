@@ -1,0 +1,49 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.Landlords
+@model CreateLandlordViewModel
+
+@{
+    ViewData["Title"] = "Edit Landlord";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">Edit Landlord Details</h1>
+<div style="padding: 5%;">
+    <form asp-area="Administration" asp-controller="Landlords" asp-action="Edit" method="post">
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-5">
+                <label asp-for="LandlordName"><i>Landlord Name</i></label>
+                <input asp-for="LandlordName" class="form-control">
+                <span asp-validation-for="LandlordName" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="LandlordOwner"><i>Landlord Owner</i></label>
+                <input asp-for="LandlordOwner" class="form-control">
+                <span asp-validation-for="LandlordOwner" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Bulstat"><i>Landlord Bulstat</i></label>
+                <input asp-for="Bulstat" class="form-control">
+                <span asp-validation-for="Bulstat" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-md-5">
+                <label asp-for="Address"><i>Landlord Address</i></label>
+                <input asp-for="Address" class="form-control">
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Email"><i>Landlord Email</i></label>
+                <input asp-for="Email" type="email" class="form-control" validate>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Phone"><i>Landlord Phone</i></label>
+                <input asp-for="Phone" class="form-control">
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary" style="width:195px">Save Changes</button>
+        <a class="btn btn-dark" href="/Administration/Landlords/Details" role="button" style="width:195px">Back</a>
+    </form>
+</div>

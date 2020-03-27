@@ -1,0 +1,43 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.Offices
+@model AllOfficesViewModel
+
+@{
+    ViewData["Title"] = "Create Office";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">All Offices</h1>
+<div style="padding: 5%;">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Office Number</th>
+                <th scope="col" colspan="1">Tenant</th>
+                <th scope="col" colspan="1">Office Area</th>
+                <th scope="col" colspan="2">Rent/SqMeter</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var office in Model.Offices.OrderBy(x => x.Name))
+            {
+                <tr>
+                    <td>@office.Name</td>
+                    @if (@office.TenantName == "Свободен")
+                    {
+                        <td><font size="3"><i style="color:blue"><b>@office.TenantName</b></i></font></td>
+                    }
+                    else
+                    {
+                        <td><i><b>@office.TenantName</b></i></td>
+                    }
+                    <td>@office.Area m<sup>2</sup></td>
+                    <td>&euro; @office.RentPerSqMeter </td>
+                    <td>
+                        <div class="button-holder text-right">
+                            <a href="/Administration/Offices/Edit?id=@office.Id" class="btn btn-primary">Edit</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

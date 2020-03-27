@@ -1,0 +1,51 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.PricesInformation
+@model CreatePricesInputViewModel
+
+@{
+    ViewData["Title"] = "Create Pricelist";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">Create Pricelist</h1>
+<div style="padding: 5%;">
+    <form asp-area="Administration" asp-controller="PricesInformation" asp-action="CreatePricelist" method="post">
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-3">
+                <label asp-for="HeatingPerKWh"><i>Price for Heating per KWh</i></label>
+                <input asp-for="HeatingPerKWh" class="form-control">
+                <span asp-validation-for="HeatingPerKWh" class="text-danger"></span>
+
+            </div>
+            <div class="col-3">
+                <label asp-for="CoolingPerKWh"><i>Price for Cooling per KWh</i></label>
+                <input asp-for="CoolingPerKWh" class="form-control" />
+                <span asp-validation-for="HeatingPerKWh" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-3">
+                <label asp-for="ElectricityPerKWh"><i>Price for Electricity per KWh</i></label>
+                <input asp-for="ElectricityPerKWh" class="form-control">
+                <span asp-validation-for="ElectricityPerKWh" class="text-danger"></span>
+            </div>
+            <div class="col-3">
+                <label asp-for="Excise"><i>Price for Excise</i></label>
+                <input asp-for="Excise" class="form-control">
+                <span asp-validation-for="Excise" class="text-danger"></span>
+            </div>
+            <div class="col-3">
+                <label asp-for="AccessToDistributionGrid"><i>Price for Acces to Grid</i></label>
+                <input asp-for="AccessToDistributionGrid" class="form-control">
+                <span asp-validation-for="AccessToDistributionGrid" class="text-danger"></span>
+            </div>
+            <div class="col-3">
+                <label asp-for="NetworkTaxesAndUtilities"><i>Network Taxes and Utilities</i></label>
+                <input asp-for="NetworkTaxesAndUtilities" class="form-control">
+                <span asp-validation-for="NetworkTaxesAndUtilities" class="text-danger"></span>
+            </div>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary" style="width:195px">Create Pricelist</button>
+        <a class="btn btn-dark" href="/Administration/PricesInformation/CurrentPrices" role="button" style="width:195px">Current Prices</a>
+    </form>
+</div>

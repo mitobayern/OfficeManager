@@ -1,0 +1,50 @@
+﻿@using OfficeManager.ViewModels.Measurements
+@model CreateElectricityMeasurementsInputViewModel
+@{
+    ViewData["Title"] = "Create Electricity Measurements";
+}
+<h1>Create Electricity Measurements</h1>
+<hr />
+<p><i style="color:orangered;"><b>Congratulations! Now you can setup your starting measurements for all of your Electricity Meters</b></i></p>
+<p><i style="color:orangered;"><b>Once you are done setting your starting measurements you can proceed and create the new ones for your first period!</b></i></p>
+
+<hr />
+<form asp-controller="Measurements" asp-action="CreateElectricityMeasurements" class="form-horizontal" method="post">
+    <div class="row" style="margin-bottom:20px">
+        <div class="col-4">
+            <label asp-for="EndOfPeriod"><i style="color:orangered;">This is the starting date of your first period!</i></label>
+            <input asp-for="EndOfPeriod" class="form-control" asp-format="{0:MM/dd/yyyy}">
+        </div>
+        <div class="col-3">
+            <label asp-for="StarOfPeriod" hidden>Start of Period</label>
+            <input asp-for="StarOfPeriod" value="EndOfPeriod" class="form-control" asp-format="{0:MM/dd/yyyy}" hidden>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <tr>
+            <th>Office Number</th>
+            <th>DayTime Measurement</th>
+            <th>NightTime Measurement</th>
+        </tr>
+        @for (var i = 0; i < Model.ElectricityMeters.Count; i++)
+        {
+            <tr>
+                <td>
+                    <input type="text" name="ElectricityMeters[@i].Name" value="@Model.ElectricityMeters[i].Name" />
+                </td>
+                <td>
+                    <input type="text" name="ElectricityMeters[@i].DayTimeMeasurement" placeholder="0" />
+                </td>
+                <td>
+                    <input type="text" name="ElectricityMeters[@i].NightTimeMeasurement" placeholder="0" />
+                </td>
+            </tr>
+        }
+    </table>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>
