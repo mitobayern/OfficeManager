@@ -37,7 +37,6 @@
                     <input style="border:none; background:none" type="text" name="ElectricityMeters[@i].Name" value="@Model.ElectricityMeters[i].Name" readonly />
                 </td>
                 <td>
-                    @*<input type="text" asp-for="@Model.ElectricityMeters[i].DayTimeMeasurement" />*@
                     <input type="text" name="ElectricityMeters[@i].DayTimeMeasurement" />
                 </td>
                 <td>
@@ -45,8 +44,8 @@
                 </td>
             </tr>
         }
-
     </table>
+    
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
             <button type="submit" class="btn btn-primary">Submit</button>

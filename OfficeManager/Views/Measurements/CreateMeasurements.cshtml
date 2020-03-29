@@ -1,0 +1,85 @@
+﻿@using OfficeManager.ViewModels.Measurements
+@model CreateMeasurementsInputViewModel
+@{
+    ViewData["Title"] = "Create Electricity Measurements";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">Create Measurements</h1>
+<br />
+<br />
+<i style="color:orangered;"><b>Last period: @Model.LastPeriod</b></i>
+<br />
+<br />
+
+<form class="form-horizontal" method="post">
+    <div class="row" style="margin-bottom:20px">
+        <div class="col-3">
+            <label asp-for="StarOfPeriod"><i>Start of Period</i></label>
+            <input asp-for="StarOfPeriod" class="form-control" placeholder="@Model.StarOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG")) г.">
+        </div>
+        <div class="col-3">
+            <label asp-for="EndOfPeriod"><i>End of Period</i></label>
+            <input asp-for="EndOfPeriod" class="form-control" asp-format="{0:MM/dd/yyyy}">
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th width="5">
+                    Electricity Meter
+                </th>
+                <th width="10">
+                    DayTime Measurement
+                </th>
+                <th width="10">
+                    NightTime Measurement
+                </th>
+                <th width="5">
+                    Temparature Meter
+                </th>
+                <th width="10">
+                    Heating Measurement
+                </th>
+                <th width="10">
+                    Cooling Measurement
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (var i = 0; i < Model.Offices.Count; i++)
+            {
+                <tr>
+                    <td @*rowspan="@Model.Offices[i].TemperatureMeters.Count"*@>
+                        <input style="border:none; background:none" type="text" size="5" name="@Model.Offices[i].ElectricityMeter.Name" value="@Model.Offices[i].ElectricityMeter.Name" readonly />
+                    </td>
+                    <td @*rowspan="@Model.Offices[i].TemperatureMeters.Count"*@>
+                        <input type="text" size="10" name="Offices[@i].ElectricityMeter.DayTimeMeasurement" />
+                    </td>
+                    <td @*rowspan="@Model.Offices[i].TemperatureMeters.Count"*@>
+                        <input type="text" size="10" name="Offices[@i].ElectricityMeter.NightTimeMeasurement" />
+                    </td>
+                    @for (int j = 0; j < Model.Offices[i].TemperatureMeters.Count; j++)
+                    {
+                        <td>
+                            <input style="border:none; background:none" type="text" size="5" name="@Model.Offices[i].TemperatureMeters[j].Name" value="@Model.Offices[i].TemperatureMeters[j].Name" readonly />
+                        </td>
+                        <td>
+                            <input type="text" size="10" name="@Model.Offices[i].TemperatureMeters[j].HeatingMeasurement" />
+                        </td>
+                        <td>
+                            <input type="text" size="10" name="Offices[@i].TemperatureMeters[@j].NightTimeMeasurement" />
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>

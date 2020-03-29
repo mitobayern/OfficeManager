@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\OfficeManager\\OfficeManager.csproj": {}
+    "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\OfficeManager.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\OfficeManager\\OfficeManager.csproj": {
+    "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\OfficeManager.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\OfficeManager\\OfficeManager.csproj",
+        "projectUniqueName": "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\OfficeManager.csproj",
         "projectName": "OfficeManager",
-        "projectPath": "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\OfficeManager\\OfficeManager.csproj",
+        "projectPath": "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\OfficeManager.csproj",
         "packagesPath": "C:\\Users\\mitob\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\OfficeManager\\obj\\",
+        "outputPath": "C:\\Users\\mitob\\Desktop\\OfficeManager\\OfficeManager\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

@@ -121,7 +121,7 @@ namespace OfficeManager.Controllers
 
             var pricesInformation = this.pricesInformationService.GetCurrentPrices();
             var electricityConsummation = this.measurementsService.GetTenantElectricityConsummationByPeriod(tenant, input.Period);
-            var temperatureConsummation = this.measurementsService.GetTenantTemperatureConsummationByPeriod(tenant, input.Period);
+            var temperatureConsummation = this.measurementsService.GetTenantTemperatureConsummationByPeriod(tenant.CompanyName, input.Period);
             var amountForElectricity = (electricityConsummation.DayTimeConsummation + electricityConsummation.NightTimeConsummation)
                                     * (pricesInformation.AccessToDistributionGrid + pricesInformation.NetworkTaxesAndUtilities
                                     + pricesInformation.Excise + pricesInformation.ElectricityPerKWh);

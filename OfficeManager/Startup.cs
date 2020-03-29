@@ -31,7 +31,7 @@ namespace OfficeManager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options./*UseLazyLoadingProxies().*/UseSqlServer(
+                options.UseLazyLoadingProxies().UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddMvc(

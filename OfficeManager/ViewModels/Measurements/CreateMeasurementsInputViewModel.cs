@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OfficeManager.ViewModels.Measurements
 {
-    public class CreateElectricityMeasurementsInputViewModel
+    public class CreateMeasurementsInputViewModel
     {
         [BindProperty]
         public string LastPeriod { get; set; }
@@ -20,9 +21,6 @@ namespace OfficeManager.ViewModels.Measurements
         public DateTime EndOfPeriod { get; set; }
 
         [BindProperty]
-        public List<ElectricityMeasurementInputViewModel> ElectricityMeters { get; set; }
-
-        //[BindProperty]
-        //public List<TemperatureMeasurementInputViewModel> TemperatureMeters { get; set; }
+        public List<OfficeMeasurementsInputViewModel> Offices { get; set; }
     }
 }

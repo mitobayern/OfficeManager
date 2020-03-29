@@ -15,6 +15,6 @@ namespace OfficeManager.Services
 
         TenantElectricityConsummationViewModel GetTenantElectricityConsummationByPeriod(Tenant tenant, string period);
 
-        TenantTemperatureConsummationViewModel GetTenantTemperatureConsummationByPeriod(Tenant tenant, string period);
+        TenantTemperatureConsummationViewModel GetTenantTemperatureConsummationByPeriod(string tenantCompanyName, string period);
     }
 }

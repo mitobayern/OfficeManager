@@ -11,14 +11,17 @@
         private readonly ApplicationDbContext dbContext;
         private readonly IElectricityMetersService electricityMetersService;
         private readonly ITemperatureMetersService temperatureMetersService;
+        private readonly ITenantsService tenantsService;
 
         public MeasurementsService(ApplicationDbContext dbContext,
                                    IElectricityMetersService electricityMetersService,
-                                   ITemperatureMetersService temperatureMetersService)
+                                   ITemperatureMetersService temperatureMetersService,
+                                   ITenantsService tenantsService)
         {
             this.dbContext = dbContext;
             this.electricityMetersService = electricityMetersService;
             this.temperatureMetersService = temperatureMetersService;
+            this.tenantsService = tenantsService;
         }
         public void CreateElectricityMeasurements(CreateElectricityMeasurementsInputViewModel input)
         {
@@ -153,14 +156,17 @@
             return tenantElectricityConsumation;
         }
 
-        public TenantTemperatureConsummationViewModel GetTenantTemperatureConsummationByPeriod(Tenant tenant, string period)
+        public TenantTemperatureConsummationViewModel GetTenantTemperatureConsummationByPeriod(string tenantCompanyName, string period)
         {
             decimal tenantHeatingConsummation = 0;
             decimal tenantCoolingConsummation = 0;
 
+            Tenant tenant = this.tenantsService.GetTenantByName(tenantCompanyName);
 
             foreach (var office in tenant.Offices)
             {
+                var name = office.Name;
+
                 foreach (var temperatureMeter in office.TemperatureMeters)
                 {
                     var endOfPeriodTemperatureMeasurement = this.dbContext.TemperatureMeasurements
