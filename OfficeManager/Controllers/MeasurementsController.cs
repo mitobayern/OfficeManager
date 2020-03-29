@@ -156,6 +156,16 @@
         [HttpPost]
         public IActionResult CreateMeasurements(CreateMeasurementsInputViewModel input)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(input);
+            }
+            if (DateTime.Compare(input.EndOfPeriod, input.StarOfPeriod) != 1)
+            {
+                return View(input);
+            }
+
+
 
             return this.Redirect("/Home/Index");
         }
