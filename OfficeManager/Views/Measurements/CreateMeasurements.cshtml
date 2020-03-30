@@ -6,12 +6,10 @@
 
 <h1 class="display-4" style="margin: 2%; text-align: center;">Create Measurements</h1>
 <br />
-<br />
 <i style="color:orangered;"><b>Last period: @Model.LastPeriod</b></i>
 <br />
-<br />
 
-<form class="form-horizontal" method="post">
+<form asp-controller="Measurements" asp-action="CreateMeasurements" method="post">
     <div class="row" style="margin-bottom:20px">
         <div class="col-3">
             <label asp-for="StarOfPeriod"><i>Start of Period</i></label>
@@ -23,7 +21,97 @@
         </div>
     </div>
 
-    <table class="table table-striped">
+    <hr />
+
+    @for (var i = 0; i < Model.Offices.Count; i++)
+    {
+        <div class="row" @*style="margin-bottom:20px"*@>
+            <div class="col-12">
+                <h5><i>Office: <b style="color:brown"> @Model.Offices[i].Name</b></i></h5>
+                <input class="form-control" type="hidden" asp-for="Offices[i].Name" value="@Model.Offices[i].Name" />
+                <br />
+                <h6><i>Electricity Meter: <b style="color:blue"> @Model.Offices[i].ElectricityMeter.Name</b></i></h6>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom:20px">
+            <input class="form-control" style="border:none; background:none" type="hidden" size="5" asp-for="Offices[i].ElectricityMeter.Name" value="@Model.Offices[i].ElectricityMeter.Name" readonly />
+            <div class="col-2">
+                <label asp-for="Offices[i].ElectricityMeter.DayTimeMeasurement"><i>DayTime</i></label>
+                <input asp-for="Offices[i].ElectricityMeter.DayTimeMeasurement" class="form-control" size="10" />
+                <span asp-validation-for="Offices[i].ElectricityMeter.DayTimeMeasurement" class="text-danger"></span>
+            </div>
+            <div class="col-2">
+                <label asp-for="Offices[i].ElectricityMeter.NightTimeMeasurement"><i>NightTime</i></label>
+                <input asp-for="Offices[i].ElectricityMeter.NightTimeMeasurement" class="form-control" size="10" />
+                <span asp-validation-for="Offices[i].ElectricityMeter.NightTimeMeasurement" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row" style="margin-bottom:20px">
+            @for (int j = 0; j < Model.Offices[i].TemperatureMeters.Count; j++)
+            {
+                <input class="form-control" style="border:none; background:none" type="hidden" size="5" asp-for="Offices[i].TemperatureMeters[j].Name" value="@Model.Offices[i].TemperatureMeters[j].Name" readonly />
+                <div class="col-4">
+                    <h6><i>Temperature Meter: <b style="color:blue"> @Model.Offices[i].TemperatureMeters[j].Name</b></i></h6>
+                    <div class="row">
+                        <div class="col-6">
+                            <label asp-for="Offices[i].TemperatureMeters[j].HeatingMeasurement"><i>Heating</i></label>
+                            <input asp-for="Offices[i].TemperatureMeters[j].HeatingMeasurement" type="number" min="20" step="0.01" class="form-control" size="10" />
+                            @*<input asp-for="Offices[i].TemperatureMeters[j].HeatingMeasurement" type="number" min="20" step="0.01" class="form-control" size="10" />*@
+                            <span asp-validation-for="Offices[i].TemperatureMeters[j].HeatingMeasurement" class="text-danger"></span>
+                        </div>
+                        <div class="col-6">
+                            <label asp-for="Offices[i].TemperatureMeters[j].CoolingMeasurement"><i>Cooling</i></label>
+                            <input asp-for="Offices[i].TemperatureMeters[j].CoolingMeasurement" class="form-control" size="10" />
+                            <span asp-validation-for="Offices[i].TemperatureMeters[j].CoolingMeasurement" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <hr />
+    }
+
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</form>
+
+
+@*<tr>
+        <td>
+            <input class="form-control" style="border:none; background:none" type="text" size="5" asp-for="Offices[i].ElectricityMeter.Name" value="@Model.Offices[i].ElectricityMeter.Name" readonly />
+        </td>
+        <td>
+            <input asp-for="Offices[i].ElectricityMeter.DayTimeMeasurement" class="form-control" type="text" size="10" />
+            <span asp-validation-for="Offices[i].ElectricityMeter.DayTimeMeasurement" class="text-danger"></span>
+
+        </td>
+        <td>
+            <input asp-for="Offices[i].ElectricityMeter.NightTimeMeasurement" class="form-control" type="text" size="10" />
+            <span asp-validation-for="Offices[i].ElectricityMeter.NightTimeMeasurement" class="text-danger"></span>
+
+        </td>
+        @for (int j = 0; j < Model.Offices[i].TemperatureMeters.Count; j++)
+        {
+            <td>
+                <input class="form-control" style="border:none; background:none" type="text" size="5" asp-for="Offices[i].TemperatureMeters[j].Name" value="@Model.Offices[i].TemperatureMeters[j].Name" readonly />
+            </td>
+            <td>
+                <input class="form-control" type="text" size="10" asp-for="Offices[i].TemperatureMeters[j].HeatingMeasurement" />
+            </td>
+            <td>
+                <input class="form-control" type="text" size="10" asp-for="Offices[i].TemperatureMeters[j].CoolingMeasurement" />
+            </td>
+        }
+    </tr>*@
+
+
+
+
+
+@*<table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th width="5">
@@ -77,11 +165,5 @@
                 }
             </tr>
         }
-    </table>
+    </table>*@
 
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-    </div>
-</form>
