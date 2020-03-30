@@ -139,7 +139,8 @@
                 },
                 TemperatureMeters = x.TemperatureMeters.Select(y=> new TemperatureMeasurementInputViewModel 
                 {
-                    Name = y.Name                    
+                    Name = y.Name
+                    
                 }).ToList()
             }).ToList();
 
