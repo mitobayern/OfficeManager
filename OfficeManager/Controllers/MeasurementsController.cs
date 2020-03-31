@@ -114,7 +114,30 @@
 
             string period = this.dbContext.ElectricityMeasurements.OrderByDescending(x => x.Id).First().Period;
             var endOfLastPeriod = this.dbContext.ElectricityMeasurements.OrderByDescending(x => x.Id).First().EndOfPeriod;
-            var startOfNewPerwiod = endOfLastPeriod.AddDays(1);
+            var startOfNewPeriod = endOfLastPeriod.AddDays(1);
+
+            var endOfNewPeriod = new DateTime();
+            int[] monthsWith31Days = new int[] { 1, 3, 5, 7, 8, 10, 12 };
+            int[] monthsWith30Days = new int[] { 4, 6, 9, 11 };
+            if (monthsWith31Days.Contains(startOfNewPeriod.Month))
+            {
+                endOfNewPeriod = startOfNewPeriod.AddDays(30);
+            }
+            else if (monthsWith30Days.Contains(startOfNewPeriod.Month))
+            {
+                endOfNewPeriod = startOfNewPeriod.AddDays(29);
+            }
+            else
+            {
+                if (DateTime.IsLeapYear(startOfNewPeriod.Year))
+                {
+                    endOfNewPeriod = startOfNewPeriod.AddDays(28);
+                }
+                else
+                {
+                    endOfNewPeriod = startOfNewPeriod.AddDays(27);
+                }
+            }
 
             var elMeters = this.dbContext.ElectricityMeters.Select(x => new ElectricityMeasurementInputViewModel
             {
@@ -146,9 +169,12 @@
 
             var result = new CreateMeasurementsInputViewModel
             {
-                StarOfPeriod = startOfNewPerwiod,
+                EndOfLastPeriod = endOfLastPeriod,
                 LastPeriod = period,
-                Offices = offices
+                StartOfPeriod = startOfNewPeriod,
+                EndOfPeriod = endOfNewPeriod,
+                Offices = offices,
+                
             };
 
             return this.View(result);
@@ -161,7 +187,7 @@
             {
                 return View(input);
             }
-            if (DateTime.Compare(input.EndOfPeriod, input.StarOfPeriod) != 1)
+            if (DateTime.Compare(input.EndOfPeriod, input.StartOfPeriod) != 1)
             {
                 return View(input);
             }
