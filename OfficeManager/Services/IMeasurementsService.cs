@@ -9,9 +9,21 @@ namespace OfficeManager.Services
 {
     public interface IMeasurementsService
     {
-        void CreateElectricityMeasurements(CreateElectricityMeasurementsInputViewModel input);
+        string GetLastPeriodAsText();
 
-        void CreateTemperatureMeasurements(CreateTemperatureMeasurementsInputViewModel input);
+        DateTime GetEndOfLastPeriod();
+
+        DateTime GetStartOfNewPeroid();
+
+        DateTime GetEndOfNewPeriod();
+
+        void CreateAllMeasurements(CreateMeasurementsInputViewModel input);
+
+        List<OfficeMeasurementsInputViewModel> GetOfficesWithLastMeasurements();
+
+        void CreateElectricityMeasurement(DateTime periodStartTime, DateTime periodEndTime, string elMeterName, decimal dayTimeMeasurement, decimal nightTimeMeasurement);
+
+        void CreateTemperatureMeasurement(DateTime periodStartTime, DateTime periodEndTime, string tempMeterName, decimal heatingMeasurement, decimal coolingMeasurement);
 
         TenantElectricityConsummationViewModel GetTenantElectricityConsummationByPeriod(Tenant tenant, string period);
 
