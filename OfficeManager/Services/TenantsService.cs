@@ -3,6 +3,7 @@ using OfficeManager.Areas.Administration.ViewModels.Offices;
 using OfficeManager.Areas.Administration.ViewModels.Tenants;
 using OfficeManager.Data;
 using OfficeManager.Models;
+using OfficeManager.ViewModels.Measurements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,10 +77,26 @@ namespace OfficeManager.Services
             return tenant;
         }
 
-        public Tenant GetTenantByName(string name)
+        public Tenant GetTenantByCompanyName(string name)
         {
             var tenant = this.dbContext.Tenants.Include(y => y.Offices).FirstOrDefault(x => x.CompanyName == name);
             return tenant;
+        }
+
+        public string GetTenantEIK(string tenantCompanyName)
+        {
+            var tenant = GetTenantByCompanyName(tenantCompanyName);
+            string eik;
+            if (tenant.Bulstat.StartsWith("BG"))
+            {
+                eik = tenant.Bulstat.Substring(2);
+            }
+            else
+            {
+                eik = tenant.Bulstat;
+            }
+
+            return eik;
         }
 
         public IEnumerable<EditOfficeViewModel> GetTenantOffices(TenantIdViewModel input)
@@ -97,6 +114,38 @@ namespace OfficeManager.Services
             return currentTenantOffices;
         }
 
+        public string GetTenantOfficesAsText(string tenantCompanyName)
+        {
+            Tenant tenant = GetTenantByCompanyName(tenantCompanyName);
+
+            string tenantOfficesAsText;
+
+            if (tenant.Offices.Count > 1)
+            {
+                tenantOfficesAsText = "офиси ";
+                List<string> currentTenantOffices = tenant.Offices.OrderBy(x => x.Name).Select(x => x.Name).ToList();
+
+                for (int i = 0; i < currentTenantOffices.Count - 1; i++)
+                {
+                    if (currentTenantOffices[i] != currentTenantOffices[currentTenantOffices.Count - 2])
+                    {
+                        tenantOfficesAsText += currentTenantOffices[i] + ", ";
+                    }
+                    else
+                    {
+                        tenantOfficesAsText += currentTenantOffices[i] + " и ";
+                    }
+                }
+                tenantOfficesAsText += currentTenantOffices[currentTenantOffices.Count - 1];
+            }
+            else
+            {
+                tenantOfficesAsText = "офис " + string.Join(", ", tenant.Offices.OrderBy(x => x.Name).Select(x => x.Name));
+            }
+
+            return tenantOfficesAsText;
+        }
+
         public void UpdateTenant(TenantToEditViewModel input)
         {
             Tenant tenantToEdit = GetTenantById(input.Id);
@@ -111,5 +160,7 @@ namespace OfficeManager.Services
 
             this.dbContext.SaveChanges();
         }
+
+
     }
 }

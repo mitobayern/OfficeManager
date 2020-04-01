@@ -29,7 +29,9 @@
 
             var resultViewModel = new CreateMeasurementsInputViewModel
             {
-                EndOfLastPeriod = this.measurementsService.GetEndOfLastPeriod(),
+                EndOfLastPeriod = this.measurementsService.IsFirstPeriod() 
+                                ? this.measurementsService.GetEndOfLastPeriod().AddDays(-1) 
+                                : this.measurementsService.GetEndOfLastPeriod(),
                 LastPeriod = this.measurementsService.GetLastPeriodAsText(),
                 StartOfPeriod = this.measurementsService.GetStartOfNewPeroid(),
                 EndOfPeriod = this.measurementsService.GetEndOfNewPeriod(),
@@ -67,7 +69,7 @@
         [HttpPost]
         public IActionResult InitialMeasurements(CreateInitialMeasurementsInputViewModel input)
         {
-            if (!ModelState.IsValid || ValidateMeasurements(input.Offices))
+            if (!ModelState.IsValid || !ValidateMeasurements(input.Offices))
             {
                 return this.View(input);
             }
@@ -79,8 +81,12 @@
 
         private bool ValidatePeriod(DateTime startOfPeriod, DateTime endOfPeriod)
         {
+            DateTime endOfLastPeriod = this.measurementsService.IsFirstPeriod()
+                                ? this.measurementsService.GetEndOfLastPeriod().AddDays(-1)
+                                : this.measurementsService.GetEndOfLastPeriod();
+
             if (DateTime.Compare(endOfPeriod, startOfPeriod) != 1 ||
-                    DateTime.Compare(startOfPeriod, this.measurementsService.GetEndOfLastPeriod()) != 1)
+                    DateTime.Compare(startOfPeriod, endOfLastPeriod) != 1)
             {
                 return false;
             }

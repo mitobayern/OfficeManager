@@ -37,129 +37,73 @@ namespace OfficeManager.Controllers
 
         public IActionResult Create()
         {
-            var allTenants = this.dbContext.Tenants.Select(x => x.CompanyName).ToList();
-
-            var allPeriods = this.dbContext.ElectricityMeasurements.OrderByDescending(x => x.Id).Select(x => x.Period).ToList();
-            List<string> outputPeriods = new List<string>();
-            List<SelectListItem> periods = new List<SelectListItem>();
-            List<SelectListItem> tenants = new List<SelectListItem>();
-
-
-            foreach (var period in allPeriods)
+            var tenantsAndPeriods = new TenantsAndPeriodsViewModel
             {
-                if (!outputPeriods.Contains(period))
-                {
-                    outputPeriods.Add(period);
-                    periods.Add(new SelectListItem
-                    {
-                        Text = period,
-                        Value = period
-                    });
-                }
-            }
+                Tenants = this.accontingReportsService.GetAllTenants(),
+                Periods = this.accontingReportsService.GetAllPeriods(),
+            };
 
-            foreach (var tenant in allTenants)
-            {
-                tenants.Add(new SelectListItem
-                {
-                    Text = tenant,
-                    Value = tenant
-                });
-            }
-
-            return this.View(new TenantsAndPeriodsViewModel { Tenants = tenants, Periods = periods });
+            return this.View(tenantsAndPeriods);
         }
 
         public IActionResult Generate(TenantsAndPeriodsViewModel input)
         {
-            int number = 0;
-            if (this.dbContext.AccountingReports.Count() == 0)
-            {
-                number = 1;
-            }
-            else
-            {
-                number = this.dbContext.AccountingReports.Count() + 1;
-            }
+            //int number = 0;
+            //if (this.dbContext.AccountingReports.Count() == 0)
+            //{
+            //    number = 1;
+            //}
+            //else
+            //{
+            //    number = this.dbContext.AccountingReports.Count() + 1;
+            //}
 
-            var landlord = this.landlordsService.GetLandlord();
-            var tenant = this.tenantsService.GetTenantByName(input.Tenant);
+            //var landlord = this.landlordsService.GetLandlord();
 
-            string eik = string.Empty;
-            if (tenant.Bulstat.StartsWith("BG"))
-            {
-                eik = tenant.Bulstat.Substring(2);
-            }
-            else
-            {
-                eik = tenant.Bulstat;
-            }
+            //var tenant = this.tenantsService.GetTenantByCompanyName(input.Tenant);
 
-            string offices = string.Empty;
-            if (tenant.Offices.Count > 1)
-            {
-                offices = "офиси ";
-                List<string> currentTenantOffices = tenant.Offices.OrderBy(x => x.Name).Select(x => x.Name).ToList();
+            //var pricesInformation = this.pricesInformationService.GetCurrentPrices();
 
-                for (int i = 0; i < currentTenantOffices.Count - 1; i++)
-                {
-                    if (currentTenantOffices[i] != currentTenantOffices[currentTenantOffices.Count - 2])
-                    {
-                        offices += currentTenantOffices[i] + ", ";
-                    }
-                    else
-                    {
-                        offices += currentTenantOffices[i] + " и ";
-                    }
-                }
-                offices += currentTenantOffices[currentTenantOffices.Count - 1];
-            }
-            else
-            {
-                offices = "офис " + string.Join(", ", tenant.Offices.OrderBy(x => x.Name).Select(x => x.Name));
-            }
+            //var electricityConsummation = this.accontingReportsService.GetTenantElectricityConsummationByPeriod(tenant.CompanyName, input.Period);
+            //var amountForElectricity = this.accontingReportsService.AmountForElectricity(electricityConsummation);
+            //var temperatureConsummation = this.accontingReportsService.GetTenantTemperatureConsummationByPeriod(tenant.CompanyName, input.Period);
 
-            var pricesInformation = this.pricesInformationService.GetCurrentPrices();
-            var electricityConsummation = this.measurementsService.GetTenantElectricityConsummationByPeriod(tenant, input.Period);
-            var temperatureConsummation = this.measurementsService.GetTenantTemperatureConsummationByPeriod(tenant.CompanyName, input.Period);
-            var amountForElectricity = (electricityConsummation.DayTimeConsummation + electricityConsummation.NightTimeConsummation)
-                                    * (pricesInformation.AccessToDistributionGrid + pricesInformation.NetworkTaxesAndUtilities
-                                    + pricesInformation.Excise + pricesInformation.ElectricityPerKWh);
-            var amountForHeating = temperatureConsummation.HeatingConsummation * pricesInformation.HeatingPerKWh;
-            var amountForCooling = temperatureConsummation.CoolingConsummation * pricesInformation.CoolingPerKWh;
-            var totalAmount = (amountForElectricity + amountForHeating + amountForCooling) * 1.20M;
+            //var amountForHeating = temperatureConsummation.HeatingConsummation * pricesInformation.HeatingPerKWh;
+            //var amountForCooling = temperatureConsummation.CoolingConsummation * pricesInformation.CoolingPerKWh;
+            //var totalAmount = (amountForElectricity + amountForHeating + amountForCooling) * 1.20M;
 
-            var tenantInfo = new TenantAccountingReportViewModel
-            {
-                Id = tenant.Id,
-                CompanyName = tenant.CompanyName,
-                Address = tenant.Address,
-                Bulstat = tenant.Bulstat,
-                EIK = eik,
-                CompanyOwner = tenant.CompanyOwner,
-                StartOfContract = tenant.StartOfContract,
-                Offices = offices,
-            };
+            //var tenantInfo = new TenantAccountingReportViewModel
+            //{
+            //    Id = tenant.Id,
+            //    CompanyName = tenant.CompanyName,
+            //    Address = tenant.Address,
+            //    Bulstat = tenant.Bulstat,
+            //    EIK = this.tenantsService.GetTenantEIK(input.Tenant),
+            //    CompanyOwner = tenant.CompanyOwner,
+            //    StartOfContract = tenant.StartOfContract,
+            //    Offices = this.tenantsService.GetTenantOfficesAsText(input.Tenant),
+            //};
 
-            AccountingReportViewModel accountingReport = new AccountingReportViewModel
-            {
-                Number = number,
-                Landlord = landlord,
-                Tenant = tenantInfo,
-                CreatedOn = DateTime.UtcNow,
-                Period = input.Period,
-                PricesInformation = pricesInformation,
-                DayTimeElectricityConsummation = electricityConsummation.DayTimeConsummation,
-                NightTimeElectricityConsummation = electricityConsummation.NightTimeConsummation,
-                AmountForElectricity = amountForElectricity,
-                HeatingConsummation = temperatureConsummation.HeatingConsummation,
-                AmountForHeating = amountForHeating,
-                CoolingConsummation = temperatureConsummation.CoolingConsummation,
-                AmountForCooling = amountForCooling,
-                PricesInformationId = pricesInformation.Id,
-                TenantId = tenant.Id,
-                TotalAmount = totalAmount,
-            };
+            //AccountingReportViewModel accountingReport = new AccountingReportViewModel
+            //{
+            //    Number = number,
+            //    Landlord = landlord,
+            //    Tenant = tenantInfo,
+            //    CreatedOn = DateTime.UtcNow,
+            //    Period = input.Period,
+            //    PricesInformation = pricesInformation,
+            //    DayTimeElectricityConsummation = electricityConsummation.DayTimeConsummation,
+            //    NightTimeElectricityConsummation = electricityConsummation.NightTimeConsummation,
+            //    AmountForElectricity = this.accontingReportsService.AmountForElectricity(electricityConsummation),
+            //    HeatingConsummation = temperatureConsummation.HeatingConsummation,
+            //    AmountForHeating = amountForHeating,
+            //    CoolingConsummation = temperatureConsummation.CoolingConsummation,
+            //    AmountForCooling = amountForCooling,
+            //    PricesInformationId = pricesInformation.Id,
+            //    TenantId = tenant.Id,
+            //    TotalAmount = totalAmount,
+            //};
+            var accountingReport = this.accontingReportsService.GetAccountingReportViewModel(input.Tenant, input.Period);
 
             var accountingReportJson = JsonConvert.SerializeObject(accountingReport, Formatting.Indented);
 
@@ -188,7 +132,7 @@ namespace OfficeManager.Controllers
             var accountingReport = this.accontingReportsService.GetAccountingReportById(input.Id);
 
             return this.View(accountingReport);
-        
+
         }
     }
 }

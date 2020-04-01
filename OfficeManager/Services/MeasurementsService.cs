@@ -191,14 +191,14 @@
             if (startOfPeriod.Year == endOfPeriod.Year)
             {
                 period = startOfPeriod.ToString("d MMMM", new System.Globalization.CultureInfo("bg-BG"))
-                    + " г. - "
+                    + " - "
                     + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
                     + " г.";
             }
             else
             {
                 period = startOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                    + " - "
+                    + " г. - "
                     + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
                     + " г.";
             }
@@ -293,83 +293,13 @@
             }
         }
 
-        public TenantElectricityConsummationViewModel GetTenantElectricityConsummationByPeriod(Tenant tenant, string period)
+        public bool IsFirstPeriod()
         {
-            decimal tenantDayTimeElectricityConsummation = 0;
-            decimal tenantNightTimeElectricityConsummation = 0;
-
-            foreach (var office in tenant.Offices)
+            if (GetLastPeriodAsText().StartsWith("Starting period"))
             {
-                var endOfPeriodElectricityMeasurement = this.dbContext.ElectricityMeasurements
-                    .FirstOrDefault(x => x.ElectricityMeter.Office == office && x.Period == period);
-
-                var startOfPeriodElectricityMeasurement = this.dbContext.ElectricityMeasurements
-                    .Where(x => x.ElectricityMeterId == endOfPeriodElectricityMeasurement.ElectricityMeterId &&
-                    x.Id < endOfPeriodElectricityMeasurement.Id)
-                    .OrderByDescending(x => x.Id)
-                    .First();
-
-                decimal dayTimeOfficeConsumation =
-                    endOfPeriodElectricityMeasurement.DayTimeMeasurement - startOfPeriodElectricityMeasurement.DayTimeMeasurement;
-
-                decimal nightTimeOfficeConsumation =
-                    endOfPeriodElectricityMeasurement.NightTimeMeasurement - startOfPeriodElectricityMeasurement.NightTimeMeasurement;
-
-                tenantDayTimeElectricityConsummation += dayTimeOfficeConsumation;
-                tenantNightTimeElectricityConsummation += nightTimeOfficeConsumation;
+                return true;
             }
-
-            var tenantElectricityConsumation = new TenantElectricityConsummationViewModel
-            {
-                DayTimeConsummation = tenantDayTimeElectricityConsummation,
-                NightTimeConsummation = tenantNightTimeElectricityConsummation
-            };
-
-            return tenantElectricityConsumation;
+            return false;
         }
-
-        public TenantTemperatureConsummationViewModel GetTenantTemperatureConsummationByPeriod(string tenantCompanyName, string period)
-        {
-            decimal tenantHeatingConsummation = 0;
-            decimal tenantCoolingConsummation = 0;
-
-            Tenant tenant = this.tenantsService.GetTenantByName(tenantCompanyName);
-
-            foreach (var office in tenant.Offices)
-            {
-                var name = office.Name;
-
-                foreach (var temperatureMeter in office.TemperatureMeters)
-                {
-                    var endOfPeriodTemperatureMeasurement = this.dbContext.TemperatureMeasurements
-                        .FirstOrDefault(x => x.TemperatureMeter == temperatureMeter && x.Period == period);
-
-                    var startOfPeriodTemperatureMeasurement = this.dbContext.TemperatureMeasurements
-                        .Where(x => x.TemperatureMeterId == endOfPeriodTemperatureMeasurement.TemperatureMeterId &&
-                        x.Id < endOfPeriodTemperatureMeasurement.Id)
-                        .OrderByDescending(x => x.Id)
-                        .First();
-
-                    decimal heatingConsumation =
-                        endOfPeriodTemperatureMeasurement.HeatingMeasurement - startOfPeriodTemperatureMeasurement.HeatingMeasurement;
-
-                    decimal coolingConsumation =
-                        endOfPeriodTemperatureMeasurement.CoolingMeasurement - startOfPeriodTemperatureMeasurement.CoolingMeasurement;
-
-                    tenantHeatingConsummation += heatingConsumation;
-                    tenantCoolingConsummation += coolingConsumation;
-                }
-
-            }
-
-            var tenantTemperatureConsumation = new TenantTemperatureConsummationViewModel
-            {
-                HeatingConsummation = tenantHeatingConsummation,
-                CoolingConsummation = tenantCoolingConsummation
-            };
-
-            return tenantTemperatureConsumation;
-        }
-
     }
 }

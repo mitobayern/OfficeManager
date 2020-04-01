@@ -2,6 +2,7 @@
 using OfficeManager.Areas.Administration.ViewModels.Tenants;
 using OfficeManager.Models;
 using OfficeManager.ViewModels.AccountingReports;
+using OfficeManager.ViewModels.Measurements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace OfficeManager.Services
 
         Tenant GetTenantById(int id);
 
-        Tenant GetTenantByName(string name);
+        Tenant GetTenantByCompanyName(string tenantCompanyName);
 
         IQueryable<TenantOutputViewModel> GetAllTenants();
 
@@ -25,5 +26,8 @@ namespace OfficeManager.Services
 
         IEnumerable<EditOfficeViewModel> GetTenantOffices(TenantIdViewModel input);
 
+        string GetTenantOfficesAsText(string tenantCompanyName);
+
+        string GetTenantEIK(string tenantCompanyName);
     }
 }

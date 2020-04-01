@@ -8,6 +8,8 @@
 
     public interface IMeasurementsService
     {
+        bool IsFirstPeriod();
+
         string GetLastPeriodAsText();
 
         DateTime GetEndOfLastPeriod();
@@ -30,8 +32,5 @@
 
         void CreateTemperatureMeasurement(DateTime periodStartTime, DateTime periodEndTime, string tempMeterName, decimal heatingMeasurement, decimal coolingMeasurement);
 
-        TenantElectricityConsummationViewModel GetTenantElectricityConsummationByPeriod(Tenant tenant, string period);
-
-        TenantTemperatureConsummationViewModel GetTenantTemperatureConsummationByPeriod(string tenantCompanyName, string period);
     }
 }
