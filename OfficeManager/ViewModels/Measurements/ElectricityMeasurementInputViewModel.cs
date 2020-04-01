@@ -1,11 +1,11 @@
-﻿using OfficeManager.Attributes;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace OfficeManager.ViewModels.Measurements
+﻿namespace OfficeManager.ViewModels.Measurements
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     public class ElectricityMeasurementInputViewModel : IValidatableObject
     {
+        [Required]
         public string Name { get; set; }
 
         [Required]

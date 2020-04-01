@@ -41,7 +41,13 @@
 
         public DateTime GetStartOfNewPeroid()
         {
-            DateTime startOfNewPeriod = this.GetEndOfLastPeriod().AddDays(1);
+            DateTime startOfNewPeriod = this.GetEndOfLastPeriod();
+
+            if (!GetLastPeriodAsText().StartsWith("Starting period"))
+            {
+                startOfNewPeriod = startOfNewPeriod.AddDays(1);
+            }
+
             return startOfNewPeriod;
         }
 
@@ -76,29 +82,83 @@
             return endOfNewPeriod;
         }
 
+        public void CreateInitialElectricityMeasurement(DateTime periodEndTime, string elMeterName, decimal dayTimeMeasurement, decimal nightTimeMeasurement)
+        {
+            DateTime startOfPeriod = periodEndTime;
+            DateTime endOfPeriod = periodEndTime;
+
+            string period = "Starting period "
+                            + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                            + " г.";
+
+            var currentElectricityMeter = this.electricityMetersService.GetElectricityMeterByName(elMeterName);
+
+            ElectricityMeasurement currentElectricityMeasurement = new ElectricityMeasurement
+            {
+                StartOfPeriod = startOfPeriod.Date,
+                EndOfPeriod = endOfPeriod.Date,
+                DayTimeMeasurement = dayTimeMeasurement,
+                NightTimeMeasurement = nightTimeMeasurement,
+                CreatedOn = DateTime.UtcNow.Date,
+                Period = period,
+                ElectricityMeter = currentElectricityMeter,
+                ElectricityMeterId = currentElectricityMeter.Id,
+            };
+
+            this.dbContext.ElectricityMeasurements.Add(currentElectricityMeasurement);
+            currentElectricityMeter.ElectricityMeasurements.Add(currentElectricityMeasurement);
+
+            this.dbContext.SaveChanges();
+        }
+
+        public void CreateInitialTemperatureMeasurement(DateTime periodEndTime, string tempMeterName, decimal heatingMeasurement, decimal coolingMeasurement)
+        {
+            DateTime endOfPeriod = periodEndTime;
+            DateTime startOfPeriod = periodEndTime;
+
+            string period = "Starting period "
+                            + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                            + " г.";
+
+            var currentTemperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(tempMeterName);
+
+            TemperatureMeasurement currentTemperatureMeasurement = new TemperatureMeasurement
+            {
+                StartOfPeriod = startOfPeriod.Date,
+                EndOfPeriod = endOfPeriod.Date,
+                HeatingMeasurement = heatingMeasurement,
+                CoolingMeasurement = coolingMeasurement,
+                Period = period,
+                TemperatureMeter = currentTemperatureMeter,
+                TemperatureMeterId = currentTemperatureMeter.Id,
+            };
+
+            this.dbContext.TemperatureMeasurements.Add(currentTemperatureMeasurement);
+            currentTemperatureMeter.TemperatureMeasurements.Add(currentTemperatureMeasurement);
+
+            this.dbContext.SaveChanges();
+        }
+
         public void CreateElectricityMeasurement(DateTime periodStartTime, DateTime periodEndTime, string elMeterName, decimal dayTimeMeasurement, decimal nightTimeMeasurement)
         {
             DateTime startOfPeriod = periodStartTime;
             DateTime endOfPeriod = periodEndTime;
 
-            if (this.dbContext.ElectricityMeasurements.Count() == 0)
-            {
-                startOfPeriod = endOfPeriod;
-            }
-
-            string period = string.Empty;
+            string period;
 
             if (startOfPeriod.Year == endOfPeriod.Year)
             {
                 period = startOfPeriod.ToString("d MMMM", new System.Globalization.CultureInfo("bg-BG"))
                     + " - "
-                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"));
+                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г.";
             }
             else
             {
                 period = startOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                    + " - "
-                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"));
+                    + " г. - "
+                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г.";
             }
 
             var currentElectricityMeter = this.electricityMetersService.GetElectricityMeterByName(elMeterName);
@@ -126,24 +186,21 @@
             DateTime startOfPeriod = periodStartTime;
             DateTime endOfPeriod = periodEndTime;
 
-            if (this.dbContext.TemperatureMeasurements.Count() == 0)
-            {
-                startOfPeriod = endOfPeriod;
-            }
-
             string period;
 
             if (startOfPeriod.Year == endOfPeriod.Year)
             {
                 period = startOfPeriod.ToString("d MMMM", new System.Globalization.CultureInfo("bg-BG"))
-                    + " - "
-                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"));
+                    + " г. - "
+                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г.";
             }
             else
             {
                 period = startOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
                     + " - "
-                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"));
+                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г.";
             }
 
 
@@ -206,6 +263,21 @@
             return offices;
         }
 
+        public void CreateInitialMeasurements(CreateInitialMeasurementsInputViewModel input)
+        {
+            foreach (var office in input.Offices)
+            {
+                CreateInitialElectricityMeasurement(input.EndOfPeriod, office.ElectricityMeter.Name,
+                    office.ElectricityMeter.DayTimeMeasurement, office.ElectricityMeter.NightTimeMeasurement);
+
+                foreach (var temperatureMeter in office.TemperatureMeters)
+                {
+                    CreateInitialTemperatureMeasurement(input.EndOfPeriod, temperatureMeter.Name,
+                        temperatureMeter.HeatingMeasurement, temperatureMeter.CoolingMeasurement);
+                }
+            }
+        }
+
         public void CreateAllMeasurements(CreateMeasurementsInputViewModel input)
         {
             foreach (var office in input.Offices)
@@ -220,7 +292,7 @@
                 }
             }
         }
-        
+
         public TenantElectricityConsummationViewModel GetTenantElectricityConsummationByPeriod(Tenant tenant, string period)
         {
             decimal tenantDayTimeElectricityConsummation = 0;

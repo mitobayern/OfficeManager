@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.ViewModels.Measurements
+﻿namespace OfficeManager.ViewModels.Measurements
 {
+    using Microsoft.AspNetCore.Mvc;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     public class CreateMeasurementsInputViewModel : IValidatableObject
     {
         [BindProperty]
@@ -43,7 +41,6 @@ namespace OfficeManager.ViewModels.Measurements
             {
                 yield return new ValidationResult($"End of period must be after {this.StartOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))} г.", new List<string> { "EndOfPeriod" });
             }
-            
         }
     }
 }

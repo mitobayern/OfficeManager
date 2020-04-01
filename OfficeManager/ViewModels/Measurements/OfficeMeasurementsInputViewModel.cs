@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.ViewModels.Measurements
+﻿namespace OfficeManager.ViewModels.Measurements
 {
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     public class OfficeMeasurementsInputViewModel
     {
+        [Required]
         public string Name { get; set; }
 
         public ElectricityMeasurementInputViewModel ElectricityMeter { get; set; }

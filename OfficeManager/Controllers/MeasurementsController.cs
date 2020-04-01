@@ -1,6 +1,7 @@
 ﻿namespace OfficeManager.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Microsoft.AspNetCore.Mvc;
 
@@ -18,93 +19,7 @@
             this.dbContext = dbContext;
             this.measurementsService = measurementsService;
         }
-        public IActionResult CreateElectricityMeasurements()
-        {
-            if (this.dbContext.ElectricityMeasurements.Count() == 0)
-            {
-                return this.Redirect("/Measurements/InitialElectricityMeasurements");
-            }
-
-            string period = this.dbContext.ElectricityMeasurements.OrderByDescending(x => x.Id).First().Period;
-
-            var elMeters = this.dbContext.ElectricityMeters.Select(x => new ElectricityMeasurementInputViewModel
-            {
-                Name = x.Name
-            })
-            .OrderBy(x => x.Name)
-            .ToList();
-
-            //var temperatureMeters = this.dbContext.TemperatureMeters.Select(x => new TemperatureMeasurementInputViewModel
-            //{
-            //    Name = x.Name
-            //})
-            //.OrderBy(x => x.Name)
-            //.ToList();
-
-
-            return this.View(new CreateElectricityMeasurementsInputViewModel { LastPeriod = period, ElectricityMeters = elMeters, /*TemperatureMeters = temperatureMeters*/ });
-        }
-
-        public IActionResult InitialElectricityMeasurements()
-        {
-            var elMeters = this.dbContext.ElectricityMeters.Select(x => new ElectricityMeasurementInputViewModel
-            {
-                Name = x.Name
-            })
-            .OrderBy(x => x.Name)
-            .ToList();
-
-            return this.View(new CreateElectricityMeasurementsInputViewModel { ElectricityMeters = elMeters });
-        }
-
-
-        public IActionResult CreateTemperatureMeasurements()
-        {
-            if (this.dbContext.TemperatureMeasurements.Count() == 0)
-            {
-                return this.Redirect("/Measurements/InitialTemperatureMeasurements");
-            }
-
-            string period = this.dbContext.TemperatureMeasurements.OrderByDescending(x => x.Id).First().Period;
-
-            var temperatureMeters = this.dbContext.TemperatureMeters.Select(x => new TemperatureMeasurementInputViewModel
-            {
-                Name = x.Name
-            })
-            .OrderBy(x => x.Name)
-            .ToList();
-
-            return this.View(new CreateTemperatureMeasurementsInputViewModel { LastPeriod = period, TemperatureMeters = temperatureMeters });
-        }
-
-        public IActionResult InitialTemperatureMeasurements()
-        {
-            var temperatureMeters = this.dbContext.TemperatureMeters.Select(x => new TemperatureMeasurementInputViewModel
-            {
-                Name = x.Name
-            })
-            .OrderBy(x => x.Name)
-            .ToList();
-
-            return this.View(new CreateTemperatureMeasurementsInputViewModel { TemperatureMeters = temperatureMeters });
-        }
-
-        [HttpPost]
-        public IActionResult CreateElectricityMeasurements(CreateElectricityMeasurementsInputViewModel input)
-        {
-            //this.measurementsService.CreateElectricityMeasurements(input);
-
-            return this.Redirect("/Home/Index");
-        }
-
-        [HttpPost]
-        public IActionResult CreateTemperatureMeasurements(CreateTemperatureMeasurementsInputViewModel input)
-        {
-            //this.measurementsService.CreateTemperatureMeasurements(input);
-
-            return this.Redirect("/Home/Index");
-        }
-
+       
         public IActionResult CreateMeasurements()
         {
             if (this.dbContext.ElectricityMeasurements.Count() == 0)
@@ -127,12 +42,9 @@
         [HttpPost]
         public IActionResult CreateMeasurements(CreateMeasurementsInputViewModel input)
         {
-            if (!ModelState.IsValid)
-            {
-                return this.View(input);
-            }
-
-            if (!Validate(input))
+            if (!ModelState.IsValid || 
+                !ValidateMeasurements(input.Offices) || 
+                !ValidatePeriod(input.StartOfPeriod, input.EndOfPeriod))
             {
                 return this.View(input);
             }
@@ -142,23 +54,51 @@
             return this.Redirect("/Home/Index");
         }
 
-        private bool Validate(CreateMeasurementsInputViewModel input)
+        public IActionResult InitialMeasurements()
         {
-            if (DateTime.Compare(input.EndOfPeriod, input.StartOfPeriod) != 1 ||
-                DateTime.Compare(input.StartOfPeriod, this.measurementsService.GetEndOfLastPeriod()) != 1)
+            var resultViewModel = new CreateInitialMeasurementsInputViewModel
+            {
+                Offices = this.measurementsService.GetOfficesWithLastMeasurements(),
+            };
+
+            return this.View(resultViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult InitialMeasurements(CreateInitialMeasurementsInputViewModel input)
+        {
+            if (!ModelState.IsValid || ValidateMeasurements(input.Offices))
+            {
+                return this.View(input);
+            }
+
+            this.measurementsService.CreateInitialMeasurements(input);
+
+            return this.Redirect("/Home/Index");
+        }
+
+        private bool ValidatePeriod(DateTime startOfPeriod, DateTime endOfPeriod)
+        {
+            if (DateTime.Compare(endOfPeriod, startOfPeriod) != 1 ||
+                    DateTime.Compare(startOfPeriod, this.measurementsService.GetEndOfLastPeriod()) != 1)
             {
                 return false;
             }
 
+            return true;
+        }
+
+        private bool ValidateMeasurements(List<OfficeMeasurementsInputViewModel> offices)
+        {
             var lastMeasurements = this.measurementsService.GetOfficesWithLastMeasurements();
 
-            foreach (var office in input.Offices)
+            foreach (var office in offices)
             {
-                if (office.ElectricityMeter.NightTimeMeasurement < 
-                    lastMeasurements.FirstOrDefault(x=>x.ElectricityMeter.Name == office.ElectricityMeter.Name)
+                if (office.ElectricityMeter.NightTimeMeasurement <
+                    lastMeasurements.FirstOrDefault(x => x.ElectricityMeter.Name == office.ElectricityMeter.Name)
                     .ElectricityMeter.NightTimeMinValue)
                 {
-                    return false;      
+                    return false;
                 }
                 if (office.ElectricityMeter.DayTimeMeasurement <
                     lastMeasurements.FirstOrDefault(x => x.ElectricityMeter.Name == office.ElectricityMeter.Name)
@@ -179,7 +119,6 @@
                         return false;
                     }
                 }
-
             }
 
             return true;

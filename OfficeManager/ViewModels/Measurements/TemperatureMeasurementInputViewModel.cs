@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace OfficeManager.ViewModels.Measurements
+﻿namespace OfficeManager.ViewModels.Measurements
 {
-    public class TemperatureMeasurementInputViewModel :IValidatableObject
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
+    public class TemperatureMeasurementInputViewModel : IValidatableObject
     {
+        [Required]
         public string Name { get; set; }
 
         [Required]
@@ -31,7 +32,5 @@ namespace OfficeManager.ViewModels.Measurements
                 yield return new ValidationResult($"Measurement can not be smaller than {this.CoolingMinValue}", new List<string> { "CoolingMeasurement" });
             }
         }
-
-
     }
 }
