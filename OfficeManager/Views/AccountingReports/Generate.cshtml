@@ -46,7 +46,7 @@
         <br />
         <h1 class="display-4" style="margin: 2%; text-align: center;">Счетоводна справка</h1>
         <p style="font-size:20px; text-align:center;"><i>№ <b>@Model.AccountingReport.Number</b> / <b>@Model.AccountingReport.CreatedOn.ToString("d.MM.yyyy") </b>г.</i></p>
-        <p style="font-size:17px; text-align:center; line-height:35px"><i>Относно режийни разходи на <b>@Model.AccountingReport.Tenant.Offices</b> в сграда на ул. Осогово №86 (дог. от <b>@Model.AccountingReport.Tenant.StartOfContract.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG")) г.</b>)<br /> за периода: <b>@Model.AccountingReport.Period г.</b></i></p>
+        <p style="font-size:17px; text-align:center; line-height:35px"><i>Относно режийни разходи на <b>@Model.AccountingReport.Tenant.Offices</b> в сграда на ул. Осогово №86 (дог. от <b>@Model.AccountingReport.Tenant.StartOfContract.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG")) г.</b>)<br /> за периода: <b>@Model.AccountingReport.Period</b></i></p>
         <br />
         <br />
         <br />
@@ -158,9 +158,9 @@
                 </p>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top:50px">Confirm Accounting Report</button>
+        @*<button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top:50px">Confirm Accounting Report</button>*@
+        <button type="submit" class="btn btn-primary" style="width:250px">Confirm Acounting Report</button>
+        <a class="btn btn-dark" href="/AccountingReports/All" role="button" style="width:250px">Back</a>
     </form>
-
-
 </body>
 </html>

@@ -41,7 +41,7 @@
     else
     {
         <div class="row" style="margin-bottom:20px">
-            <div class="col-md-8">
+            <div class="col-8">
                 <h5><i>Electricity meter: <b style="color:brown">@Model.ElectricityMeter</b></i></h5>
             </div>
         </div>
@@ -49,20 +49,20 @@
     <div class="row">
         @if (Model.ElectricityMeter == "No electricity meter available")
         {
-            <div class="col-md-3">
+            <div class="col-3">
                 <a href="/Administration/Offices/AddElectricityMeter?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
             </div>
-            <div class="col-md-3">
+            <div class="col-3">
                 <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
             </div>
         }
         else
         {
-            <div class="col-md-3">
+            <div class="col-3">
 
                 <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
             </div>
-            <div class="col-md-3">
+            <div class="col-3">
                 <a href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
             </div>
         }
@@ -80,16 +80,16 @@
     else
     {
         <div class="row" style="margin-bottom:20px">
-            <div class="col-md-8">
+            <div class="col-8">
                 <h5><i>Temperature meters: <b style="color:brown">@String.Join(", ", Model.TemperatureMeters)</b></i></h5>
             </div>
         </div>
     }
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-3">
             <a href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Temperature Meters</a>
         </div>
-        <div class="col-md-3">
+        <div class="col-3">
             <a href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Temperature Meters</a>
         </div>
     </div>
