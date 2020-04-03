@@ -56,6 +56,10 @@
 
         public IActionResult Edit(OfficeIdViewModel input)
         {
+            if (!ValidateOffice(input.Id))
+            {
+                return this.Redirect("/Administration/Offices/All");
+            }
             var officeToEdit = officesService.EditOffice(input.Id);
 
             return View(officeToEdit);
@@ -77,6 +81,11 @@
 
         public IActionResult AddTemperatureMeters(OfficeIdViewModel input)
         {
+            if (!ValidateOffice(input.Id))
+            {
+                return this.Redirect("/Administration/Offices/All");
+            }
+
             var allAvailableTemperatureMeters = temperatureMetersService
                 .GetAllTemperatureMeters()
                 .Where(x => x.OfficeNumber == null)
@@ -88,6 +97,10 @@
         [HttpPost]
         public IActionResult AddTemperatureMeters(AddRemoveTemperatureMetersViewModel input)
         {
+            if (input.AreChecked == null)
+            {
+                return this.RedirectToAction("AddTemperatureMeters", new OfficeIdViewModel { Id = input.Id });
+            }
             officesService.AddTemperatureMetersToOffice(input.Id, input.AreChecked);
 
             return Redirect("/Administration/Offices/Edit?id=" + input.Id.ToString());
@@ -95,15 +108,24 @@
 
         public IActionResult RemoveTemperatureMeters(OfficeIdViewModel input)
         {
+            if (!ValidateOffice(input.Id))
+            {
+                return this.Redirect("/Administration/Offices/All");
+            }
+
             var currentOfficeTemperatreMeters = officesService.GetOfficeTemperatureMeters(input.Id).ToList();
-
-
+            
             return View(new OfficeWithCurrentTemperatureMetersViewModel { Id = input.Id, CurrentTemperatureMeters = currentOfficeTemperatreMeters });
         }
 
         [HttpPost]
         public IActionResult RemoveTemperatureMeters(AddRemoveTemperatureMetersViewModel input)
         {
+            if (input.AreChecked == null)
+            {
+                return this.RedirectToAction("RemoveTemperatureMeters", new OfficeIdViewModel { Id = input.Id });
+            }
+
             officesService.RemoveTemperatureMetersFromOffice(input.Id, input.AreChecked);
 
             return Redirect("/Administration/Offices/Edit?id=" + input.Id.ToString());
@@ -111,6 +133,11 @@
 
         public IActionResult AddElectricityMeter(OfficeIdViewModel input)
         {
+            if (!ValidateOffice(input.Id))
+            {
+                return this.Redirect("/Administration/Offices/All");
+            }
+
             var office = dbContext.Offices.FirstOrDefault(x => x.Id == input.Id);
 
             var elMeters = dbContext.ElectricityMeters
@@ -129,6 +156,11 @@
         [HttpPost]
         public IActionResult AddElectricityMeter(AddRemoveElectricityMeterViewModel input)
         {
+            if (input.IsChecked == null)
+            {
+                return this.RedirectToAction("AddElectricityMeter", new OfficeIdViewModel { Id = input.Id });
+            }
+
             officesService.AddElectricityMeterToOffice(input.Id, input.IsChecked);
 
             return Redirect("/Administration/Offices/Edit?id=" + input.Id.ToString());
@@ -136,6 +168,11 @@
 
         public IActionResult RemoveElectricityMeter(OfficeIdViewModel input)
         {
+            if (!ValidateOffice(input.Id))
+            {
+                return this.Redirect("/Administration/Offices/All");
+            }
+
             var currentOffice = officesService.GetOfficeById(input.Id);
             var currentElMeter = currentOffice.ElectricityMeter;
 
@@ -146,6 +183,15 @@
             dbContext.SaveChanges();
 
             return Redirect("/Administration/Offices/Edit?id=" + input.Id.ToString());
+        }
+
+        private bool ValidateOffice(int id)
+        {
+            if (this.dbContext.Offices.Any(x => x.Id == id))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
