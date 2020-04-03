@@ -11,12 +11,10 @@
     [Authorize(Roles = "Admin")]
     public class PricesInformationController : Controller
     {
-        private readonly ApplicationDbContext dbContext;
         private readonly IPricesInformationService pricesInformationService;
 
-        public PricesInformationController(ApplicationDbContext dbContext, IPricesInformationService pricesInformationService)
+        public PricesInformationController(IPricesInformationService pricesInformationService)
         {
-            this.dbContext = dbContext;
             this.pricesInformationService = pricesInformationService;
         }
 

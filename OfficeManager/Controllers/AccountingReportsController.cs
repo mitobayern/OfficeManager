@@ -13,7 +13,7 @@
         private readonly IAccontingReportsService accontingReportsService;
         private readonly ApplicationDbContext dbContext;
 
-        public AccountingReportsController(IAccontingReportsService accontingReportsService, ApplicationDbContext dbContext)
+        public AccountingReportsController(ApplicationDbContext dbContext, IAccontingReportsService accontingReportsService)
         {
             this.accontingReportsService = accontingReportsService;
             this.dbContext = dbContext;
@@ -47,6 +47,7 @@
 
                 return this.View(tenantsAndPeriods);
             }
+
             var result = new AccountingReportInputViewModel
             {
                 Tenant = input.Tenant,
@@ -58,17 +59,9 @@
 
         public IActionResult Generate(AccountingReportInputViewModel input)
         {
-            var AccountingReports = this.accontingReportsService.GetAllAccountingReports().ToList();
-            if (AccountingReports != null)
+            if (!ValidateTenantAndPeriod(input.Tenant, input.Period))
             {
-                var MatchingAccountingReports = AccountingReports.Any(x => x.CompanyName == input.Tenant && x.Period == input.Period);
-                var ExistingTenant = this.dbContext.Tenants.Any(x=>x.CompanyName == input.Tenant);
-                var ExistingPeriod = this.dbContext.ElectricityMeasurements.Any(x => x.Period == input.Period);
-
-                if (MatchingAccountingReports || !ExistingTenant || !ExistingPeriod)
-                {
-                    return this.Redirect("/AccountingReports/Create");
-                }
+                return this.Redirect("/AccountingReports/Create");
             }
 
             var accountingReport = this.accontingReportsService.GetAccountingReportViewModel(input.Tenant, input.Period);
@@ -98,6 +91,24 @@
             var accountingReport = this.accontingReportsService.GetAccountingReportById(input.Id);
 
             return this.View(accountingReport);
+        }
+
+        private bool ValidateTenantAndPeriod(string tenant, string period)
+        {
+            var AccountingReports = this.accontingReportsService.GetAllAccountingReports().ToList();
+            if (AccountingReports != null)
+            {
+                var MatchingAccountingReports = AccountingReports.Any(x => x.CompanyName == tenant && x.Period == period);
+                var ExistingTenant = this.dbContext.Tenants.Any(x => x.CompanyName == tenant);
+                var ExistingPeriod = this.dbContext.ElectricityMeasurements.Any(x => x.Period == period);
+
+                if (MatchingAccountingReports || !ExistingTenant || !ExistingPeriod)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
