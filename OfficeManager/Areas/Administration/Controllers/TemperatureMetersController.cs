@@ -6,15 +6,18 @@
 
     using OfficeManager.Services;
     using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
+    using OfficeManager.Data;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
     public class TemperatureMetersController : Controller
     {
+        private readonly ApplicationDbContext dbContext;
         private readonly ITemperatureMetersService temperatureMetersService;
 
-        public TemperatureMetersController(ITemperatureMetersService temperatureMetersService)
+        public TemperatureMetersController(ApplicationDbContext dbContext, ITemperatureMetersService temperatureMetersService)
         {
+            this.dbContext = dbContext;
             this.temperatureMetersService = temperatureMetersService;
         }
 
@@ -45,6 +48,11 @@
 
         public IActionResult Edit(TemperatureMeterIdViewModel input)
         {
+            if (!ValidateTemperatureMeter(input.Id))
+            {
+                return this.Redirect("/Administration/TemperatureMeters/All");
+            }
+
             var temperatureMeterToEdit = temperatureMetersService.EditTemperatureMeter(input.Id);
 
             return View(temperatureMeterToEdit);
@@ -61,5 +69,15 @@
 
             return Redirect("/Administration/TemperatureMeters/All");
         }
+
+        private bool ValidateTemperatureMeter(int id)
+        {
+            if (this.dbContext.TemperatureMeters.Any(x => x.Id == id))
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
 }
