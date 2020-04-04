@@ -22,6 +22,11 @@
                 Name = input.Name,
             };
 
+            if (this.dbContext.TemperatureMeters.Any(x=>x.Name== temperatureMeter.Name))
+            {
+                return;
+            }
+
             this.dbContext.TemperatureMeters.Add(temperatureMeter);
             this.dbContext.SaveChanges();
         }

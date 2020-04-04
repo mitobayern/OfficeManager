@@ -33,6 +33,7 @@
             {
                 return View();
             }
+
             temperatureMetersService.CreateTemperatureMeter(input);
 
             return Redirect("/Administration/TemperatureMeters/All");
