@@ -8,7 +8,7 @@
     {
         public int Number { get; set; }
 
-        public LandlordOutputViewModel Landlord { get; set; }
+        public CreateLandlordViewModel Landlord { get; set; }
 
         public int TenantId { get; set; }
         public TenantAccountingReportViewModel Tenant { get; set; }

@@ -35,29 +35,29 @@ namespace OfficeManager.Services
             this.dbContext.SaveChanges();
         }
 
-        public CreateLandlordViewModel EditLandlord()
+        //public CreateLandlordViewModel EditLandlord()
+        //{
+        //    var landlord = this.dbContext.Landlords.FirstOrDefault();
+
+        //    var outputLandlord = new CreateLandlordViewModel()
+        //    {
+        //        Id = landlord.Id,
+        //        LandlordName = landlord.CompanyName,
+        //        LandlordOwner = landlord.CompanyOwner,
+        //        Bulstat = landlord.Bulstat,
+        //        Address = landlord.Address,
+        //        Email = landlord.Email,
+        //        Phone = landlord.Phone
+        //    };
+
+        //    return outputLandlord;
+        //}
+
+        public CreateLandlordViewModel GetLandlord()
         {
             var landlord = this.dbContext.Landlords.FirstOrDefault();
 
             var outputLandlord = new CreateLandlordViewModel()
-            {
-                Id = landlord.Id,
-                LandlordName = landlord.CompanyName,
-                LandlordOwner = landlord.CompanyOwner,
-                Bulstat = landlord.Bulstat,
-                Address = landlord.Address,
-                Email = landlord.Email,
-                Phone = landlord.Phone
-            };
-
-            return outputLandlord;
-        }
-
-        public LandlordOutputViewModel GetLandlord()
-        {
-            var landlord = this.dbContext.Landlords.FirstOrDefault();
-
-            var outputLandlord = new LandlordOutputViewModel()
             {
                 Id = landlord.Id,
                 LandlordName = landlord.CompanyName,

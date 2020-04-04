@@ -53,7 +53,7 @@
 
         public IActionResult Edit()
         {
-            var landlord = landlordsService.EditLandlord();
+            var landlord = landlordsService.GetLandlord();
 
             return View(landlord);
         }

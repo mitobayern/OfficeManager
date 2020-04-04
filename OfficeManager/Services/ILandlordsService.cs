@@ -7,10 +7,8 @@ namespace OfficeManager.Services
     {
         void CreateLandlord(CreateLandlordViewModel landlord);
 
-        LandlordOutputViewModel GetLandlord();
-
-        CreateLandlordViewModel EditLandlord();
-
+        CreateLandlordViewModel GetLandlord();
+        
         void UpdateLandlord(CreateLandlordViewModel input);
     }
 }

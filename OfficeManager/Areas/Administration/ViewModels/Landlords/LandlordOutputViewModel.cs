@@ -3,6 +3,7 @@
     public class LandlordOutputViewModel
     {
         public int Id { get; set; }
+
         public string LandlordName { get; set; }
 
         public string LandlordOwner { get; set; }
