@@ -1,16 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OfficeManager.Areas.Administration.ViewModels.Landlords;
-using OfficeManager.Data;
-using OfficeManager.Models;
-using OfficeManager.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xunit;
-
-namespace OfficeManager.Tests.LandlolrdsTests
+﻿namespace OfficeManager.Tests.LandlolrdsTests
 {
+    using Microsoft.EntityFrameworkCore;
+    using OfficeManager.Areas.Administration.ViewModels.Landlords;
+    using OfficeManager.Data;
+    using OfficeManager.Models;
+    using OfficeManager.Services;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using Xunit;
+
     public class LandlordsServiceTests
     {
         private CreateLandlordViewModel landlord;
@@ -90,10 +90,6 @@ namespace OfficeManager.Tests.LandlolrdsTests
             Assert.Equal("UpdateCompanyName", landlordName);
             Assert.Equal("UpdateCompanyOwner", landlordOwner);
         }
-
-
-
-
 
         private DbContextOptions<ApplicationDbContext> GetInMemoryDadabaseOptions()
         {

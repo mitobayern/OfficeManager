@@ -25,6 +25,11 @@ namespace OfficeManager.Services
                 PowerSupply = input.PowerSupply,
             };
 
+            if (this.dbContext.ElectricityMeters.Any(x=>x.Name == electricityMeter.Name))
+            {
+                return;
+            }
+
             this.dbContext.ElectricityMeters.Add(electricityMeter);
             this.dbContext.SaveChanges();
         }
