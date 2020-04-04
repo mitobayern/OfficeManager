@@ -20,8 +20,7 @@ namespace OfficeManager.Services
         public OfficesService(ApplicationDbContext dbContext,
                               ITenantsService tenantsService,
                               IElectricityMetersService electricityMetersService,
-                              ITemperatureMetersService temperatureMetersService
-                              )
+                              ITemperatureMetersService temperatureMetersService)
         {
             this.dbContext = dbContext;
             this.tenantsService = tenantsService;

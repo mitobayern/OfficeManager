@@ -22,6 +22,11 @@ namespace OfficeManager.Services
 
         public void CreateTenant(CreateTenantViewModel input)
         {
+            if (this.dbContext.Tenants.Any(x=>x.CompanyName == input.CompanyName))
+            {
+                return;
+            }
+
             Tenant tenant = new Tenant()
             {
                 CompanyName = input.CompanyName,
@@ -160,7 +165,5 @@ namespace OfficeManager.Services
 
             this.dbContext.SaveChanges();
         }
-
-
     }
 }
