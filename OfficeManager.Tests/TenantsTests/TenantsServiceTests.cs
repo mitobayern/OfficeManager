@@ -139,8 +139,7 @@ namespace OfficeManager.Tests.TenantsTests
 
             Assert.Equal("TestCompanyOwner", companyOwner);
         }
-
-
+        
         [Theory]
         [InlineData("123456789")]
         [InlineData("BG123456789")]

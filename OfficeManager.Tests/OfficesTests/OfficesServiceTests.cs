@@ -103,7 +103,6 @@ namespace OfficeManager.Tests.OfficesTests
             {
                 IOfficesService officesService =
                     new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
-
                 officesService.CreateOffice(inputOffice);
 
                 Assert.Equal("No electricity meter available", officesService.EditOffice(1).ElectricityMeter);
