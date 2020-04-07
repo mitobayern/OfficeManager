@@ -14,7 +14,7 @@ namespace OfficeManager.Tests.TenantsTests
     public class TenantsServiceTests
     {
         [Fact]
-        public void TestIfTemperatureMeterIsCreatedCorrectly()
+        public void TestIfTenantIsCreatedCorrectly()
         {
             int actualTenantsCount;
 

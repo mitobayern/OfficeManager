@@ -9,6 +9,5 @@
         CurrentPricesOutputViewModel GetCurrentPrices();
 
         CurrentPricesOutputViewModel GetPricesInformationById(int id);
-
     }
 }

@@ -18,11 +18,13 @@ namespace OfficeManager.Services
 
         void AddOfficesToTenant(int id, List<string> offices);
 
-        void RemoveOfficeFromTenant(int id, List<string> offices);
+        void RemoveOfficesFromTenant(int id, List<string> offices);
 
         void AddTemperatureMetersToOffice(int id, List<string> temperatureMeters);
 
         void RemoveTemperatureMetersFromOffice(int id, List<string> temperatureMeters);
+
+        void RemoveElectricityMeterFromOffice(int id);
 
         void AddElectricityMeterToOffice(int id, string electricityMeterName);
 

@@ -75,6 +75,11 @@ namespace OfficeManager.Services
 
         public void CreateOffice(CreateOfficeViewModel input)
         {
+            if (this.dbContext.Offices.Any(x=>x.Name == input.Name))
+            {
+                return;
+            }
+
             Office office = new Office()
             {
                 Name = input.Name,
@@ -167,7 +172,7 @@ namespace OfficeManager.Services
             return officeTemperatureMeters;
         }
 
-        public void RemoveOfficeFromTenant(int id, List<string> offices)
+        public void RemoveOfficesFromTenant(int id, List<string> offices)
         {
             var currentTenant = this.tenantsService.GetTenantById(id);
 
@@ -202,6 +207,18 @@ namespace OfficeManager.Services
             }
 
             this.dbContext.SaveChanges();
+        }
+
+        public void RemoveElectricityMeterFromOffice(int id)
+        {
+            var currentOffice = GetOfficeById(id);
+            var currentElMeter = currentOffice.ElectricityMeter;
+
+            currentElMeter.Office = null;
+            currentElMeter.OfficeId = null;
+            currentOffice.ElectricityMeter = null;
+
+            dbContext.SaveChanges();
         }
 
         public void UpdateOffice(int id, string name, decimal area, decimal rentPerSqMeter)

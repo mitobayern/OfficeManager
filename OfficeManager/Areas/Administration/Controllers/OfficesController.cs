@@ -172,15 +172,9 @@
             {
                 return this.Redirect("/Administration/Offices/All");
             }
+            
+            this.officesService.RemoveElectricityMeterFromOffice(input.Id);
 
-            var currentOffice = officesService.GetOfficeById(input.Id);
-            var currentElMeter = currentOffice.ElectricityMeter;
-
-            currentElMeter.Office = null;
-            currentElMeter.OfficeId = null;
-            currentOffice.ElectricityMeter = null;
-
-            dbContext.SaveChanges();
 
             return Redirect("/Administration/Offices/Edit?id=" + input.Id.ToString());
         }

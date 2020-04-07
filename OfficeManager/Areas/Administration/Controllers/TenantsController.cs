@@ -136,7 +136,7 @@
                 return this.RedirectToAction("RemoveOffices", new TenantIdViewModel { Id = input.Id });
             }
 
-            this.officesService.RemoveOfficeFromTenant(input.Id, input.AreChecked);
+            this.officesService.RemoveOfficesFromTenant(input.Id, input.AreChecked);
 
             return Redirect("/Administration/Tenants/Details?id=" + input.Id.ToString());
         }
