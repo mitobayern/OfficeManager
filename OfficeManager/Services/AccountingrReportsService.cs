@@ -102,7 +102,7 @@ namespace OfficeManager.Services
                 AmountForCooling = input.AmountForCooling,
                 TotalAmount = input.TotalAmount,
             };
-            ;
+            
             tenant.AccountingReports.Add(accountingReport);
             this.dbContext.AccountingReports.Add(accountingReport);
             this.dbContext.SaveChanges();
@@ -285,7 +285,7 @@ namespace OfficeManager.Services
                 StartOfContract = tenant.StartOfContract,
                 Offices = this.tenantsService.GetTenantOfficesAsText(tenantCompanyName),
             };
-
+            ;
             AccountingReportViewModel accountingReport = new AccountingReportViewModel
             {
                 Number = number,

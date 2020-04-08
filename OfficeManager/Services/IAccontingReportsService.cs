@@ -22,6 +22,7 @@ namespace OfficeManager.Services
         decimal AmountForElectricity(TenantElectricityConsummationViewModel tenantElectricityConsummation);
 
         void GenerateAccountingReport(AccountingReportViewModel accountingReport);
+
         IQueryable<AccountingReportListViewModel> GetAllAccountingReports();
 
         AccountingReportViewModel GetAccountingReportById(int аccountingReportId);
