@@ -10,6 +10,8 @@
     using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters;
     using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
     using System;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
@@ -58,56 +60,16 @@
             return Redirect("/Administration/Offices/All");
         }
 
-        public IActionResult All(string sortOrder)
+        public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            ViewData["order"] = "Company: Z to A";
-            ViewData["OfficeNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? officesDescending : "";
-            ViewData["TenantSortParam"] = sortOrder == tenantsAscending ? tenantsDescending : tenantsAscending;
-            ViewData["AreaSortParam"] = sortOrder == areaAscending ? areaDescending : areaAscending;
-            ViewData["RentSortParam"] = sortOrder == rentAscending ? rentDescending : rentAscending;
+            var allOffices = officesService.GetAllOffices();
 
+            allOffices = OrderOfficesAsync(sortOrder, currentFilter, searchString, pageNumber, allOffices);
 
-
-            var allOffices = officesService.GetAllOffices().ToList();
-
-            switch (sortOrder)
-            {
-                case officesDescending:
-                    allOffices = allOffices.OrderByDescending(s => s.Name).ToList();
-                    ViewData["order"] = officesDescending;
-                    break;
-                case tenantsAscending:
-                    allOffices = allOffices.OrderBy(s => s.TenantName).ToList();
-                    ViewData["order"] = tenantsAscending;
-                    break;
-                case tenantsDescending:
-                    allOffices = allOffices.OrderByDescending(s => s.TenantName).ToList();
-                    ViewData["order"] = tenantsDescending;
-                    break;
-                case areaAscending:
-                    allOffices = allOffices.OrderBy(s => s.Area).ToList();
-                    ViewData["order"] = areaAscending;
-                    break;
-                case areaDescending:
-                    allOffices = allOffices.OrderByDescending(s => s.Area).ToList();
-                    ViewData["order"] = areaDescending;
-                    break;
-                case rentAscending:
-                    allOffices = allOffices.OrderBy(s => s.RentPerSqMeter).ToList();
-                    ViewData["order"] = rentAscending;
-                    break;
-                case rentDescending:
-                    allOffices = allOffices.OrderByDescending(s => s.RentPerSqMeter).ToList();
-                    ViewData["order"] = rentDescending;
-                    break;
-                default:
-                    allOffices = allOffices.OrderBy(s => s.Name).ToList();
-                    ViewData["order"] = officesAscending;
-                    break;
-            }
-
-            return View(new AllOfficesViewModel { Offices = allOffices });
+            int pageSize = 10;
+            return View(await PaginatedList<OfficeOutputViewModel>.CreateAsync(allOffices.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
 
         public IActionResult Edit(OfficeIdViewModel input)
         {
@@ -234,6 +196,70 @@
             return Redirect("/Administration/Offices/Edit?id=" + input.Id.ToString());
         }
 
+        private IQueryable<OfficeOutputViewModel> OrderOfficesAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<OfficeOutputViewModel> allOffices)
+        {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["order"] = "Company: Z to A";
+            ViewData["OfficeNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? officesDescending : "";
+            ViewData["TenantSortParam"] = sortOrder == tenantsAscending ? tenantsDescending : tenantsAscending;
+            ViewData["AreaSortParam"] = sortOrder == areaAscending ? areaDescending : areaAscending;
+            ViewData["RentSortParam"] = sortOrder == rentAscending ? rentDescending : rentAscending;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                allOffices = allOffices.Where(s => s.Name.Contains(searchString)
+                                       || s.TenantName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case officesDescending:
+                    allOffices = allOffices.OrderByDescending(s => s.Name);
+                    ViewData["order"] = officesDescending;
+                    break;
+                case tenantsAscending:
+                    allOffices = allOffices.OrderBy(s => s.TenantName);
+                    ViewData["order"] = tenantsAscending;
+                    break;
+                case tenantsDescending:
+                    allOffices = allOffices.OrderByDescending(s => s.TenantName);
+                    ViewData["order"] = tenantsDescending;
+                    break;
+                case areaAscending:
+                    allOffices = allOffices.OrderBy(s => s.Area);
+                    ViewData["order"] = areaAscending;
+                    break;
+                case areaDescending:
+                    allOffices = allOffices.OrderByDescending(s => s.Area);
+                    ViewData["order"] = areaDescending;
+                    break;
+                case rentAscending:
+                    allOffices = allOffices.OrderBy(s => s.RentPerSqMeter);
+                    ViewData["order"] = rentAscending;
+                    break;
+                case rentDescending:
+                    allOffices = allOffices.OrderByDescending(s => s.RentPerSqMeter);
+                    ViewData["order"] = rentDescending;
+                    break;
+                default:
+                    allOffices = allOffices.OrderBy(s => s.Name);
+                    ViewData["order"] = officesAscending;
+                    break;
+            }
+            return allOffices;
+        }
+        
         private bool ValidateOffice(int id)
         {
             if (this.dbContext.Offices.Any(x => x.Id == id))
