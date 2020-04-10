@@ -8,6 +8,7 @@
     using OfficeManager.Areas.Administration.ViewModels.Offices;
     using OfficeManager.Areas.Administration.ViewModels.Tenants;
     using OfficeManager.Data;
+    using System;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
@@ -42,10 +43,34 @@
             return Redirect("/Administration/Tenants/All");
         }
 
-        public IActionResult All()
+        public IActionResult All(string sortOrder)
         {
+            ViewData["order"] = "Company: Z to A";
+            ViewData["CompanyNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "company_desc" : "";
+            ViewData["OwnerSortParam"] = sortOrder == "owner_asc" ? "owner_desc" : "owner_asc";
+
+
             var allTenants = tenantsService.GetAllTenants().ToList();
 
+            switch (sortOrder)
+            {
+                case "company_desc":
+                    allTenants = allTenants.OrderByDescending(s => s.CompanyName).ToList();
+                    ViewData["order"] = "company_desc";
+                    break;
+                case "owner_asc":
+                    allTenants = allTenants.OrderBy(s => s.CompanyOwner).ToList();
+                    ViewData["order"] = "owner_asc";
+                    break;
+                case "owner_desc":
+                    allTenants = allTenants.OrderByDescending(s => s.CompanyOwner).ToList();
+                    ViewData["order"] = "owner_desc";
+                    break;
+                default:
+                    allTenants = allTenants.OrderBy(s => s.CompanyName).ToList();
+                    ViewData["order"] = "company_asc";
+                    break;
+            }
             return View(new AllTenantsViewModel { Tenants = allTenants });
         }
 
@@ -77,7 +102,7 @@
                 input.Offices = tenantToEdit.Offices;
                 return View(input);
             }
-            
+
             this.tenantsService.UpdateTenant(input);
 
             return Redirect("/Administration/Tenants/All");

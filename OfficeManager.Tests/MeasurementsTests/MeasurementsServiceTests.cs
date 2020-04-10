@@ -243,7 +243,6 @@ namespace OfficeManager.Tests.MeasurementsTests
             }
         }
 
-
         private OfficeMeasurementsInputViewModel GetOfficeInputViewModel()
         {
             ElectricityMeasurementInputViewModel electricityMeasurement = new ElectricityMeasurementInputViewModel()

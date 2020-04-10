@@ -10,8 +10,13 @@
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
-                <th scope="col">Company Name</th>
-                <th scope="col">Company Owner</th>
+                <th scope="col">
+                    <a asp-action="All" style="color:white" asp-route-sortOrder="@ViewData["CompanyNameSortParm"]">Company Name &#x21C5;</a>
+                </th>
+                <th scope="col">
+                    <a asp-action="All" style="color:white" asp-route-sortOrder="@ViewData["OwnerSortParam"]">Company Owner</a>
+                    <span style="font-size:large">&#8595;</span>
+                </th>
                 <th scope="col">Bulstat</th>
                 <th scope="col" colspan="2">Address</th>
             </tr>

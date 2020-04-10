@@ -92,8 +92,7 @@ namespace OfficeManager.Tests.PricesInformationTests
 
             Assert.Equal(1.5M, currentElectricityPerKWhPrice);
         }
-
-
+        
         private DbContextOptions<ApplicationDbContext> GetInMemoryDadabaseOptions()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
