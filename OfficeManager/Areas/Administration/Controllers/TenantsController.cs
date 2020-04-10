@@ -9,6 +9,8 @@
     using OfficeManager.Areas.Administration.ViewModels.Tenants;
     using OfficeManager.Data;
     using System;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
@@ -17,6 +19,11 @@
         private readonly ApplicationDbContext dbContext;
         private readonly IOfficesService officesService;
         private readonly ITenantsService tenantsService;
+        private const string companyNameAscending = "name_asc";
+        private const string companyNameDescending = "name_desc";
+        private const string ownerAscending = "owner_asc";
+        private const string ownerDescending = "owner_desc";
+        
 
         public TenantsController(ApplicationDbContext dbContext, IOfficesService officesService, ITenantsService tenantsService)
         {
@@ -43,36 +50,84 @@
             return Redirect("/Administration/Tenants/All");
         }
 
-        public IActionResult All(string sortOrder)
+        public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
+            var allTenants = tenantsService.GetAllTenants();
+
+            allTenants = OrderTenantsAsync(sortOrder, currentFilter, searchString, pageNumber, allTenants);
+
+            int pageSize;
+
+            if (String.IsNullOrEmpty(rowsPerPage))
+            {
+                pageSize = 5;
+            }
+            else if (rowsPerPage == "All")
+            {
+                pageSize = allTenants.Count();
+            }
+            else
+            {
+                pageSize = int.Parse(rowsPerPage);
+            }
+
+            ViewData["RowsPerPage"] = pageSize;
+            
+            return View(await PaginatedList<TenantOutputViewModel>.CreateAsync(allTenants.AsNoTracking(), pageNumber ?? 1, pageSize));
+        }
+
+        private IQueryable<TenantOutputViewModel> OrderTenantsAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<TenantOutputViewModel> allTenants)
+        {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["order"] = "Company: Z to A";
-            ViewData["CompanyNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "company_desc" : "";
-            ViewData["OwnerSortParam"] = sortOrder == "owner_asc" ? "owner_desc" : "owner_asc";
+            ViewData["CompanyNameSortParm"] = String.IsNullOrEmpty(sortOrder) ? companyNameDescending : "";
+            ViewData["OwnerSortParam"] = sortOrder == ownerAscending ? ownerDescending : ownerAscending;
+           
 
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
 
-            var allTenants = tenantsService.GetAllTenants().ToList();
+            ViewData["CurrentFilter"] = searchString;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                allTenants = allTenants.Where(s => s.CompanyName.Contains(searchString)
+                                       || s.CompanyOwner.Contains(searchString));
+            }
 
             switch (sortOrder)
             {
-                case "company_desc":
-                    allTenants = allTenants.OrderByDescending(s => s.CompanyName).ToList();
-                    ViewData["order"] = "company_desc";
+                case companyNameDescending:
+                    allTenants = allTenants.OrderByDescending(s => s.CompanyName);
+                    ViewData["order"] = companyNameDescending;
                     break;
-                case "owner_asc":
-                    allTenants = allTenants.OrderBy(s => s.CompanyOwner).ToList();
-                    ViewData["order"] = "owner_asc";
+                case ownerAscending:
+                    allTenants = allTenants.OrderBy(s => s.CompanyOwner);
+                    ViewData["order"] = ownerAscending;
                     break;
-                case "owner_desc":
-                    allTenants = allTenants.OrderByDescending(s => s.CompanyOwner).ToList();
-                    ViewData["order"] = "owner_desc";
+                case ownerDescending:
+                    allTenants = allTenants.OrderByDescending(s => s.CompanyOwner);
+                    ViewData["order"] = ownerDescending;
                     break;
                 default:
-                    allTenants = allTenants.OrderBy(s => s.CompanyName).ToList();
-                    ViewData["order"] = "company_asc";
+                    allTenants = allTenants.OrderBy(s => s.CompanyName);
+                    ViewData["order"] = companyNameAscending;
                     break;
             }
-            return View(new AllTenantsViewModel { Tenants = allTenants });
+            return allTenants;
         }
+
+
+
+
+
+
 
         public IActionResult Details(TenantIdViewModel input)
         {
