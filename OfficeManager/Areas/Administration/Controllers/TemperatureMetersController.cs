@@ -47,15 +47,27 @@
             return Redirect("/Administration/TemperatureMeters/All");
         }
 
-        public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber)
+        public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
             var allTemperatureMeters = temperatureMetersService.GetAllTemperatureMeters();
 
             allTemperatureMeters = OrderTemperatureMetersAsync(sortOrder, currentFilter, searchString, pageNumber, allTemperatureMeters);
 
+            int pageSize;
 
-
-            int pageSize = 5;
+            if (String.IsNullOrEmpty(rowsPerPage))
+            {
+                pageSize = 5;
+            }
+            else if (rowsPerPage == "All")
+            {
+                pageSize = allTemperatureMeters.Count();
+            }
+            else
+            {
+                pageSize =int.Parse(rowsPerPage);
+            }
+            ViewData["RowsPerPage"] = pageSize;
             return View(await PaginatedList<TemperatureMeterOutputViewModel>.CreateAsync(allTemperatureMeters.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
         private IQueryable<TemperatureMeterOutputViewModel> OrderTemperatureMetersAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<TemperatureMeterOutputViewModel> allTemperatureMeters)
@@ -64,7 +76,7 @@
             ViewData["order"] = "Company: Z to A";
             ViewData["TemperatureMeterSortParam"] = String.IsNullOrEmpty(sortOrder) ? temperatureMetersDescending : "";
             ViewData["OfficeNameSortParm"] = sortOrder == officesAscending ? officesDescending : officesAscending;
-            
+
 
             if (searchString != null)
             {
