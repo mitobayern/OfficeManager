@@ -143,9 +143,13 @@ namespace OfficeManager.Services
                 Id = x.Id,
                 Number = x.Number,
                 CompanyName = x.Tenant.CompanyName,
-                CreatedOn = x.IssuedOn.ToString("d.MM.yyyy") + " г.",
+                CreatedOn = x.IssuedOn,
+                //CreatedOn = x.IssuedOn.ToString("d.MM.yyyy") + " г.",
+
                 Period = x.Period,
-                TotalAmount = x.TotalAmount.ToString("F2") + " лв."
+                //TotalAmount = x.TotalAmount.ToString("F2") + " лв."
+
+                TotalAmount = x.TotalAmount
             });
 
             return allAccountingReports;

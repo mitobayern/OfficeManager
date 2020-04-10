@@ -1,10 +1,12 @@
 ﻿namespace OfficeManager.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Newtonsoft.Json;
     using OfficeManager.Data;
     using OfficeManager.Services;
     using OfficeManager.ViewModels.AccountingReports;
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -12,6 +14,16 @@
     {
         private readonly IAccontingReportsService accontingReportsService;
         private readonly ApplicationDbContext dbContext;
+        private const string numberAscending = "number_asc";
+        private const string numberDescending = "number_desc";
+        private const string dateAscending = "date_asc";
+        private const string dateDescending = "date_desc";
+        private const string tenantsAscending = "tenant_asc";
+        private const string tenantsDescending = "tenant_desc";
+        private const string periodAscending = "period_asc";
+        private const string periodDescending = "period_desc";
+        private const string totalAmountAscending = "amount_asc";
+        private const string totalAmountDescending = "amount_desc";
 
         public AccountingReportsController(ApplicationDbContext dbContext, IAccontingReportsService accontingReportsService)
         {
@@ -79,12 +91,102 @@
             return this.Redirect("/AccountingReports/All");
         }
 
-        public IActionResult All()
+        public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
-            var allAccountingReports = this.accontingReportsService.GetAllAccountingReports().ToList();
+            var allAccountingReports = this.accontingReportsService.GetAllAccountingReports();
 
-            return this.View(new AllAccountingReportsViewModel { AccountingReports = allAccountingReports });
+            allAccountingReports = OrderAccountingReportsAsync(sortOrder, currentFilter, searchString, pageNumber, allAccountingReports);
+
+
+            int pageSize;
+
+            if (String.IsNullOrEmpty(rowsPerPage))
+            {
+                pageSize = 5;
+            }
+            else if (rowsPerPage == "All")
+            {
+                pageSize = allAccountingReports.Count();
+            }
+            else
+            {
+                pageSize = int.Parse(rowsPerPage);
+            }
+
+            ViewData["RowsPerPage"] = pageSize;
+
+            return View(await PaginatedList<AccountingReportListViewModel>.CreateAsync(allAccountingReports.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
+        private IQueryable<AccountingReportListViewModel> OrderAccountingReportsAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<AccountingReportListViewModel> allAccountingReports)
+        {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["order"] = "Company: Z to A";
+            ViewData["NumberSortParm"] = String.IsNullOrEmpty(sortOrder) ? numberDescending : "";
+            ViewData["DateSortParam"] = sortOrder == dateAscending ? dateDescending : dateAscending;
+            ViewData["TenantSortParam"] = sortOrder == tenantsAscending ? tenantsDescending : tenantsAscending;
+            ViewData["PeriodSortParam"] = sortOrder == periodAscending ? periodDescending : periodAscending;
+            ViewData["TotalAmountSortParam"] = sortOrder == totalAmountAscending ? totalAmountDescending : totalAmountAscending;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                allAccountingReports = allAccountingReports.Where(s => s.CompanyName.Contains(searchString)
+                                       || s.Number.ToString().Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case numberDescending:
+                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.Number);
+                    break;
+                case dateAscending:
+                    allAccountingReports = allAccountingReports.OrderBy(s => s.CreatedOn);
+                    break;
+                case dateDescending:
+                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.CreatedOn);
+                    break;
+                case tenantsAscending:
+                    allAccountingReports = allAccountingReports.OrderBy(s => s.CompanyName);
+                    break;
+                case tenantsDescending:
+                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.CompanyName);
+                    break;
+                case periodAscending:
+                    allAccountingReports = allAccountingReports.OrderBy(s => s.Period);
+                    break;
+                case periodDescending:
+                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.Period);
+                    break;
+                case totalAmountAscending:
+                    allAccountingReports = allAccountingReports.OrderBy(s => s.TotalAmount);
+                    break;
+                case totalAmountDescending:
+                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.TotalAmount);
+                    break;
+                default:
+                    allAccountingReports = allAccountingReports.OrderBy(s => s.Number);
+                    break;
+            }
+            return allAccountingReports;
+        }
+
+
+
+
+
+
+
 
         public IActionResult Details(AccountingReportIdViewModel input)
         {
