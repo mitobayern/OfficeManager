@@ -70,6 +70,40 @@
             ViewData["RowsPerPage"] = pageSize;
             return View(await PaginatedList<TemperatureMeterOutputViewModel>.CreateAsync(allTemperatureMeters.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+                      
+        public IActionResult Edit(TemperatureMeterIdViewModel input)
+        {
+            if (!ValidateTemperatureMeter(input.Id))
+            {
+                return this.Redirect("/Administration/TemperatureMeters/All");
+            }
+
+            var temperatureMeterToEdit = temperatureMetersService.EditTemperatureMeter(input.Id);
+
+            return View(temperatureMeterToEdit);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(EditTemperatreMeterViewModel input)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(input);
+            }
+            temperatureMetersService.UpdateTemperatureMeter(input);
+
+            return Redirect("/Administration/TemperatureMeters/All");
+        }
+
+        private bool ValidateTemperatureMeter(int id)
+        {
+            if (this.dbContext.TemperatureMeters.Any(x => x.Id == id))
+            {
+                return true;
+            }
+            return false;
+        }
+
         private IQueryable<TemperatureMeterOutputViewModel> OrderTemperatureMetersAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<TemperatureMeterOutputViewModel> allTemperatureMeters)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -115,47 +149,6 @@
                     break;
             }
             return allTemperatureMeters;
-        }
-
-        //public IActionResult All()
-        //{
-        //    var allTemperatureMeters = temperatureMetersService.GetAllTemperatureMeters().ToList();
-
-        //    return View(new AllTemperatureMetersViewModel { TemperatureMeters = allTemperatureMeters });
-        //}
-
-
-        public IActionResult Edit(TemperatureMeterIdViewModel input)
-        {
-            if (!ValidateTemperatureMeter(input.Id))
-            {
-                return this.Redirect("/Administration/TemperatureMeters/All");
-            }
-
-            var temperatureMeterToEdit = temperatureMetersService.EditTemperatureMeter(input.Id);
-
-            return View(temperatureMeterToEdit);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(EditTemperatreMeterViewModel input)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(input);
-            }
-            temperatureMetersService.UpdateTemperatureMeter(input);
-
-            return Redirect("/Administration/TemperatureMeters/All");
-        }
-
-        private bool ValidateTemperatureMeter(int id)
-        {
-            if (this.dbContext.TemperatureMeters.Any(x => x.Id == id))
-            {
-                return true;
-            }
-            return false;
         }
     }
 }

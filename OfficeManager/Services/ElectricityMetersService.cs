@@ -41,7 +41,7 @@ namespace OfficeManager.Services
                 Id = x.Id,
                 Name = x.Name,
                 PowerSupply = x.PowerSupply,
-                OfficeNumber = null,
+                OfficeNumber = x.Office.Name,
             });
 
             return electricityMeteres;
