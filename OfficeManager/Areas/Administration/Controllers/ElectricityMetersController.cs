@@ -73,6 +73,35 @@
             return View(await PaginatedList<ElectricityMeterOutputViewModel>.CreateAsync(allElectricityMeters.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
+        public IActionResult Edit(ElectricityMeterIdViewModel input)
+        {
+            if (!ValidateElectricityMeter(input.Id))
+            {
+                return this.Redirect("/Administration/ElectricityMeters/All");
+            }
+
+            var electricityMeterToEdit = electricityMetersService.GetElectricityMeterById(input.Id);
+            var electricityMeter = new ElectricityMeterOutputViewModel
+            {
+                Id = electricityMeterToEdit.Id,
+                Name = electricityMeterToEdit.Name,
+                PowerSupply = electricityMeterToEdit.PowerSupply,
+            };
+
+            return View(electricityMeter);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(ElectricityMeterOutputViewModel input)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(input);
+            }
+            electricityMetersService.UpdateElectricityMeter(input);
+
+            return Redirect("/Administration/ElectricityMeters/All");
+        }
 
         private IQueryable<ElectricityMeterOutputViewModel> OrderElectricityMetersAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<ElectricityMeterOutputViewModel> allElectricityMeters)
         {
@@ -81,8 +110,7 @@
             ViewData["ElectricityMeterSortParam"] = String.IsNullOrEmpty(sortOrder) ? electricityMetersDescending : "";
             ViewData["OfficeNameSortParm"] = sortOrder == officesAscending ? officesDescending : officesAscending;
             ViewData["PowerSupplySortParm"] = sortOrder == powerSupplyAscending ? powerSuplpyDescending : powerSupplyAscending;
-
-
+            
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -128,39 +156,6 @@
                     break;
             }
             return allElectricityMeters;
-        }
-
-
-
-
-        public IActionResult Edit(ElectricityMeterIdViewModel input)
-        {
-            if (!ValidateElectricityMeter(input.Id))
-            {
-                return this.Redirect("/Administration/ElectricityMeters/All");
-            }
-
-            var electricityMeterToEdit = electricityMetersService.GetElectricityMeterById(input.Id);
-            var electricityMeter = new ElectricityMeterOutputViewModel
-            {
-                Id = electricityMeterToEdit.Id,
-                Name = electricityMeterToEdit.Name,
-                PowerSupply = electricityMeterToEdit.PowerSupply,
-            };
-
-            return View(electricityMeter);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(ElectricityMeterOutputViewModel input)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(input);
-            }
-            electricityMetersService.UpdateElectricityMeter(input);
-
-            return Redirect("/Administration/ElectricityMeters/All");
         }
 
         private bool ValidateElectricityMeter(int id)

@@ -60,13 +60,29 @@
             return Redirect("/Administration/Offices/All");
         }
 
-        public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber)
+        public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
             var allOffices = officesService.GetAllOffices();
 
             allOffices = OrderOfficesAsync(sortOrder, currentFilter, searchString, pageNumber, allOffices);
 
-            int pageSize = 5;
+            int pageSize;
+
+            if (String.IsNullOrEmpty(rowsPerPage))
+            {
+                pageSize = 5;
+            }
+            else if (rowsPerPage == "All")
+            {
+                pageSize = allOffices.Count();
+            }
+            else
+            {
+                pageSize = int.Parse(rowsPerPage);
+            }
+
+            ViewData["RowsPerPage"] = pageSize;
+
             return View(await PaginatedList<OfficeOutputViewModel>.CreateAsync(allOffices.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
