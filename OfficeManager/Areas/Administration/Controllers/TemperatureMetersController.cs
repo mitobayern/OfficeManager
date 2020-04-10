@@ -7,6 +7,10 @@
     using OfficeManager.Services;
     using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
     using OfficeManager.Data;
+    using System.Threading.Tasks;
+    using OfficeManager.Areas.Administration.ViewModels.Offices;
+    using Microsoft.EntityFrameworkCore;
+    using System;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
@@ -14,6 +18,10 @@
     {
         private readonly ApplicationDbContext dbContext;
         private readonly ITemperatureMetersService temperatureMetersService;
+        private const string officesAscending = "offices_asc";
+        private const string officesDescending = "offices_desc";
+        private const string temperatureMetersAscending = "meters_asc";
+        private const string temperatureMetersDescending = "meters_desc";
 
         public TemperatureMetersController(ApplicationDbContext dbContext, ITemperatureMetersService temperatureMetersService)
         {
@@ -39,12 +47,70 @@
             return Redirect("/Administration/TemperatureMeters/All");
         }
 
-        public IActionResult All()
+        public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var allTemperatureMeters = temperatureMetersService.GetAllTemperatureMeters().ToList();
+            var allTemperatureMeters = temperatureMetersService.GetAllTemperatureMeters();
 
-            return View(new AllTemperatureMetersViewModel { TemperatureMeters = allTemperatureMeters });
+            allTemperatureMeters = OrderTemperatureMetersAsync(sortOrder, currentFilter, searchString, pageNumber, allTemperatureMeters);
+
+
+
+            int pageSize = 5;
+            return View(await PaginatedList<TemperatureMeterOutputViewModel>.CreateAsync(allTemperatureMeters.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+        private IQueryable<TemperatureMeterOutputViewModel> OrderTemperatureMetersAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<TemperatureMeterOutputViewModel> allTemperatureMeters)
+        {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["order"] = "Company: Z to A";
+            ViewData["TemperatureMeterSortParam"] = String.IsNullOrEmpty(sortOrder) ? temperatureMetersDescending : "";
+            ViewData["OfficeNameSortParm"] = sortOrder == officesAscending ? officesDescending : officesAscending;
+            
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                allTemperatureMeters = allTemperatureMeters.Where(s => s.Name.Contains(searchString)
+                                       || s.OfficeNumber.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case temperatureMetersDescending:
+                    allTemperatureMeters = allTemperatureMeters.OrderByDescending(s => s.Name);
+                    ViewData["order"] = temperatureMetersDescending;
+                    break;
+                case officesAscending:
+                    allTemperatureMeters = allTemperatureMeters.OrderBy(s => s.OfficeNumber);
+                    ViewData["order"] = officesAscending;
+                    break;
+                case officesDescending:
+                    allTemperatureMeters = allTemperatureMeters.OrderByDescending(s => s.OfficeNumber);
+                    ViewData["order"] = officesDescending;
+                    break;
+                default:
+                    allTemperatureMeters = allTemperatureMeters.OrderBy(s => s.Name);
+                    ViewData["order"] = temperatureMetersAscending;
+                    break;
+            }
+            return allTemperatureMeters;
+        }
+
+        //public IActionResult All()
+        //{
+        //    var allTemperatureMeters = temperatureMetersService.GetAllTemperatureMeters().ToList();
+
+        //    return View(new AllTemperatureMetersViewModel { TemperatureMeters = allTemperatureMeters });
+        //}
 
 
         public IActionResult Edit(TemperatureMeterIdViewModel input)

@@ -66,7 +66,7 @@
 
             allOffices = OrderOfficesAsync(sortOrder, currentFilter, searchString, pageNumber, allOffices);
 
-            int pageSize = 10;
+            int pageSize = 5;
             return View(await PaginatedList<OfficeOutputViewModel>.CreateAsync(allOffices.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 

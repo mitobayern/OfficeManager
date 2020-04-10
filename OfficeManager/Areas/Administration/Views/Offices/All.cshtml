@@ -17,7 +17,16 @@
             </p>
         </div>
     </form>
-
+    @*<div class="dataTables_length bs-select" id="dtOrderExample_length">
+            <label>
+                Show
+                <select name="dtOrderExample_length" aria-controls="dtOrderExample" class="custom-select custom-select-sm form-control form-control-sm">
+                    <option value="@ViewData["Size"]">5</option>
+                    <option value="50">10</option>
+                    <option value="100">25</option>
+                </select> entries
+            </label>
+        </div>*@
 
     <table class="table table-striped">
         <thead class="thead-dark">
@@ -72,6 +81,27 @@
        class="btn btn-default @prevDisabled">
         Previous
     </a>
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        @if (@i == Model.PageIndex)
+        {
+            <a asp-action="All"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@i"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]" style="color:red">
+                @i
+            </a>
+        }
+        else
+        {
+            <a asp-action="All"
+               asp-route-sortOrder="@ViewData["CurrentSort"]"
+               asp-route-pageNumber="@i"
+               asp-route-currentFilter="@ViewData["CurrentFilter"]">
+                @i
+            </a>
+        }
+    }
     <a asp-action="All"
        asp-route-sortOrder="@ViewData["CurrentSort"]"
        asp-route-pageNumber="@(Model.PageIndex + 1)"
