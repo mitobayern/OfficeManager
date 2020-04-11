@@ -274,7 +274,7 @@ namespace OfficeManager.Tests.MeasurementsTests
 
         private void CreateOfficeWithMeters(ITemperatureMetersService temperatureMeters, IElectricityMetersService electricityMeters, IOfficesService officesService)
         {
-            officesService.CreateOffice(new CreateOfficeViewModel
+            officesService.CreateOfficeAsync(new CreateOfficeViewModel
             {
                 Name = "TestOfficeName",
                 Area = 50M,
@@ -292,8 +292,8 @@ namespace OfficeManager.Tests.MeasurementsTests
                 Name = temperatureMeterName
             });
 
-            officesService.AddElectricityMeterToOffice(1, electricityMeterName);
-            officesService.AddTemperatureMetersToOffice(1, new List<string> { temperatureMeterName });
+            officesService.AddElectricityMeterToOfficeAsync(1, electricityMeterName);
+            officesService.AddTemperatureMetersToOfficeAsync(1, new List<string> { temperatureMeterName });
         }
 
         private DbContextOptions<ApplicationDbContext> GetInMemoryDadabaseOptions()

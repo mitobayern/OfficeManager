@@ -1,33 +1,30 @@
-﻿using OfficeManager.Areas.Administration.ViewModels.Offices;
-using OfficeManager.Areas.Administration.ViewModels.Tenants;
-using OfficeManager.Models;
-using OfficeManager.ViewModels.AccountingReports;
-using OfficeManager.ViewModels.Measurements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.Services
+﻿namespace OfficeManager.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using OfficeManager.Areas.Administration.ViewModels.Offices;
+    using OfficeManager.Areas.Administration.ViewModels.Tenants;
+    using OfficeManager.Models;
+
     public interface ITenantsService
     {
-        void CreateTenant(CreateTenantViewModel tenant);
+        Task CreateTenantAsync(CreateTenantViewModel tenant);
+
+        Task UpdateTenantAsync(TenantToEditViewModel input);
+
+        TenantToEditViewModel EditTenant(Tenant tenant);
 
         Tenant GetTenantById(int id);
 
         Tenant GetTenantByCompanyName(string tenantCompanyName);
 
-        IQueryable<TenantOutputViewModel> GetAllTenants();
-
-        TenantToEditViewModel EditTenant(Tenant tenant);
-
-        void UpdateTenant(TenantToEditViewModel input);
-
-        IEnumerable<EditOfficeViewModel> GetTenantOffices(TenantIdViewModel input);
+        string GetTenantEIK(string tenantCompanyName);
 
         string GetTenantOfficesAsText(string tenantCompanyName);
 
-        string GetTenantEIK(string tenantCompanyName);
+        IEnumerable<EditOfficeViewModel> GetTenantOffices(TenantIdViewModel input);
+
+        IQueryable<TenantOutputViewModel> GetAllTenants();
     }
 }

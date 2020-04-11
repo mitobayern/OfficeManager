@@ -1,40 +1,39 @@
-﻿using OfficeManager.Areas.Administration.ViewModels.Offices;
-using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
-using OfficeManager.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.Services
+﻿namespace OfficeManager.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using OfficeManager.Areas.Administration.ViewModels.Offices;
+    using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
+    using OfficeManager.Models;
+
     public interface IOfficesService
     {
-        void CreateOffice(CreateOfficeViewModel input);
-
-        IQueryable<OfficeOutputViewModel> GetAllOffices();
-
-        IQueryable<EditOfficeViewModel> GetAllAvailableOffices();
-
-        void AddOfficesToTenant(int id, List<string> offices);
-
-        void RemoveOfficesFromTenant(int id, List<string> offices);
-
-        void AddTemperatureMetersToOffice(int id, List<string> temperatureMeters);
-
-        void RemoveTemperatureMetersFromOffice(int id, List<string> temperatureMeters);
-
-        void RemoveElectricityMeterFromOffice(int id);
-
-        void AddElectricityMeterToOffice(int id, string electricityMeterName);
-
-        Office GetOfficeByName(string name);
-
-        Office GetOfficeById(int id);
+        Task CreateOfficeAsync(string name, decimal area, decimal rentPerSqMeter);
 
         EditOfficeViewModel EditOffice(int id);
 
-        void UpdateOffice(int id, string name, decimal area, decimal rentPerSqMeter);
+        Task UpdateOfficeAsync(int id, string name, decimal area, decimal rentPerSqMeter);
+
+        Task AddOfficesToTenantAsync(int id, List<string> offices);
+
+        Task RemoveOfficesFromTenantAsync(int id, List<string> offices);
+
+        Task AddTemperatureMetersToOfficeAsync(int id, List<string> temperatureMeters);
+
+        Task RemoveTemperatureMetersFromOfficeAsync(int id, List<string> temperatureMeters);
+
+        Task AddElectricityMeterToOfficeAsync(int id, string electricityMeterName);
+
+        Task RemoveElectricityMeterFromOfficeAsync(int id);
+
+        Office GetOfficeById(int id);
+
+        Office GetOfficeByName(string name);
+
+        IQueryable<EditOfficeViewModel> GetAllAvailableOffices();
+
+        IQueryable<OfficeOutputViewModel> GetAllOffices();
 
         IEnumerable<TemperatureMeterOutputViewModel> GetOfficeTemperatureMeters(int id);
     }

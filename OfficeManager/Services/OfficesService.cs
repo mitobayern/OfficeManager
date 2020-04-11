@@ -1,15 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OfficeManager.Areas.Administration.ViewModels.Offices;
-using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
-using OfficeManager.Data;
-using OfficeManager.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.Services
+﻿namespace OfficeManager.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using OfficeManager.Areas.Administration.ViewModels.Offices;
+    using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
+    using OfficeManager.Data;
+    using OfficeManager.Models;
+
     public class OfficesService : IOfficesService
     {
         private readonly ApplicationDbContext dbContext;
@@ -17,10 +16,11 @@ namespace OfficeManager.Services
         private readonly IElectricityMetersService electricityMetersService;
         private readonly ITemperatureMetersService temperatureMetersService;
 
-        public OfficesService(ApplicationDbContext dbContext,
-                              ITenantsService tenantsService,
-                              IElectricityMetersService electricityMetersService,
-                              ITemperatureMetersService temperatureMetersService)
+        public OfficesService(
+            ApplicationDbContext dbContext,
+            ITenantsService tenantsService,
+            IElectricityMetersService electricityMetersService,
+            ITemperatureMetersService temperatureMetersService)
         {
             this.dbContext = dbContext;
             this.tenantsService = tenantsService;
@@ -28,73 +28,28 @@ namespace OfficeManager.Services
             this.temperatureMetersService = temperatureMetersService;
         }
 
-        public void AddElectricityMeterToOffice(int id, string electricityMeterName)
+        public async Task CreateOfficeAsync(string name, decimal area, decimal rentPerSqMeter)
         {
-            var currentOffice = GetOfficeById(id);
-            var electricityMeter = this.electricityMetersService.GetElectricityMeterByName(electricityMeterName);
-            currentOffice.ElectricityMeter = electricityMeter;
-            electricityMeter.Office = currentOffice;
-            this.dbContext.SaveChanges();
-        }
-
-        public void AddOfficesToTenant(int id, List<string> offices)
-        {
-            var currentTenant = this.tenantsService.GetTenantById(id);
-
-            foreach (var officeName in offices)
-            {
-                Office office = GetOfficeByName(officeName);
-                if (office == null)
-                {
-                    return;
-                }
-
-                currentTenant.Offices.Add(office);
-                office.isAvailable = false;
-            }
-
-            this.dbContext.SaveChanges();
-        }
-
-        public void AddTemperatureMetersToOffice(int id, List<string> temperatureMeters)
-        {
-            var currentOffice = GetOfficeById(id);
-
-            foreach (var temperatureMeterName in temperatureMeters)
-            {
-                TemperatureMeter temperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(temperatureMeterName);
-                if (temperatureMeter == null)
-                {
-                    return;
-                }
-
-                temperatureMeter.Office = currentOffice;
-                this.dbContext.SaveChanges();
-            }
-        }
-
-        public void CreateOffice(CreateOfficeViewModel input)
-        {
-            if (this.dbContext.Offices.Any(x=>x.Name == input.Name))
+            if (this.dbContext.Offices.Any(x => x.Name == name))
             {
                 return;
             }
 
             Office office = new Office()
             {
-                Name = input.Name,
-                Area = input.Area,
+                Name = name,
+                Area = area,
                 isAvailable = true,
-                RentPerSqMeter = input.RentPerSqMeter,
+                RentPerSqMeter = rentPerSqMeter,
             };
 
-            this.dbContext.Offices.Add(office);
-            this.dbContext.SaveChanges();
+            await this.dbContext.Offices.AddAsync(office);
+            await this.dbContext.SaveChangesAsync();
         }
 
         public EditOfficeViewModel EditOffice(int id)
         {
-            var office = GetOfficeById(id);
+            var office = this.GetOfficeById(id);
             var allElectricityMeters = this.electricityMetersService.GetAllElectricityMeters().Select(x => x.Name).ToList();
             var allTemperatureMeters = this.temperatureMetersService.GetAllTemperatureMeters().Select(x => x.Name).ToList();
             List<string> officeTemperatureMeters = office.TemperatureMeters.OrderBy(x => x.Name).Select(x => x.Name).ToList();
@@ -112,22 +67,136 @@ namespace OfficeManager.Services
                 Area = office.Area,
                 RentPerSqMeter = office.RentPerSqMeter,
                 ElectricityMeter = officeElectricityMeter,
-                //AllElecticityMeters = allElectricityMeters,
                 TemperatureMeters = officeTemperatureMeters,
-                //AllTemperatureMeters = allTemperatureMeters,
             };
 
             return officeToEdit;
         }
 
+        public async Task UpdateOfficeAsync(int id, string name, decimal area, decimal rentPerSqMeter)
+        {
+            var officeToEdit = this.dbContext.Offices.FirstOrDefault(x => x.Id == id);
+            officeToEdit.Name = name;
+            officeToEdit.Area = area;
+            officeToEdit.RentPerSqMeter = rentPerSqMeter;
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task AddOfficesToTenantAsync(int id, List<string> offices)
+        {
+            var currentTenant = this.tenantsService.GetTenantById(id);
+
+            foreach (var officeName in offices)
+            {
+                Office office = this.GetOfficeByName(officeName);
+                if (office == null)
+                {
+                    return;
+                }
+
+                currentTenant.Offices.Add(office);
+                office.isAvailable = false;
+            }
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveOfficesFromTenantAsync(int id, List<string> offices)
+        {
+            var currentTenant = this.tenantsService.GetTenantById(id);
+
+            foreach (var officeName in offices)
+            {
+                Office office = this.GetOfficeByName(officeName);
+                if (office == null)
+                {
+                    return;
+                }
+
+                currentTenant.Offices.Remove(office);
+                office.isAvailable = true;
+            }
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task AddTemperatureMetersToOfficeAsync(int id, List<string> temperatureMeters)
+        {
+            var currentOffice = this.GetOfficeById(id);
+
+            foreach (var temperatureMeterName in temperatureMeters)
+            {
+                TemperatureMeter temperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(temperatureMeterName);
+                if (temperatureMeter == null)
+                {
+                    return;
+                }
+
+                temperatureMeter.Office = currentOffice;
+                await this.dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveTemperatureMetersFromOfficeAsync(int id, List<string> temperatureMeters)
+        {
+            var currentOffice = this.GetOfficeById(id);
+
+            foreach (var termperatreMeterName in temperatureMeters)
+            {
+                TemperatureMeter temperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(termperatreMeterName);
+                if (temperatureMeter == null)
+                {
+                    return;
+                }
+
+                currentOffice.TemperatureMeters.Remove(temperatureMeter);
+            }
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task AddElectricityMeterToOfficeAsync(int id, string electricityMeterName)
+        {
+            var currentOffice = this.GetOfficeById(id);
+            var electricityMeter = this.electricityMetersService.GetElectricityMeterByName(electricityMeterName);
+            currentOffice.ElectricityMeter = electricityMeter;
+            electricityMeter.Office = currentOffice;
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveElectricityMeterFromOfficeAsync(int id)
+        {
+            var currentOffice = this.GetOfficeById(id);
+            var currentElMeter = currentOffice.ElectricityMeter;
+
+            currentElMeter.Office = null;
+            currentElMeter.OfficeId = null;
+            currentOffice.ElectricityMeter = null;
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public Office GetOfficeById(int id)
+        {
+            var office = this.dbContext.Offices.Include(y => y.ElectricityMeter).FirstOrDefault(x => x.Id == id);
+            return office;
+        }
+
+        public Office GetOfficeByName(string name)
+        {
+            Office office = this.dbContext.Offices.Include(y => y.ElectricityMeter).FirstOrDefault(x => x.Name == name);
+            return office;
+        }
+
         public IQueryable<EditOfficeViewModel> GetAllAvailableOffices()
         {
-            var availavleOffices = this.dbContext.Offices.Where(x => x.isAvailable == true).Include(y => y.TemperatureMeters).Select(x => new EditOfficeViewModel
+            var availavleOffices = this.dbContext.Offices.Where(x => x.isAvailable == true).Select(x => new EditOfficeViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
                 Area = x.Area,
-                RentPerSqMeter = x.RentPerSqMeter
+                RentPerSqMeter = x.RentPerSqMeter,
             });
 
             return availavleOffices;
@@ -146,21 +215,9 @@ namespace OfficeManager.Services
             return offices;
         }
 
-        public Office GetOfficeById(int id)
-        {
-            var office = this.dbContext.Offices.Include(y => y.ElectricityMeter).Include(a => a.TemperatureMeters).FirstOrDefault(x => x.Id == id);
-            return office;
-        }
-
-        public Office GetOfficeByName(string name)
-        {
-            Office office = this.dbContext.Offices.Include(y => y.ElectricityMeter).Include(a => a.TemperatureMeters).FirstOrDefault(x => x.Name == name);
-            return office;
-        }
-
         public IEnumerable<TemperatureMeterOutputViewModel> GetOfficeTemperatureMeters(int id)
         {
-            var currentOffice = GetOfficeById(id);
+            var currentOffice = this.GetOfficeById(id);
 
             var officeTemperatureMeters = currentOffice.TemperatureMeters.Select(x => new TemperatureMeterOutputViewModel
             {
@@ -170,65 +227,6 @@ namespace OfficeManager.Services
             });
 
             return officeTemperatureMeters;
-        }
-
-        public void RemoveOfficesFromTenant(int id, List<string> offices)
-        {
-            var currentTenant = this.tenantsService.GetTenantById(id);
-
-            foreach (var officeName in offices)
-            {
-                Office office = GetOfficeByName(officeName);
-                if (office == null)
-                {
-                    return;
-                }
-
-                currentTenant.Offices.Remove(office);
-                office.isAvailable = true;
-            }
-
-            this.dbContext.SaveChanges();
-        }
-
-        public void RemoveTemperatureMetersFromOffice(int id, List<string> temperatureMeters)
-        {
-            var currentOffice = GetOfficeById(id);
-
-            foreach (var termperatreMeterName in temperatureMeters)
-            {
-                TemperatureMeter temperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(termperatreMeterName);
-                if (temperatureMeter == null)
-                {
-                    return;
-                }
-
-                currentOffice.TemperatureMeters.Remove(temperatureMeter);
-            }
-
-            this.dbContext.SaveChanges();
-        }
-
-        public void RemoveElectricityMeterFromOffice(int id)
-        {
-            var currentOffice = GetOfficeById(id);
-            var currentElMeter = currentOffice.ElectricityMeter;
-
-            currentElMeter.Office = null;
-            currentElMeter.OfficeId = null;
-            currentOffice.ElectricityMeter = null;
-
-            dbContext.SaveChanges();
-        }
-
-        public void UpdateOffice(int id, string name, decimal area, decimal rentPerSqMeter)
-        {
-            var officeToEdit = this.dbContext.Offices.FirstOrDefault(x => x.Id == id);
-            officeToEdit.Name = name;
-            officeToEdit.Area = area;
-            officeToEdit.RentPerSqMeter = rentPerSqMeter;
-
-            this.dbContext.SaveChanges();
         }
     }
 }

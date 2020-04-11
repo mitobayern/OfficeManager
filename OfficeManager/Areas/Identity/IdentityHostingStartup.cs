@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OfficeManager.Data;
 
 [assembly: HostingStartup(typeof(OfficeManager.Areas.Identity.IdentityHostingStartup))]
+
 namespace OfficeManager.Areas.Identity
 {
     public class IdentityHostingStartup : IHostingStartup

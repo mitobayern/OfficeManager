@@ -157,11 +157,11 @@ namespace OfficeManager.Tests.AccountingReportsTests
             CreateLandlord(landlordsService);
             CreateTenant(tenantsService);
             CreateOffice(officesService);
-            officesService.AddOfficesToTenant(1, new List<string> { "TestOfficeName" });
+            officesService.AddOfficesToTenantAsync(1, new List<string> { "TestOfficeName" });
             CreateTemperatureMeter(temperatureMetersService);
             CreateElectricityMeter(electricityMetersService);
-            officesService.AddElectricityMeterToOffice(1, "ElectricityMeterName");
-            officesService.AddTemperatureMetersToOffice(1, new List<string> { "TemperatureMeterName" });
+            officesService.AddElectricityMeterToOfficeAsync(1, "ElectricityMeterName");
+            officesService.AddTemperatureMetersToOfficeAsync(1, new List<string> { "TemperatureMeterName" });
             CreateInitialElectricityMeasuremets(measurementsService);
             CreateElectricityMeasuremets(measurementsService);
             CreateInitialTemperatureMeasurements(measurementsService);
@@ -184,7 +184,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
 
         private static void CreateTenant(ITenantsService tenantsService)
         {
-            tenantsService.CreateTenant(new CreateTenantViewModel
+            tenantsService.CreateTenantAsync(new CreateTenantViewModel
             {
                 CompanyName = "TenantName",
                 CompanyOwner = "TenantOwner",
@@ -198,7 +198,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
 
         private static void CreateOffice(IOfficesService officesService)
         {
-            officesService.CreateOffice(new CreateOfficeViewModel
+            officesService.CreateOfficeAsync(new CreateOfficeViewModel
             {
                 Name = "TestOfficeName",
                 Area = 100M,

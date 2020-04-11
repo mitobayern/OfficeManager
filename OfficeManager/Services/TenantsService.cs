@@ -1,16 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OfficeManager.Areas.Administration.ViewModels.Offices;
-using OfficeManager.Areas.Administration.ViewModels.Tenants;
-using OfficeManager.Data;
-using OfficeManager.Models;
-using OfficeManager.ViewModels.Measurements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.Services
+﻿namespace OfficeManager.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using OfficeManager.Areas.Administration.ViewModels.Offices;
+    using OfficeManager.Areas.Administration.ViewModels.Tenants;
+    using OfficeManager.Data;
+    using OfficeManager.Models;
+
     public class TenantsService : ITenantsService
     {
         private readonly ApplicationDbContext dbContext;
@@ -20,9 +17,9 @@ namespace OfficeManager.Services
             this.dbContext = dbContext;
         }
 
-        public void CreateTenant(CreateTenantViewModel input)
+        public async Task CreateTenantAsync(CreateTenantViewModel input)
         {
-            if (this.dbContext.Tenants.Any(x=>x.CompanyName == input.CompanyName))
+            if (this.dbContext.Tenants.Any(x => x.CompanyName == input.CompanyName))
             {
                 return;
             }
@@ -35,15 +32,31 @@ namespace OfficeManager.Services
                 Address = input.Address,
                 Email = input.Email,
                 Phone = input.Phone,
-                StartOfContract = input.StartOfContract
+                StartOfContract = input.StartOfContract,
             };
-            this.dbContext.Tenants.Add(tenant);
-            this.dbContext.SaveChanges();
+
+            await this.dbContext.Tenants.AddAsync(tenant);
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateTenantAsync(TenantToEditViewModel input)
+        {
+            Tenant tenantToEdit = this.GetTenantById(input.Id);
+
+            tenantToEdit.CompanyOwner = input.CompanyOwner;
+            tenantToEdit.CompanyName = input.CompanyName;
+            tenantToEdit.Bulstat = input.Bulstat;
+            tenantToEdit.Phone = input.Phone;
+            tenantToEdit.Email = input.Email;
+            tenantToEdit.Address = input.Address;
+            tenantToEdit.StartOfContract = input.StartOfContract;
+
+            await this.dbContext.SaveChangesAsync();
         }
 
         public TenantToEditViewModel EditTenant(Tenant currentTenant)
         {
-            List<string> tenantOffices = currentTenant.Offices.OrderBy(x=>x.Name).Select(x => x.Name).ToList();
+            List<string> tenantOffices = currentTenant.Offices.OrderBy(x => x.Name).Select(x => x.Name).ToList();
             List<string> allOffices = this.dbContext.Offices.Select(x => x.Name).ToList();
 
             TenantToEditViewModel tenantToEdit = new TenantToEditViewModel
@@ -57,41 +70,29 @@ namespace OfficeManager.Services
                 Phone = currentTenant.Phone,
                 StartOfContract = currentTenant.StartOfContract,
                 Offices = tenantOffices,
-                AllOffices = allOffices
+                AllOffices = allOffices,
             };
 
             return tenantToEdit;
         }
 
-        public IQueryable<TenantOutputViewModel> GetAllTenants()
-        {
-            var allTenants = this.dbContext.Tenants.Select(x => new TenantOutputViewModel
-            {
-                Id = x.Id,
-                CompanyName = x.CompanyName,
-                CompanyOwner = x.CompanyOwner,
-                Bulstat = x.Bulstat,
-                Address = x.Address
-            });
-            return allTenants;
-        }
-
         public Tenant GetTenantById(int id)
         {
-            var tenant = this.dbContext.Tenants.Include(y => y.Offices).FirstOrDefault(x => x.Id == id);
+            var tenant = this.dbContext.Tenants.FirstOrDefault(x => x.Id == id);
             return tenant;
         }
 
         public Tenant GetTenantByCompanyName(string name)
         {
-            var tenant = this.dbContext.Tenants.Include(y => y.Offices).FirstOrDefault(x => x.CompanyName == name);
+            var tenant = this.dbContext.Tenants.FirstOrDefault(x => x.CompanyName == name);
             return tenant;
         }
 
         public string GetTenantEIK(string tenantCompanyName)
         {
-            var tenant = GetTenantByCompanyName(tenantCompanyName);
+            var tenant = this.GetTenantByCompanyName(tenantCompanyName);
             string eik;
+
             if (tenant.Bulstat.StartsWith("BG"))
             {
                 eik = tenant.Bulstat.Substring(2);
@@ -104,24 +105,9 @@ namespace OfficeManager.Services
             return eik;
         }
 
-        public IEnumerable<EditOfficeViewModel> GetTenantOffices(TenantIdViewModel input)
-        {
-            var currentTenant = GetTenantById(input.Id);
-
-            var currentTenantOffices = currentTenant.Offices.Select(x => new EditOfficeViewModel
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Area = x.Area,
-                RentPerSqMeter = x.RentPerSqMeter
-            });
-
-            return currentTenantOffices;
-        }
-
         public string GetTenantOfficesAsText(string tenantCompanyName)
         {
-            Tenant tenant = GetTenantByCompanyName(tenantCompanyName);
+            Tenant tenant = this.GetTenantByCompanyName(tenantCompanyName);
 
             string tenantOfficesAsText;
 
@@ -141,6 +127,7 @@ namespace OfficeManager.Services
                         tenantOfficesAsText += currentTenantOffices[i] + " и ";
                     }
                 }
+
                 tenantOfficesAsText += currentTenantOffices[currentTenantOffices.Count - 1];
             }
             else
@@ -151,19 +138,32 @@ namespace OfficeManager.Services
             return tenantOfficesAsText;
         }
 
-        public void UpdateTenant(TenantToEditViewModel input)
+        public IEnumerable<EditOfficeViewModel> GetTenantOffices(TenantIdViewModel input)
         {
-            Tenant tenantToEdit = GetTenantById(input.Id);
+            var currentTenant = this.GetTenantById(input.Id);
 
-            tenantToEdit.CompanyOwner = input.CompanyOwner;
-            tenantToEdit.CompanyName = input.CompanyName;
-            tenantToEdit.Bulstat = input.Bulstat;
-            tenantToEdit.Phone = input.Phone;
-            tenantToEdit.Email = input.Email;
-            tenantToEdit.Address = input.Address;
-            tenantToEdit.StartOfContract = input.StartOfContract;
+            var currentTenantOffices = currentTenant.Offices.Select(x => new EditOfficeViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Area = x.Area,
+                RentPerSqMeter = x.RentPerSqMeter,
+            });
 
-            this.dbContext.SaveChanges();
+            return currentTenantOffices;
+        }
+
+        public IQueryable<TenantOutputViewModel> GetAllTenants()
+        {
+            var allTenants = this.dbContext.Tenants.Select(x => new TenantOutputViewModel
+            {
+                Id = x.Id,
+                CompanyName = x.CompanyName,
+                CompanyOwner = x.CompanyOwner,
+                Bulstat = x.Bulstat,
+                Address = x.Address,
+            });
+            return allTenants;
         }
     }
 }

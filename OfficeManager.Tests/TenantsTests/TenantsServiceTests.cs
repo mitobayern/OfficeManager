@@ -22,7 +22,7 @@ namespace OfficeManager.Tests.TenantsTests
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
 
-                tenantsService.CreateTenant(new CreateTenantViewModel
+                tenantsService.CreateTenantAsync(new CreateTenantViewModel
                 {
                     CompanyName = "FirstTestCompanyName",
                     CompanyOwner = "TestCompanyOwner",
@@ -35,7 +35,7 @@ namespace OfficeManager.Tests.TenantsTests
 
                 for (int i = 0; i < 3; i++)
                 {
-                    tenantsService.CreateTenant(new CreateTenantViewModel
+                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = "SecondTestCompanyName",
                         CompanyOwner = "TestCompanyOwner",
@@ -65,7 +65,7 @@ namespace OfficeManager.Tests.TenantsTests
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    tenantsService.CreateTenant(new CreateTenantViewModel
+                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = i.ToString(),
                         CompanyOwner = "TestCompanyOwner",
@@ -98,7 +98,7 @@ namespace OfficeManager.Tests.TenantsTests
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    tenantsService.CreateTenant(new CreateTenantViewModel
+                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = i.ToString(),
                         CompanyOwner = "TestCompanyOwner",
@@ -123,7 +123,7 @@ namespace OfficeManager.Tests.TenantsTests
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
                 {
-                    tenantsService.CreateTenant(new CreateTenantViewModel
+                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = "TestCompanyName",
                         CompanyOwner = "TestCompanyOwner",
@@ -150,7 +150,7 @@ namespace OfficeManager.Tests.TenantsTests
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
                 {
-                    tenantsService.CreateTenant(new CreateTenantViewModel
+                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = "TestCompanyName",
                         CompanyOwner = "TestCompanyOwner",
@@ -175,7 +175,7 @@ namespace OfficeManager.Tests.TenantsTests
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
                 {
-                    tenantsService.CreateTenant(new CreateTenantViewModel
+                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = "TestCompanyName",
                         CompanyOwner = "TestCompanyOwner",
@@ -216,7 +216,7 @@ namespace OfficeManager.Tests.TenantsTests
                 {
                     for (int i = 1; i <= 2; i++)
                     {
-                        tenantsService.CreateTenant(new CreateTenantViewModel
+                        tenantsService.CreateTenantAsync(new CreateTenantViewModel
                         {
                             CompanyName = i.ToString(),
                             CompanyOwner = "TestCompanyOwner",
@@ -267,7 +267,7 @@ namespace OfficeManager.Tests.TenantsTests
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
                 {
-                    tenantsService.CreateTenant(new CreateTenantViewModel
+                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = "TestCompanyName",
                         CompanyOwner = "TestCompanyOwner",
@@ -279,7 +279,7 @@ namespace OfficeManager.Tests.TenantsTests
                     });                    
                     dbContext.SaveChanges();
 
-                    tenantsService.UpdateTenant(new TenantToEditViewModel
+                    tenantsService.UpdateTenantAsync(new TenantToEditViewModel
                     {
                         Id = 1,
                         CompanyName = "UpdatedCompanyName",

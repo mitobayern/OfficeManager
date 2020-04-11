@@ -56,7 +56,7 @@ namespace OfficeManager.Tests.OfficesTests
                 IOfficesService officesService =
                     new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
 
-                officesService.CreateOffice(new CreateOfficeViewModel
+                officesService.CreateOfficeAsync(new CreateOfficeViewModel
                 {
                     Name = "FirstTestOfficeName",
                     Area = 50M,
@@ -65,7 +65,7 @@ namespace OfficeManager.Tests.OfficesTests
 
                 for (int i = 0; i < 3; i++)
                 {
-                    officesService.CreateOffice(new CreateOfficeViewModel
+                    officesService.CreateOfficeAsync(new CreateOfficeViewModel
                     {
                         Name = "SecondTestOfficeName",
                         Area = 50M,
@@ -87,8 +87,8 @@ namespace OfficeManager.Tests.OfficesTests
                 IOfficesService officesService =
                     new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
 
-                officesService.CreateOffice(inputOffice);
-                officesService.UpdateOffice(1, "UpdatedOffice", 20M, 10M);
+                officesService.CreateOfficeAsync(inputOffice);
+                officesService.UpdateOfficeAsync(1, "UpdatedOffice", 20M, 10M);
 
                 Assert.Equal("UpdatedOffice", officesService.GetOfficeById(1).Name);
                 Assert.Equal(20M, officesService.GetOfficeByName("UpdatedOffice").Area);
@@ -103,7 +103,7 @@ namespace OfficeManager.Tests.OfficesTests
             {
                 IOfficesService officesService =
                     new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
-                officesService.CreateOffice(inputOffice);
+                officesService.CreateOfficeAsync(inputOffice);
 
                 Assert.Equal("No electricity meter available", officesService.EditOffice(1).ElectricityMeter);
                 Assert.Equal(50M, officesService.EditOffice(1).Area);
@@ -121,7 +121,7 @@ namespace OfficeManager.Tests.OfficesTests
                 IOfficesService officesService =
                     new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
 
-                officesService.CreateOffice(inputOffice);
+                officesService.CreateOfficeAsync(inputOffice);
 
                 officeName = officesService.GetOfficeById(1).Name;
             }
@@ -139,7 +139,7 @@ namespace OfficeManager.Tests.OfficesTests
                 IOfficesService officesService =
                     new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
 
-                officesService.CreateOffice(inputOffice);
+                officesService.CreateOfficeAsync(inputOffice);
 
                 officeName = officesService.GetOfficeByName("TestOfficeName").Name;
             }
@@ -164,8 +164,8 @@ namespace OfficeManager.Tests.OfficesTests
 
                 AddOfficesToTenant(inputTenant, tenants, officesService);
 
-                officesService.AddOfficesToTenant(1, officesToAdd);
-                officesService.RemoveOfficesFromTenant(1, officesToRemove);
+                officesService.AddOfficesToTenantAsync(1, officesToAdd);
+                officesService.RemoveOfficesFromTenantAsync(1, officesToRemove);
                 tenantOfficesCount = dbContext.Tenants.FirstOrDefault(x => x.CompanyName == "TestCompanyName").Offices.Count();
             }
 
@@ -187,7 +187,7 @@ namespace OfficeManager.Tests.OfficesTests
 
                 AddOfficesToTenant(inputTenant, tenants, officesService);
 
-                officesService.AddOfficesToTenant(1, offices);
+                officesService.AddOfficesToTenantAsync(1, offices);
                 availableOfficesCount = officesService.GetAllAvailableOffices().Count();
             }
 
@@ -207,7 +207,7 @@ namespace OfficeManager.Tests.OfficesTests
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    officesService.CreateOffice(new CreateOfficeViewModel
+                    officesService.CreateOfficeAsync(new CreateOfficeViewModel
                     {
                         Name = i.ToString(),
                         Area = 50M,
@@ -239,7 +239,7 @@ namespace OfficeManager.Tests.OfficesTests
                 IOfficesService officesService =
                     new OfficesService(dbContext, tenantsService.Object, electricityMeters, temperatureMetersService.Object);
 
-                officesService.CreateOffice(inputOffice);
+                officesService.CreateOfficeAsync(inputOffice);
 
                 electricityMeters.CreateElectricityMeter(new CreateElectricityMeterViewModel
                 {
@@ -247,11 +247,11 @@ namespace OfficeManager.Tests.OfficesTests
                     PowerSupply = 5M,
                 });
 
-                officesService.AddElectricityMeterToOffice(1, "TestElectricityMeter");
+                officesService.AddElectricityMeterToOfficeAsync(1, "TestElectricityMeter");
 
                 actualElectricityMetersName = officesService.GetOfficeByName("TestOfficeName").ElectricityMeter.Name;
 
-                officesService.RemoveElectricityMeterFromOffice(1);
+                officesService.RemoveElectricityMeterFromOfficeAsync(1);
                 Assert.Throws<NullReferenceException>(() => officesService.GetOfficeByName("TestOfficeName").ElectricityMeter.Name);
             }
         }
@@ -270,7 +270,7 @@ namespace OfficeManager.Tests.OfficesTests
                 IOfficesService officesService =
                     new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMeters);
 
-                officesService.CreateOffice(inputOffice);
+                officesService.CreateOfficeAsync(inputOffice);
 
                 for (int i = 1; i <= 5; i++)
                 {
@@ -282,8 +282,8 @@ namespace OfficeManager.Tests.OfficesTests
 
                 var office = officesService.GetOfficeById(1);
                 var count = dbContext.TemperatureMeters.Count();
-                officesService.AddTemperatureMetersToOffice(1, temperatureMetersToAdd);
-                officesService.RemoveTemperatureMetersFromOffice(1, temperatureMetersToRemove);
+                officesService.AddTemperatureMetersToOfficeAsync(1, temperatureMetersToAdd);
+                officesService.RemoveTemperatureMetersFromOfficeAsync(1, temperatureMetersToRemove);
                 temperatureMetersCount = officesService.GetOfficeTemperatureMeters(1).ToList().Count();
             }
             Assert.Equal(2, temperatureMetersCount);
@@ -291,11 +291,11 @@ namespace OfficeManager.Tests.OfficesTests
 
         private static void AddOfficesToTenant(CreateTenantViewModel inputTenant, ITenantsService tenants, IOfficesService officesService)
         {
-            tenants.CreateTenant(inputTenant);
+            tenants.CreateTenantAsync(inputTenant);
 
             for (int i = 1; i <= 5; i++)
             {
-                officesService.CreateOffice(new CreateOfficeViewModel
+                officesService.CreateOfficeAsync(new CreateOfficeViewModel
                 {
                     Name = i.ToString(),
                     Area = 50M,
