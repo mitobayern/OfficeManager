@@ -11,9 +11,13 @@ namespace OfficeManager.Services
 {
     public interface IAccontingReportsService
     {
-        List<SelectListItem> GetAllPeriods();
+        List<SelectListItem> GetAllPeriodsSelectList();
 
-        List<SelectListItem> GetAllTenants();
+        List<SelectListItem> GetAllTenantsSelectList();
+
+        List<string> AllPeriods();
+
+        List<string> AlTenants();
 
         TenantElectricityConsummationViewModel GetTenantElectricityConsummationByPeriod(string tenantCompanyName, string period);
 

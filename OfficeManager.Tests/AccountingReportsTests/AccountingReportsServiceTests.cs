@@ -101,8 +101,8 @@ namespace OfficeManager.Tests.AccountingReportsTests
 
             SeedData(dbContext);
 
-            Assert.Single(accontingReportsService.GetAllTenants().ToList());
-            Assert.Single(accontingReportsService.GetAllPeriods().ToList());
+            Assert.Single(accontingReportsService.GetAllTenantsSelectList().ToList());
+            Assert.Single(accontingReportsService.GetAllPeriodsSelectList().ToList());
         }
 
         [Fact]

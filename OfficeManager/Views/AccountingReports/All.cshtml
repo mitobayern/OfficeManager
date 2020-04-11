@@ -4,9 +4,51 @@
 @{
     ViewData["Title"] = "All Accounting Reports";
 }
-
 <h1 class="display-4" style="margin: 2%; text-align: center;">All Accounting Reports</h1>
 <div style="padding: 5%;">
+
+    <div class="row">
+        <div class="col-6">
+            @foreach (var tenant in (List<string>)ViewData["AllTenants"])
+            {
+                <div class="row">
+                    <a style="font-size:small"
+                       asp-action="All"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-currentFilter="@tenant"
+                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                        @tenant
+                    </a>
+                </div>
+            }
+
+        </div>
+        <div class="col-6">
+            @foreach (var period in (List<string>)ViewData["AllPeriods"])
+            {
+                <div class="row">
+                    <a style="font-size:small"
+                       asp-action="All"
+                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                       asp-route-currentFilter="@period"
+                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                        @period
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+    <br />
+    <form asp-action="All" method="get">
+        <div class="form-actions no-color">
+            <p>
+                Find by name: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-default" /> |
+                <a asp-action="All">Back to Full List</a>
+            </p>
+        </div>
+    </form>
+    <br />
     <table class="table">
         <thead class="thead-dark">
             <tr>
@@ -66,7 +108,6 @@
                     <td>@accountingReport.CompanyName</td>
                     <td>@accountingReport.Period</td>
                     <td>@(accountingReport.TotalAmount.ToString("F2") + " лв.")</td>
-
                     <td>
                         <div class="button-holder text-right">
                             <a href="/AccountingReports/Details?id=@accountingReport.Id" class="btn btn-primary">View</a>
@@ -140,7 +181,7 @@
                     Rows per page
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item-text"
+                    <a class="dropdown-item-text" style="font-size:small"
                        asp-action="All"
                        asp-route-sortOrder="@ViewData["CurrentSort"]"
                        asp-route-pageNumber="1"

@@ -7,6 +7,7 @@
     using OfficeManager.Services;
     using OfficeManager.ViewModels.AccountingReports;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -35,8 +36,8 @@
         {
             var tenantsAndPeriods = new TenantsAndPeriodsViewModel
             {
-                Tenants = this.accontingReportsService.GetAllTenants(),
-                Periods = this.accontingReportsService.GetAllPeriods(),
+                Tenants = this.accontingReportsService.GetAllTenantsSelectList(),
+                Periods = this.accontingReportsService.GetAllPeriodsSelectList(),
                 AccountingReports = this.accontingReportsService.GetAllAccountingReports().ToList(),
             };
 
@@ -52,8 +53,8 @@
                 {
                     Tenant = input.Tenant,
                     Period = input.Period,
-                    Tenants = this.accontingReportsService.GetAllTenants(),
-                    Periods = this.accontingReportsService.GetAllPeriods(),
+                    Tenants = this.accontingReportsService.GetAllTenantsSelectList(),
+                    Periods = this.accontingReportsService.GetAllPeriodsSelectList(),
                     AccountingReports = this.accontingReportsService.GetAllAccountingReports().ToList(),
                 };
 
@@ -112,7 +113,10 @@
             {
                 pageSize = int.Parse(rowsPerPage);
             }
+            
 
+            ViewData["AllTenants"] = this.accontingReportsService.AlTenants();
+            ViewData["AllPeriods"] = this.accontingReportsService.AllPeriods();
             ViewData["RowsPerPage"] = pageSize;
 
             return View(await PaginatedList<AccountingReportListViewModel>.CreateAsync(allAccountingReports.AsNoTracking(), pageNumber ?? 1, pageSize));
@@ -121,7 +125,6 @@
         private IQueryable<AccountingReportListViewModel> OrderAccountingReportsAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<AccountingReportListViewModel> allAccountingReports)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["order"] = "Company: Z to A";
             ViewData["NumberSortParm"] = String.IsNullOrEmpty(sortOrder) ? numberDescending : "";
             ViewData["DateSortParam"] = sortOrder == dateAscending ? dateDescending : dateAscending;
             ViewData["TenantSortParam"] = sortOrder == tenantsAscending ? tenantsDescending : tenantsAscending;
@@ -142,7 +145,7 @@
             if (!String.IsNullOrEmpty(searchString))
             {
                 allAccountingReports = allAccountingReports.Where(s => s.CompanyName.Contains(searchString)
-                                       || s.Number.ToString().Contains(searchString));
+                                       || s.Period.Contains(searchString));
             }
 
             switch (sortOrder)

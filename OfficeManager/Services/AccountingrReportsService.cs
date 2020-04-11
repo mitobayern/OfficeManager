@@ -30,7 +30,7 @@ namespace OfficeManager.Services
             this.pricesInformationService = pricesInformationService;
         }
         
-        public List<SelectListItem> GetAllTenants()
+        public List<SelectListItem> GetAllTenantsSelectList()
         {
             var allTenants = this.dbContext.Tenants.Select(x => x.CompanyName).ToList();
 
@@ -48,7 +48,7 @@ namespace OfficeManager.Services
             return tenantsViewModel;
         }
 
-        public List<SelectListItem> GetAllPeriods()
+        public List<SelectListItem> GetAllPeriodsSelectList()
         {
             var allPeriods = this.dbContext.ElectricityMeasurements
                             .OrderByDescending(x => x.Id)
@@ -149,7 +149,9 @@ namespace OfficeManager.Services
                 Period = x.Period,
                 //TotalAmount = x.TotalAmount.ToString("F2") + " лв."
 
-                TotalAmount = x.TotalAmount
+                TotalAmount = x.TotalAmount,
+                //AllTenants = GetAllTenants(),
+                //AllPeriods = GetAllPeriods(),
             });
 
             return allAccountingReports;
@@ -360,6 +362,46 @@ namespace OfficeManager.Services
                 Offices = offices,
             };
             return tenantInfo;
+        }
+
+        public List<string> AllPeriods()
+        {
+            List<string> allPeriods = new List<string>();
+
+            foreach (var period in this.dbContext.ElectricityMeasurements
+                            .OrderByDescending(x => x.Id)
+                            .Select(x => x.Period)
+                            .Where(x => !x.StartsWith("Starting"))
+                            .ToList())
+            {
+                if (!allPeriods.Contains(period))
+                {
+                    allPeriods.Add(period);
+                }
+
+                if (allPeriods.Count() == 12)
+                {
+                    break;
+                }
+            }
+
+
+            return allPeriods;
+        }
+
+        public List<string> AlTenants()
+        {
+            List<string> allTenants = new List<string>();
+
+            foreach (var tenant in GetAllAccountingReports().Select(x => x.CompanyName).OrderBy(x => x).ToList())
+            {
+                if (!allTenants.Contains(tenant))
+                {
+                    allTenants.Add(tenant);
+                }
+            }
+
+            return allTenants;
         }
     }
 }
