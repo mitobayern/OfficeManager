@@ -1,28 +1,25 @@
 ﻿namespace OfficeManager.Areas.Administration.Controllers
 {
     using System.Linq;
-    using Microsoft.AspNetCore.Mvc;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
-
-    using OfficeManager.Services;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters;
     using OfficeManager.Data;
-    using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore;
-    using System;
+    using OfficeManager.Services;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
     public class ElectricityMetersController : Controller
     {
+        private const string OfficesAscending = "offices_asc";
+        private const string OfficesDescending = "offices_desc";
+        private const string PowerSupplyAscending = "power_asc";
+        private const string PowerSuplpyDescending = "power_desc";
+        private const string ElectricityMetersDescending = "meters_desc";
         private readonly ApplicationDbContext dbContext;
         private readonly IElectricityMetersService electricityMetersService;
-        private const string officesAscending = "offices_asc";
-        private const string officesDescending = "offices_desc";
-        private const string powerSupplyAscending = "power_asc";
-        private const string powerSuplpyDescending = "power_desc";
-        private const string electricityMetersAscending = "meters_asc";
-        private const string electricityMetersDescending = "meters_desc";
 
         public ElectricityMetersController(ApplicationDbContext dbContext, IElectricityMetersService electricityMetersService)
         {
@@ -32,30 +29,69 @@
 
         public IActionResult Create()
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
-        public IActionResult Create(CreateElectricityMeterViewModel input)
+        public async Task<IActionResult> CreateAsync(CreateElectricityMeterViewModel input)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return View(input);
+                return this.View(input);
             }
-            electricityMetersService.CreateElectricityMeter(input);
 
-            return Redirect("/Administration/ElectricityMeters/All");
+            await this.electricityMetersService.CreateElectricityMeterAsync(input.Name, input.PowerSupply);
+
+            return this.Redirect("/Administration/ElectricityMeters/All");
+        }
+
+        public IActionResult Edit(ElectricityMeterIdViewModel input)
+        {
+            if (!this.ValidateElectricityMeter(input.Id))
+            {
+                return this.Redirect("/Administration/ElectricityMeters/All");
+            }
+
+            var electricityMeterToEdit = this.electricityMetersService.GetElectricityMeterById(input.Id);
+            var electricityMeter = new ElectricityMeterOutputViewModel
+            {
+                Id = electricityMeterToEdit.Id,
+                Name = electricityMeterToEdit.Name,
+                PowerSupply = electricityMeterToEdit.PowerSupply,
+            };
+
+            return this.View(electricityMeter);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAsync(ElectricityMeterOutputViewModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            await this.electricityMetersService.UpdateElectricityMeterAsync(input.Id, input.Name, input.PowerSupply);
+
+            return this.Redirect("/Administration/ElectricityMeters/All");
         }
 
         public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
-            var allElectricityMeters = electricityMetersService.GetAllElectricityMeters();
+            var allElectricityMeters = this.electricityMetersService.GetAllElectricityMeters();
+            allElectricityMeters = this.OrderElectricityMeters(sortOrder, currentFilter, searchString, pageNumber, allElectricityMeters);
+            int pageSize = GetPageSize(rowsPerPage, allElectricityMeters);
 
-            allElectricityMeters = OrderElectricityMetersAsync(sortOrder, currentFilter, searchString, pageNumber, allElectricityMeters);
-            
+            this.ViewData["RowsPerPage"] = pageSize;
+
+            return this.View(await PaginatedList<ElectricityMeterOutputViewModel>.CreateAsync(allElectricityMeters.AsNoTracking(), pageNumber ?? 1, pageSize));
+        }
+
+        private static int GetPageSize(string rowsPerPage, IQueryable<ElectricityMeterOutputViewModel> allElectricityMeters)
+        {
             int pageSize;
 
-            if (String.IsNullOrEmpty(rowsPerPage))
+            if (string.IsNullOrEmpty(rowsPerPage))
             {
                 pageSize = 5;
             }
@@ -68,49 +104,16 @@
                 pageSize = int.Parse(rowsPerPage);
             }
 
-            ViewData["RowsPerPage"] = pageSize;
-
-            return View(await PaginatedList<ElectricityMeterOutputViewModel>.CreateAsync(allElectricityMeters.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return pageSize;
         }
 
-        public IActionResult Edit(ElectricityMeterIdViewModel input)
+        private IQueryable<ElectricityMeterOutputViewModel> OrderElectricityMeters(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<ElectricityMeterOutputViewModel> allElectricityMeters)
         {
-            if (!ValidateElectricityMeter(input.Id))
-            {
-                return this.Redirect("/Administration/ElectricityMeters/All");
-            }
+            this.ViewData["CurrentSort"] = sortOrder;
+            this.ViewData["ElectricityMeterSortParam"] = string.IsNullOrEmpty(sortOrder) ? ElectricityMetersDescending : string.Empty;
+            this.ViewData["OfficeNameSortParm"] = sortOrder == OfficesAscending ? OfficesDescending : OfficesAscending;
+            this.ViewData["PowerSupplySortParm"] = sortOrder == PowerSupplyAscending ? PowerSuplpyDescending : PowerSupplyAscending;
 
-            var electricityMeterToEdit = electricityMetersService.GetElectricityMeterById(input.Id);
-            var electricityMeter = new ElectricityMeterOutputViewModel
-            {
-                Id = electricityMeterToEdit.Id,
-                Name = electricityMeterToEdit.Name,
-                PowerSupply = electricityMeterToEdit.PowerSupply,
-            };
-
-            return View(electricityMeter);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(ElectricityMeterOutputViewModel input)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(input);
-            }
-            electricityMetersService.UpdateElectricityMeter(input);
-
-            return Redirect("/Administration/ElectricityMeters/All");
-        }
-
-        private IQueryable<ElectricityMeterOutputViewModel> OrderElectricityMetersAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<ElectricityMeterOutputViewModel> allElectricityMeters)
-        {
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["order"] = "Company: Z to A";
-            ViewData["ElectricityMeterSortParam"] = String.IsNullOrEmpty(sortOrder) ? electricityMetersDescending : "";
-            ViewData["OfficeNameSortParm"] = sortOrder == officesAscending ? officesDescending : officesAscending;
-            ViewData["PowerSupplySortParm"] = sortOrder == powerSupplyAscending ? powerSuplpyDescending : powerSupplyAscending;
-            
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -120,41 +123,23 @@
                 searchString = currentFilter;
             }
 
-            ViewData["CurrentFilter"] = searchString;
+            this.ViewData["CurrentFilter"] = searchString;
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 allElectricityMeters = allElectricityMeters.Where(s => s.Name.Contains(searchString)
                                        || s.OfficeNumber.Contains(searchString));
             }
 
-            switch (sortOrder)
+            allElectricityMeters = sortOrder switch
             {
-                case electricityMetersDescending:
-                    allElectricityMeters = allElectricityMeters.OrderByDescending(s => s.Name);
-                    ViewData["order"] = electricityMetersDescending;
-                    break;
-                case officesAscending:
-                    allElectricityMeters = allElectricityMeters.OrderBy(s => s.OfficeNumber);
-                    ViewData["order"] = officesAscending;
-                    break;
-                case officesDescending:
-                    allElectricityMeters = allElectricityMeters.OrderByDescending(s => s.OfficeNumber);
-                    ViewData["order"] = officesDescending;
-                    break;
-                case powerSupplyAscending:
-                    allElectricityMeters = allElectricityMeters.OrderBy(s => s.OfficeNumber);
-                    ViewData["order"] = powerSupplyAscending;
-                    break;
-                case powerSuplpyDescending:
-                    allElectricityMeters = allElectricityMeters.OrderByDescending(s => s.PowerSupply);
-                    ViewData["order"] = powerSuplpyDescending;
-                    break;
-                default:
-                    allElectricityMeters = allElectricityMeters.OrderBy(s => s.PowerSupply);
-                    ViewData["order"] = electricityMetersAscending;
-                    break;
-            }
+                ElectricityMetersDescending => allElectricityMeters.OrderByDescending(s => s.Name),
+                OfficesAscending => allElectricityMeters.OrderBy(s => s.OfficeNumber),
+                OfficesDescending => allElectricityMeters.OrderByDescending(s => s.OfficeNumber),
+                PowerSupplyAscending => allElectricityMeters.OrderBy(s => s.OfficeNumber),
+                PowerSuplpyDescending => allElectricityMeters.OrderByDescending(s => s.PowerSupply),
+                _ => allElectricityMeters.OrderBy(s => s.PowerSupply),
+            };
             return allElectricityMeters;
         }
 
@@ -164,6 +149,7 @@
             {
                 return true;
             }
+
             return false;
         }
     }

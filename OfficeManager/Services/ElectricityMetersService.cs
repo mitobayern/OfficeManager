@@ -1,13 +1,11 @@
-﻿using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters;
-using OfficeManager.Data;
-using OfficeManager.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.Services
+﻿namespace OfficeManager.Services
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+    using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters;
+    using OfficeManager.Data;
+    using OfficeManager.Models;
+
     public class ElectricityMetersService : IElectricityMetersService
     {
         private readonly ApplicationDbContext dbContext;
@@ -17,34 +15,31 @@ namespace OfficeManager.Services
             this.dbContext = dbContext;
         }
 
-        public void CreateElectricityMeter(CreateElectricityMeterViewModel input)
+        public async Task CreateElectricityMeterAsync(string name, decimal powerSupply)
         {
             ElectricityMeter electricityMeter = new ElectricityMeter
             {
-                Name = input.Name,
-                PowerSupply = input.PowerSupply,
+                Name = name,
+                PowerSupply = powerSupply,
             };
 
-            if (this.dbContext.ElectricityMeters.Any(x=>x.Name == electricityMeter.Name))
+            if (this.dbContext.ElectricityMeters.Any(x => x.Name == electricityMeter.Name))
             {
                 return;
             }
 
-            this.dbContext.ElectricityMeters.Add(electricityMeter);
-            this.dbContext.SaveChanges();
+            await this.dbContext.ElectricityMeters.AddAsync(electricityMeter);
+            await this.dbContext.SaveChangesAsync();
         }
 
-        public IQueryable<ElectricityMeterOutputViewModel> GetAllElectricityMeters()
+        public async Task UpdateElectricityMeterAsync(int id, string name, decimal powerSupply)
         {
-            var electricityMeteres = this.dbContext.ElectricityMeters.Select(x => new ElectricityMeterOutputViewModel
-            {
-                Id = x.Id,
-                Name = x.Name,
-                PowerSupply = x.PowerSupply,
-                OfficeNumber = x.Office.Name,
-            });
+            ElectricityMeter electricityMeterToEdit = this.GetElectricityMeterById(id);
 
-            return electricityMeteres;
+            electricityMeterToEdit.Name = name;
+            electricityMeterToEdit.PowerSupply = powerSupply;
+
+            await this.dbContext.SaveChangesAsync();
         }
 
         public ElectricityMeter GetElectricityMeterById(int id)
@@ -61,14 +56,17 @@ namespace OfficeManager.Services
             return electricityMeter;
         }
 
-        public void UpdateElectricityMeter(ElectricityMeterOutputViewModel input)
+        public IQueryable<ElectricityMeterOutputViewModel> GetAllElectricityMeters()
         {
-            ElectricityMeter electricityMeterToEdit = GetElectricityMeterById(input.Id);
+            var electricityMeteres = this.dbContext.ElectricityMeters.Select(x => new ElectricityMeterOutputViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                PowerSupply = x.PowerSupply,
+                OfficeNumber = x.Office.Name,
+            });
 
-            electricityMeterToEdit.Name = input.Name;
-            electricityMeterToEdit.PowerSupply = input.PowerSupply;
-
-            this.dbContext.SaveChanges();
+            return electricityMeteres;
         }
     }
 }
