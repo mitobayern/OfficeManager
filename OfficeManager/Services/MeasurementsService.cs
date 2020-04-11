@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using OfficeManager.Data;
     using OfficeManager.Models;
     using OfficeManager.ViewModels.Measurements;
@@ -12,18 +13,211 @@
         private readonly ApplicationDbContext dbContext;
         private readonly IElectricityMetersService electricityMetersService;
         private readonly ITemperatureMetersService temperatureMetersService;
-        private readonly ITenantsService tenantsService;
 
-        public MeasurementsService(ApplicationDbContext dbContext,
-                                   IElectricityMetersService electricityMetersService,
-                                   ITemperatureMetersService temperatureMetersService,
-                                   ITenantsService tenantsService)
+        public MeasurementsService(
+            ApplicationDbContext dbContext,
+            IElectricityMetersService electricityMetersService,
+            ITemperatureMetersService temperatureMetersService)
         {
             this.dbContext = dbContext;
             this.electricityMetersService = electricityMetersService;
             this.temperatureMetersService = temperatureMetersService;
-            this.tenantsService = tenantsService;
         }
+
+        public async Task CreateInitialElectricityMeasurementAsync(DateTime periodEndTime, string elMeterName, decimal dayTimeMeasurement, decimal nightTimeMeasurement)
+        {
+            DateTime startOfPeriod = periodEndTime;
+            DateTime endOfPeriod = periodEndTime;
+
+            string period = "Starting period "
+                            + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                            + " г.";
+
+            var currentElectricityMeter = this.electricityMetersService.GetElectricityMeterByName(elMeterName);
+
+            ElectricityMeasurement currentElectricityMeasurement = new ElectricityMeasurement
+            {
+                StartOfPeriod = startOfPeriod.Date,
+                EndOfPeriod = endOfPeriod.Date,
+                DayTimeMeasurement = dayTimeMeasurement,
+                NightTimeMeasurement = nightTimeMeasurement,
+                CreatedOn = DateTime.UtcNow.Date,
+                Period = period,
+                ElectricityMeter = currentElectricityMeter,
+                ElectricityMeterId = currentElectricityMeter.Id,
+            };
+
+            await this.dbContext.ElectricityMeasurements.AddAsync(currentElectricityMeasurement);
+            currentElectricityMeter.ElectricityMeasurements.Add(currentElectricityMeasurement);
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task CreateElectricityMeasurementAsync(DateTime periodStartTime, DateTime periodEndTime, string elMeterName, decimal dayTimeMeasurement, decimal nightTimeMeasurement)
+        {
+            DateTime startOfPeriod = periodStartTime;
+            DateTime endOfPeriod = periodEndTime;
+
+            string period;
+
+            if (startOfPeriod.Year == endOfPeriod.Year)
+            {
+                period = startOfPeriod.ToString("d MMMM", new System.Globalization.CultureInfo("bg-BG"))
+                    + " - "
+                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г.";
+            }
+            else
+            {
+                period = startOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г. - "
+                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г.";
+            }
+
+            var currentElectricityMeter = this.electricityMetersService.GetElectricityMeterByName(elMeterName);
+
+            ElectricityMeasurement currentElectricityMeasurement = new ElectricityMeasurement
+            {
+                StartOfPeriod = startOfPeriod.Date,
+                EndOfPeriod = endOfPeriod.Date,
+                DayTimeMeasurement = dayTimeMeasurement,
+                NightTimeMeasurement = nightTimeMeasurement,
+                CreatedOn = DateTime.UtcNow.Date,
+                Period = period,
+                ElectricityMeter = currentElectricityMeter,
+                ElectricityMeterId = currentElectricityMeter.Id,
+            };
+
+            await this.dbContext.ElectricityMeasurements.AddAsync(currentElectricityMeasurement);
+            currentElectricityMeter.ElectricityMeasurements.Add(currentElectricityMeasurement);
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task CreateInitialTemperatureMeasurementAsync(DateTime periodEndTime, string tempMeterName, decimal heatingMeasurement, decimal coolingMeasurement)
+        {
+            DateTime endOfPeriod = periodEndTime;
+            DateTime startOfPeriod = periodEndTime;
+
+            string period = "Starting period "
+                            + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                            + " г.";
+
+            var currentTemperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(tempMeterName);
+
+            TemperatureMeasurement currentTemperatureMeasurement = new TemperatureMeasurement
+            {
+                StartOfPeriod = startOfPeriod.Date,
+                EndOfPeriod = endOfPeriod.Date,
+                HeatingMeasurement = heatingMeasurement,
+                CoolingMeasurement = coolingMeasurement,
+                Period = period,
+                TemperatureMeter = currentTemperatureMeter,
+                TemperatureMeterId = currentTemperatureMeter.Id,
+            };
+
+            await this.dbContext.TemperatureMeasurements.AddAsync(currentTemperatureMeasurement);
+            currentTemperatureMeter.TemperatureMeasurements.Add(currentTemperatureMeasurement);
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task CreateTemperatureMeasurementAsync(DateTime periodStartTime, DateTime periodEndTime, string tempMeterName, decimal heatingMeasurement, decimal coolingMeasurement)
+        {
+            DateTime startOfPeriod = periodStartTime;
+            DateTime endOfPeriod = periodEndTime;
+
+            string period;
+
+            if (startOfPeriod.Year == endOfPeriod.Year)
+            {
+                period = startOfPeriod.ToString("d MMMM", new System.Globalization.CultureInfo("bg-BG"))
+                    + " - "
+                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г.";
+            }
+            else
+            {
+                period = startOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г. - "
+                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
+                    + " г.";
+            }
+
+            var currentTemperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(tempMeterName);
+
+            TemperatureMeasurement currentTemperatureMeasurement = new TemperatureMeasurement
+            {
+                StartOfPeriod = startOfPeriod.Date,
+                EndOfPeriod = endOfPeriod.Date,
+                HeatingMeasurement = heatingMeasurement,
+                CoolingMeasurement = coolingMeasurement,
+                Period = period,
+                TemperatureMeter = currentTemperatureMeter,
+                TemperatureMeterId = currentTemperatureMeter.Id,
+            };
+
+            await this.dbContext.TemperatureMeasurements.AddAsync(currentTemperatureMeasurement);
+            currentTemperatureMeter.TemperatureMeasurements.Add(currentTemperatureMeasurement);
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task CreateInitialMeasurementsAsync(CreateInitialMeasurementsInputViewModel input)
+        {
+            foreach (var office in input.Offices)
+            {
+                await this.CreateInitialElectricityMeasurementAsync(
+                    input.EndOfPeriod,
+                    office.ElectricityMeter.Name,
+                    office.ElectricityMeter.DayTimeMeasurement,
+                    office.ElectricityMeter.NightTimeMeasurement);
+
+                foreach (var temperatureMeter in office.TemperatureMeters)
+                {
+                    await this.CreateInitialTemperatureMeasurementAsync(
+                        input.EndOfPeriod,
+                        temperatureMeter.Name,
+                        temperatureMeter.HeatingMeasurement,
+                        temperatureMeter.CoolingMeasurement);
+                }
+            }
+        }
+
+        public async Task CreateAllMeasurementsAsync(CreateMeasurementsInputViewModel input)
+        {
+            foreach (var office in input.Offices)
+            {
+                await this.CreateElectricityMeasurementAsync(
+                    input.StartOfPeriod,
+                    input.EndOfPeriod,
+                    office.ElectricityMeter.Name,
+                    office.ElectricityMeter.DayTimeMeasurement,
+                    office.ElectricityMeter.NightTimeMeasurement);
+
+                foreach (var temperatureMeter in office.TemperatureMeters)
+                {
+                    await this.CreateTemperatureMeasurementAsync(
+                        input.StartOfPeriod,
+                        input.EndOfPeriod,
+                        temperatureMeter.Name,
+                        temperatureMeter.HeatingMeasurement,
+                        temperatureMeter.CoolingMeasurement);
+                }
+            }
+        }
+
+        public bool IsFirstPeriod()
+        {
+            if (this.GetLastPeriodAsText().StartsWith("Starting period"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public string GetLastPeriodAsText()
         {
             string periodAsText = this.dbContext.ElectricityMeasurements.OrderByDescending(x => x.EndOfPeriod).First().Period;
@@ -43,7 +237,7 @@
         {
             DateTime startOfNewPeriod = this.GetEndOfLastPeriod();
 
-            if (!GetLastPeriodAsText().StartsWith("Starting period"))
+            if (!this.GetLastPeriodAsText().StartsWith("Starting period"))
             {
                 startOfNewPeriod = startOfNewPeriod.AddDays(1);
             }
@@ -82,146 +276,6 @@
             return endOfNewPeriod;
         }
 
-        public void CreateInitialElectricityMeasurement(DateTime periodEndTime, string elMeterName, decimal dayTimeMeasurement, decimal nightTimeMeasurement)
-        {
-            DateTime startOfPeriod = periodEndTime;
-            DateTime endOfPeriod = periodEndTime;
-
-            string period = "Starting period "
-                            + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                            + " г.";
-
-            var currentElectricityMeter = this.electricityMetersService.GetElectricityMeterByName(elMeterName);
-
-            ElectricityMeasurement currentElectricityMeasurement = new ElectricityMeasurement
-            {
-                StartOfPeriod = startOfPeriod.Date,
-                EndOfPeriod = endOfPeriod.Date,
-                DayTimeMeasurement = dayTimeMeasurement,
-                NightTimeMeasurement = nightTimeMeasurement,
-                CreatedOn = DateTime.UtcNow.Date,
-                Period = period,
-                ElectricityMeter = currentElectricityMeter,
-                ElectricityMeterId = currentElectricityMeter.Id,
-            };
-
-            this.dbContext.ElectricityMeasurements.Add(currentElectricityMeasurement);
-            currentElectricityMeter.ElectricityMeasurements.Add(currentElectricityMeasurement);
-
-            this.dbContext.SaveChanges();
-        }
-
-        public void CreateInitialTemperatureMeasurement(DateTime periodEndTime, string tempMeterName, decimal heatingMeasurement, decimal coolingMeasurement)
-        {
-            DateTime endOfPeriod = periodEndTime;
-            DateTime startOfPeriod = periodEndTime;
-
-            string period = "Starting period "
-                            + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                            + " г.";
-
-            var currentTemperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(tempMeterName);
-
-            TemperatureMeasurement currentTemperatureMeasurement = new TemperatureMeasurement
-            {
-                StartOfPeriod = startOfPeriod.Date,
-                EndOfPeriod = endOfPeriod.Date,
-                HeatingMeasurement = heatingMeasurement,
-                CoolingMeasurement = coolingMeasurement,
-                Period = period,
-                TemperatureMeter = currentTemperatureMeter,
-                TemperatureMeterId = currentTemperatureMeter.Id,
-            };
-
-            this.dbContext.TemperatureMeasurements.Add(currentTemperatureMeasurement);
-            currentTemperatureMeter.TemperatureMeasurements.Add(currentTemperatureMeasurement);
-
-            this.dbContext.SaveChanges();
-        }
-
-        public void CreateElectricityMeasurement(DateTime periodStartTime, DateTime periodEndTime, string elMeterName, decimal dayTimeMeasurement, decimal nightTimeMeasurement)
-        {
-            DateTime startOfPeriod = periodStartTime;
-            DateTime endOfPeriod = periodEndTime;
-
-            string period;
-
-            if (startOfPeriod.Year == endOfPeriod.Year)
-            {
-                period = startOfPeriod.ToString("d MMMM", new System.Globalization.CultureInfo("bg-BG"))
-                    + " - "
-                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                    + " г.";
-            }
-            else
-            {
-                period = startOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                    + " г. - "
-                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                    + " г.";
-            }
-
-            var currentElectricityMeter = this.electricityMetersService.GetElectricityMeterByName(elMeterName);
-
-            ElectricityMeasurement currentElectricityMeasurement = new ElectricityMeasurement
-            {
-                StartOfPeriod = startOfPeriod.Date,
-                EndOfPeriod = endOfPeriod.Date,
-                DayTimeMeasurement = dayTimeMeasurement,
-                NightTimeMeasurement = nightTimeMeasurement,
-                CreatedOn = DateTime.UtcNow.Date,
-                Period = period,
-                ElectricityMeter = currentElectricityMeter,
-                ElectricityMeterId = currentElectricityMeter.Id,
-            };
-
-            this.dbContext.ElectricityMeasurements.Add(currentElectricityMeasurement);
-            currentElectricityMeter.ElectricityMeasurements.Add(currentElectricityMeasurement);
-
-            this.dbContext.SaveChanges();
-        }
-
-        public void CreateTemperatureMeasurement(DateTime periodStartTime, DateTime periodEndTime, string tempMeterName, decimal heatingMeasurement, decimal coolingMeasurement)
-        {
-            DateTime startOfPeriod = periodStartTime;
-            DateTime endOfPeriod = periodEndTime;
-
-            string period;
-
-            if (startOfPeriod.Year == endOfPeriod.Year)
-            {
-                period = startOfPeriod.ToString("d MMMM", new System.Globalization.CultureInfo("bg-BG"))
-                    + " - "
-                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                    + " г.";
-            }
-            else
-            {
-                period = startOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                    + " г. - "
-                    + endOfPeriod.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG"))
-                    + " г.";
-            }
-
-
-            var currentTemperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(tempMeterName);
-
-            TemperatureMeasurement currentTemperatureMeasurement = new TemperatureMeasurement
-            {
-                StartOfPeriod = startOfPeriod.Date,
-                EndOfPeriod = endOfPeriod.Date,
-                HeatingMeasurement = heatingMeasurement,
-                CoolingMeasurement = coolingMeasurement,
-                Period = period,
-                TemperatureMeter = currentTemperatureMeter,
-                TemperatureMeterId = currentTemperatureMeter.Id,
-            };
-
-            this.dbContext.TemperatureMeasurements.Add(currentTemperatureMeasurement);
-            currentTemperatureMeter.TemperatureMeasurements.Add(currentTemperatureMeasurement);
-
-            this.dbContext.SaveChanges();
-        }
 
         public List<OfficeMeasurementsInputViewModel> GetOfficesWithLastMeasurements()
         {
@@ -255,51 +309,12 @@
                                       .CoolingMeasurement,
                 })
                 .OrderBy(x => x.Name)
-                .ToList()
+                .ToList(),
             })
             .OrderBy(x => x.Name)
             .ToList();
 
             return offices;
-        }
-
-        public void CreateInitialMeasurements(CreateInitialMeasurementsInputViewModel input)
-        {
-            foreach (var office in input.Offices)
-            {
-                CreateInitialElectricityMeasurement(input.EndOfPeriod, office.ElectricityMeter.Name,
-                    office.ElectricityMeter.DayTimeMeasurement, office.ElectricityMeter.NightTimeMeasurement);
-
-                foreach (var temperatureMeter in office.TemperatureMeters)
-                {
-                    CreateInitialTemperatureMeasurement(input.EndOfPeriod, temperatureMeter.Name,
-                        temperatureMeter.HeatingMeasurement, temperatureMeter.CoolingMeasurement);
-                }
-            }
-        }
-
-        public void CreateAllMeasurements(CreateMeasurementsInputViewModel input)
-        {
-            foreach (var office in input.Offices)
-            {
-                CreateElectricityMeasurement(input.StartOfPeriod, input.EndOfPeriod, office.ElectricityMeter.Name,
-                    office.ElectricityMeter.DayTimeMeasurement, office.ElectricityMeter.NightTimeMeasurement);
-
-                foreach (var temperatureMeter in office.TemperatureMeters)
-                {
-                    CreateTemperatureMeasurement(input.StartOfPeriod, input.EndOfPeriod, temperatureMeter.Name,
-                        temperatureMeter.HeatingMeasurement, temperatureMeter.CoolingMeasurement);
-                }
-            }
-        }
-
-        public bool IsFirstPeriod()
-        {
-            if (GetLastPeriodAsText().StartsWith("Starting period"))
-            {
-                return true;
-            }
-            return false;
         }
     }
 }

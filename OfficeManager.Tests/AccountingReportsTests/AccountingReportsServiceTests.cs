@@ -225,22 +225,22 @@ namespace OfficeManager.Tests.AccountingReportsTests
 
         private static void CreateInitialElectricityMeasuremets(IMeasurementsService measurementsService)
         {
-            measurementsService.CreateInitialElectricityMeasurement(new DateTime(2020, 1, 1), "ElectricityMeterName", 0M, 0M);
+            measurementsService.CreateInitialElectricityMeasurementAsync(new DateTime(2020, 1, 1), "ElectricityMeterName", 0M, 0M);
         }
 
         private static void CreateElectricityMeasuremets(IMeasurementsService measurementsService)
         {
-            measurementsService.CreateElectricityMeasurement(new DateTime(2020, 1, 1), new DateTime(2020, 1, 31), "ElectricityMeterName", 10M, 5M);
+            measurementsService.CreateElectricityMeasurementAsync(new DateTime(2020, 1, 1), new DateTime(2020, 1, 31), "ElectricityMeterName", 10M, 5M);
         }
 
         private static void CreateInitialTemperatureMeasurements(IMeasurementsService measurementsService)
         {
-            measurementsService.CreateInitialTemperatureMeasurement(new DateTime(2020, 1, 1), "TemperatureMeterName", 0M, 0M);
+            measurementsService.CreateInitialTemperatureMeasurementAsync(new DateTime(2020, 1, 1), "TemperatureMeterName", 0M, 0M);
         }
 
         private static void CreateTemperatureMeasuremets(IMeasurementsService measurementsService)
         {
-            measurementsService.CreateTemperatureMeasurement(new DateTime(2020, 1, 1), new DateTime(2020, 1, 31), "TemperatureMeterName", 10M, 5M);
+            measurementsService.CreateTemperatureMeasurementAsync(new DateTime(2020, 1, 1), new DateTime(2020, 1, 31), "TemperatureMeterName", 10M, 5M);
         }
 
         private static void CreatePricelist(IPricesInformationService pricesInformationService)

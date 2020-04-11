@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-namespace OfficeManager.Controllers
+﻿namespace OfficeManager.Controllers
 {
+    using System.Diagnostics;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
@@ -16,7 +14,7 @@ namespace OfficeManager.Controllers
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
         {
-            _logger = logger;
+            this._logger = logger;
             this.db = db;
         }
 
@@ -27,13 +25,13 @@ namespace OfficeManager.Controllers
 
         public IActionResult Privacy()
         {
-            return View();
+            return this.View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return this.View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
     }

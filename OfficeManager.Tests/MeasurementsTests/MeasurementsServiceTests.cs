@@ -62,7 +62,7 @@ namespace OfficeManager.Tests.MeasurementsTests
                     PowerSupply = 10M,
                 });
 
-                measurementsService.CreateElectricityMeasurement(periodStartTime, periodEndTime, electricityMeterName, dayTimeMeasurement, nightTimeMeasurement);
+                measurementsService.CreateElectricityMeasurementAsync(periodStartTime, periodEndTime, electricityMeterName, dayTimeMeasurement, nightTimeMeasurement);
                 var countOfMeasurements = electricityMeters.GetElectricityMeterByName(electricityMeterName).ElectricityMeasurements.Count();
                 string period = electricityMeters.GetElectricityMeterById(1).ElectricityMeasurements.FirstOrDefault().Period;
                 Assert.Equal("1 януари - 31 януари 2020 г.", period);
@@ -87,7 +87,7 @@ namespace OfficeManager.Tests.MeasurementsTests
                     PowerSupply = 10M,
                 });
 
-                measurementsService.CreateInitialElectricityMeasurement(periodEndTime, electricityMeterName, dayTimeMeasurement, nightTimeMeasurement);
+                measurementsService.CreateInitialElectricityMeasurementAsync(periodEndTime, electricityMeterName, dayTimeMeasurement, nightTimeMeasurement);
                 var countOfMeasurements = electricityMeters.GetElectricityMeterByName(electricityMeterName).ElectricityMeasurements.Count();
                 string period = electricityMeters.GetElectricityMeterById(1).ElectricityMeasurements.FirstOrDefault().Period;
                 Assert.Equal("Starting period 31 януари 2020 г.", period);
@@ -111,7 +111,7 @@ namespace OfficeManager.Tests.MeasurementsTests
                     Name = temperatureMeterName
                 });
 
-                measurementsService.CreateTemperatureMeasurement(periodStartTime, periodEndTime, temperatureMeterName, heatingMeasurement, coolingMeasurement);
+                measurementsService.CreateTemperatureMeasurementAsync(periodStartTime, periodEndTime, temperatureMeterName, heatingMeasurement, coolingMeasurement);
 
                 var countOfMeasurements = temperatureMeters.GetTemperatureMeterByName(temperatureMeterName).TemperatureMeasurements.Count();
                 string period = temperatureMeters.GetTemperatureMeterById(1).TemperatureMeasurements.FirstOrDefault().Period;
@@ -136,7 +136,7 @@ namespace OfficeManager.Tests.MeasurementsTests
                     Name = temperatureMeterName
                 });
 
-                measurementsService.CreateInitialTemperatureMeasurement(periodEndTime, temperatureMeterName, heatingMeasurement, coolingMeasurement);
+                measurementsService.CreateInitialTemperatureMeasurementAsync(periodEndTime, temperatureMeterName, heatingMeasurement, coolingMeasurement);
 
                 var countOfMeasurements = temperatureMeters.GetTemperatureMeterByName(temperatureMeterName).TemperatureMeasurements.Count();
                 string period = temperatureMeters.GetTemperatureMeterById(1).TemperatureMeasurements.FirstOrDefault().Period;
@@ -168,7 +168,7 @@ namespace OfficeManager.Tests.MeasurementsTests
                     LastPeriod = "1 декември - 31 декември 2019 г.",
                     Offices = new List<OfficeMeasurementsInputViewModel> { GetOfficeInputViewModel() },
                 };
-                measurementsService.CreateAllMeasurements(input);
+                measurementsService.CreateAllMeasurementsAsync(input);
 
                 var result = measurementsService.GetOfficesWithLastMeasurements().FirstOrDefault();
                 
@@ -206,7 +206,7 @@ namespace OfficeManager.Tests.MeasurementsTests
                     LastPeriod = "1 декември - 31 декември 2019 г.",
                     Offices = new List<OfficeMeasurementsInputViewModel> { GetOfficeInputViewModel() },
                 };
-                measurementsService.CreateAllMeasurements(input);
+                measurementsService.CreateAllMeasurementsAsync(input);
 
                 Assert.Equal("1 януари - 31 януари 2020 г.", measurementsService.GetLastPeriodAsText());
                 Assert.Equal(new DateTime(2020, 2, 1), measurementsService.GetStartOfNewPeroid());
@@ -235,7 +235,7 @@ namespace OfficeManager.Tests.MeasurementsTests
                     Offices = new List<OfficeMeasurementsInputViewModel> { GetOfficeInputViewModel() },
                 };
 
-                measurementsService.CreateInitialMeasurements(input);
+                measurementsService.CreateInitialMeasurementsAsync(input);
 
                 Assert.Equal(1, dbContext.TemperatureMeasurements.Count());
                 Assert.Equal(1, dbContext.ElectricityMeasurements.Count());
