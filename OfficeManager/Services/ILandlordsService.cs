@@ -1,14 +1,14 @@
-﻿using OfficeManager.Areas.Administration.ViewModels.Landlords;
-using OfficeManager.Models;
-
-namespace OfficeManager.Services
+﻿namespace OfficeManager.Services
 {
+    using OfficeManager.Areas.Administration.ViewModels.Landlords;
+    using System.Threading.Tasks;
+
     public interface ILandlordsService
     {
-        void CreateLandlord(CreateLandlordViewModel landlord);
+        Task CreateLandlordAsync(CreateLandlordViewModel landlord);
 
         CreateLandlordViewModel GetLandlord();
         
-        void UpdateLandlord(CreateLandlordViewModel input);
+        Task UpdateLandlordAsync(CreateLandlordViewModel input);
     }
 }

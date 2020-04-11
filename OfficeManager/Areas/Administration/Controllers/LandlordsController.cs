@@ -1,12 +1,12 @@
 ﻿namespace OfficeManager.Areas.Administration.Controllers
 {
     using System.Linq;
-    using Microsoft.AspNetCore.Mvc;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
-
+    using Microsoft.AspNetCore.Mvc;
+    using OfficeManager.Areas.Administration.ViewModels.Landlords;
     using OfficeManager.Data;
     using OfficeManager.Services;
-    using OfficeManager.Areas.Administration.ViewModels.Landlords;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
@@ -21,54 +21,54 @@
             this.landlordsService = landlordsService;
         }
 
-
         public IActionResult Create()
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
-        public IActionResult Create(CreateLandlordViewModel input)
+        public async Task<IActionResult> CreateAsync(CreateLandlordViewModel input)
         {
-            if (dbContext.Landlords.Count() == 1)
+            if (this.dbContext.Landlords.Count() == 1)
             {
-                return Redirect("/Administration/Landlords/Details");
+                return this.Redirect("/Administration/Landlords/Details");
             }
 
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return View(input);
+                return this.View(input);
             }
-            landlordsService.CreateLandlord(input);
 
-            return Redirect("/Administration/Landlords/Details");
+            await this.landlordsService.CreateLandlordAsync(input);
+
+            return this.Redirect("/Administration/Landlords/Details");
         }
 
         public IActionResult Details()
         {
-            var landlord = landlordsService.GetLandlord();
+            var landlord = this.landlordsService.GetLandlord();
 
-            return View(landlord);
+            return this.View(landlord);
         }
 
         public IActionResult Edit()
         {
-            var landlord = landlordsService.GetLandlord();
+            var landlord = this.landlordsService.GetLandlord();
 
-            return View(landlord);
+            return this.View(landlord);
         }
 
         [HttpPost]
-        public IActionResult Edit(CreateLandlordViewModel input)
+        public async Task<IActionResult> EditAsync(CreateLandlordViewModel input)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return View(input);
+                return this.View(input);
             }
 
-            landlordsService.UpdateLandlord(input);
+            await this.landlordsService.UpdateLandlordAsync(input);
 
-            return Redirect("/Administration/Landlords/Details");
+            return this.Redirect("/Administration/Landlords/Details");
         }
     }
 }

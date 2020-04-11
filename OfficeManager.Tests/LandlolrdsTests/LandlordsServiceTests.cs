@@ -37,8 +37,8 @@
             {
                 ILandlordsService landlordsService = new LandlordsService(dbContext);
 
-                landlordsService.CreateLandlord(this.landlord);
-                landlordsService.CreateLandlord(this.landlord);
+                landlordsService.CreateLandlordAsync(this.landlord);
+                landlordsService.CreateLandlordAsync(this.landlord);
 
                 actualLandlordsCount = dbContext.Landlords.Count();
             }
@@ -54,7 +54,7 @@
             using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
             {
                 ILandlordsService landlordsService = new LandlordsService(dbContext);
-                landlordsService.CreateLandlord(this.landlord);
+                landlordsService.CreateLandlordAsync(this.landlord);
                 landlordName = landlordsService.GetLandlord().LandlordName;
                 landlordOwner = landlordsService.GetLandlord().LandlordOwner;
             }
@@ -81,8 +81,8 @@
             using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
             {
                 ILandlordsService landlordsService = new LandlordsService(dbContext);
-                landlordsService.CreateLandlord(this.landlord);
-                landlordsService.UpdateLandlord(landlordToUpdate);
+                landlordsService.CreateLandlordAsync(this.landlord);
+                landlordsService.UpdateLandlordAsync(landlordToUpdate);
                 landlordName = landlordsService.GetLandlord().LandlordName;
                 landlordOwner = landlordsService.GetLandlord().LandlordOwner;
             }

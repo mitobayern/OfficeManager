@@ -2,6 +2,7 @@
 using OfficeManager.Data;
 using OfficeManager.Models;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OfficeManager.Services
 {
@@ -14,13 +15,8 @@ namespace OfficeManager.Services
             this.dbContext = dbContext;
         }
 
-        public void CreateLandlord(CreateLandlordViewModel input)
+        public async Task CreateLandlordAsync(CreateLandlordViewModel input)
         {
-            if (this.dbContext.Landlords.Count() == 1)
-            {
-                return;
-            }
-
             Landlord landlord = new Landlord()
             {
                 CompanyName = input.LandlordName,
@@ -31,8 +27,8 @@ namespace OfficeManager.Services
                 Phone = input.Phone
             };
 
-            this.dbContext.Landlords.Add(landlord);
-            this.dbContext.SaveChanges();
+            await this.dbContext.Landlords.AddAsync(landlord);
+            await this.dbContext.SaveChangesAsync();
         }
 
         //public CreateLandlordViewModel EditLandlord()
@@ -71,7 +67,7 @@ namespace OfficeManager.Services
             return outputLandlord;
         }
 
-        public void UpdateLandlord(CreateLandlordViewModel input)
+        public async Task UpdateLandlordAsync(CreateLandlordViewModel input)
         {
             Landlord landlordToEdit = this.dbContext.Landlords.FirstOrDefault();
 
@@ -82,7 +78,7 @@ namespace OfficeManager.Services
             landlordToEdit.Email = input.Email;
             landlordToEdit.Address = input.Address;
 
-            this.dbContext.SaveChanges();
+            await this.dbContext.SaveChangesAsync();
         }
     }
 }

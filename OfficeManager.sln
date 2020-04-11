@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager", "OfficeManager\OfficeManager.csproj", "{AC59F19E-88C0-43B4-84F9-2E61572ABA8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeManager.Tests", "OfficeManager.Tests\OfficeManager.Tests.csproj", "{16A24081-C397-43A8-AD5C-8772FBBBB0FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfficeManager.Tests", "OfficeManager.Tests\OfficeManager.Tests.csproj", "{16A24081-C397-43A8-AD5C-8772FBBBB0FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E0D305E5-A870-49D2-9284-EAD596CC7EE6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -171,7 +171,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
 
         private static void CreateLandlord(ILandlordsService landlordsService)
         {
-            landlordsService.CreateLandlord(new CreateLandlordViewModel
+            landlordsService.CreateLandlordAsync(new CreateLandlordViewModel
             {
                 LandlordName = "LandlordName",
                 LandlordOwner = "LandlordOwner",
