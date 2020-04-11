@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Threading.Tasks;
     using OfficeManager.Areas.Administration.ViewModels.PricesInformation;
     using OfficeManager.Data;
     using OfficeManager.Models;
@@ -15,7 +16,7 @@
             this.dbContext = dbContext;
         }
 
-        public void CreatePricelist(CreatePricesInputViewModel input)
+        public async Task CreatePricelistAsync(CreatePricesInputViewModel input)
         {
             PricesInformation pricesInformation = new PricesInformation
             {
@@ -28,8 +29,8 @@
                 NetworkTaxesAndUtilities = input.NetworkTaxesAndUtilities,
             };
 
-            this.dbContext.PricesInformation.Add(pricesInformation);
-            this.dbContext.SaveChanges();
+            await this.dbContext.PricesInformation.AddAsync(pricesInformation);
+            await this.dbContext.SaveChangesAsync();
         }
 
         public CurrentPricesOutputViewModel GetCurrentPrices()

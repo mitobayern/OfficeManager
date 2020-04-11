@@ -23,7 +23,7 @@ namespace OfficeManager.Tests.PricesInformationTests
 
                 for (int i = 0; i < 3; i++)
                 {
-                    pricesInformationService.CreatePricelist(new CreatePricesInputViewModel
+                    pricesInformationService.CreatePricelistAsync(new CreatePricesInputViewModel
                     {
                         ElectricityPerKWh = 0.5M,
                         HeatingPerKWh = 1.5M,
@@ -50,7 +50,7 @@ namespace OfficeManager.Tests.PricesInformationTests
 
                 for (int i = 0; i < 3; i++)
                 {
-                    pricesInformationService.CreatePricelist(new CreatePricesInputViewModel
+                    pricesInformationService.CreatePricelistAsync(new CreatePricesInputViewModel
                     {
                         ElectricityPerKWh = i + 0.5M,
                         HeatingPerKWh = 1.5M,
@@ -77,7 +77,7 @@ namespace OfficeManager.Tests.PricesInformationTests
 
                 for (int i = 0; i < 3; i++)
                 {
-                    pricesInformationService.CreatePricelist(new CreatePricesInputViewModel
+                    pricesInformationService.CreatePricelistAsync(new CreatePricesInputViewModel
                     {
                         ElectricityPerKWh = i + 0.5M,
                         HeatingPerKWh = 1.5M,

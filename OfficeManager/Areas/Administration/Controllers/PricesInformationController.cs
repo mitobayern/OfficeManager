@@ -1,11 +1,10 @@
 ﻿namespace OfficeManager.Areas.Administration.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
-
-    using OfficeManager.Data;
-    using OfficeManager.Services;
+    using Microsoft.AspNetCore.Mvc;
     using OfficeManager.Areas.Administration.ViewModels.PricesInformation;
+    using OfficeManager.Services;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
@@ -20,26 +19,27 @@
 
         public IActionResult CreatePricelist()
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
-        public IActionResult CreatePricelist(CreatePricesInputViewModel input)
+        public async Task<IActionResult> CreatePricelistAsync(CreatePricesInputViewModel input)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return View(input);
+                return this.View(input);
             }
-            pricesInformationService.CreatePricelist(input);
 
-            return Redirect("/Home/Index");
+            await this.pricesInformationService.CreatePricelistAsync(input);
+
+            return this.Redirect("/Administration/PricesInformation/CurrentPrices");
         }
 
         public IActionResult CurrentPrices()
         {
-            var currentPrices = pricesInformationService.GetCurrentPrices();
+            var currentPrices = this.pricesInformationService.GetCurrentPrices();
 
-            return View(currentPrices);
+            return this.View(currentPrices);
         }
     }
 }

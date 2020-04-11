@@ -1,11 +1,11 @@
-﻿using OfficeManager.Areas.Administration.ViewModels.Landlords;
-using OfficeManager.Data;
-using OfficeManager.Models;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.Services
+﻿namespace OfficeManager.Services
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+    using OfficeManager.Areas.Administration.ViewModels.Landlords;
+    using OfficeManager.Data;
+    using OfficeManager.Models;
+
     public class LandlordsService : ILandlordsService
     {
         private readonly ApplicationDbContext dbContext;
@@ -24,47 +24,11 @@ namespace OfficeManager.Services
                 Bulstat = input.Bulstat,
                 Address = input.Address,
                 Email = input.Email,
-                Phone = input.Phone
+                Phone = input.Phone,
             };
 
             await this.dbContext.Landlords.AddAsync(landlord);
             await this.dbContext.SaveChangesAsync();
-        }
-
-        //public CreateLandlordViewModel EditLandlord()
-        //{
-        //    var landlord = this.dbContext.Landlords.FirstOrDefault();
-
-        //    var outputLandlord = new CreateLandlordViewModel()
-        //    {
-        //        Id = landlord.Id,
-        //        LandlordName = landlord.CompanyName,
-        //        LandlordOwner = landlord.CompanyOwner,
-        //        Bulstat = landlord.Bulstat,
-        //        Address = landlord.Address,
-        //        Email = landlord.Email,
-        //        Phone = landlord.Phone
-        //    };
-
-        //    return outputLandlord;
-        //}
-
-        public CreateLandlordViewModel GetLandlord()
-        {
-            var landlord = this.dbContext.Landlords.FirstOrDefault();
-
-            var outputLandlord = new CreateLandlordViewModel()
-            {
-                Id = landlord.Id,
-                LandlordName = landlord.CompanyName,
-                LandlordOwner = landlord.CompanyOwner,
-                Bulstat = landlord.Bulstat,
-                Address = landlord.Address,
-                Email = landlord.Email,
-                Phone = landlord.Phone
-            };
-
-            return outputLandlord;
         }
 
         public async Task UpdateLandlordAsync(CreateLandlordViewModel input)
@@ -79,6 +43,24 @@ namespace OfficeManager.Services
             landlordToEdit.Address = input.Address;
 
             await this.dbContext.SaveChangesAsync();
+        }
+
+        public CreateLandlordViewModel GetLandlord()
+        {
+            var landlord = this.dbContext.Landlords.FirstOrDefault();
+
+            var outputLandlord = new CreateLandlordViewModel()
+            {
+                Id = landlord.Id,
+                LandlordName = landlord.CompanyName,
+                LandlordOwner = landlord.CompanyOwner,
+                Bulstat = landlord.Bulstat,
+                Address = landlord.Address,
+                Email = landlord.Email,
+                Phone = landlord.Phone,
+            };
+
+            return outputLandlord;
         }
     }
 }

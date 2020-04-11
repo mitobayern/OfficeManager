@@ -1,10 +1,11 @@
 ﻿namespace OfficeManager.Services
 {
+    using System.Threading.Tasks;
     using OfficeManager.Areas.Administration.ViewModels.PricesInformation;
 
     public interface IPricesInformationService
     {
-        void CreatePricelist(CreatePricesInputViewModel input);
+        Task CreatePricelistAsync(CreatePricesInputViewModel input);
 
         CurrentPricesOutputViewModel GetCurrentPrices();
 

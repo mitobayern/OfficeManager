@@ -245,7 +245,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
 
         private static void CreatePricelist(IPricesInformationService pricesInformationService)
         {
-            pricesInformationService.CreatePricelist(new CreatePricesInputViewModel
+            pricesInformationService.CreatePricelistAsync(new CreatePricesInputViewModel
             {
                 ElectricityPerKWh = 10M,
                 HeatingPerKWh = 10M,
