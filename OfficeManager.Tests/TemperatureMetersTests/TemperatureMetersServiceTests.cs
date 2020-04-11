@@ -135,7 +135,7 @@ namespace OfficeManager.Tests.TemperatureMetersTests
                     Name = "Updated"
                 };
 
-                temperatureMetersService.UpdateTemperatureMeter(temperatureMeterToUpdate);
+                temperatureMetersService.UpdateTemperatureMeterAsync(temperatureMeterToUpdate);
                 temperatureMeterName = temperatureMetersService.GetTemperatureMeterByName("Updated").Name;
             }
 

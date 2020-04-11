@@ -33,7 +33,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(CreateElectricityMeterViewModel input)
+        public async Task<IActionResult> Create(CreateElectricityMeterViewModel input)
         {
             if (!this.ModelState.IsValid)
             {
@@ -64,7 +64,7 @@
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditAsync(ElectricityMeterOutputViewModel input)
+        public async Task<IActionResult> Edit(ElectricityMeterOutputViewModel input)
         {
             if (!this.ModelState.IsValid)
             {

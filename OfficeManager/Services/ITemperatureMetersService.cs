@@ -1,22 +1,22 @@
 ﻿namespace OfficeManager.Services
 {
+    using System.Linq;
+    using System.Threading.Tasks;
     using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
     using OfficeManager.Models;
-    using System.Linq;
 
     public interface ITemperatureMetersService
     {
-        void CreateTemperatureMeter(CreateTemperatureMeterViewModel inuput);
+        Task CreateTemperatureMeterAsync(string name);
 
-        IQueryable<TemperatureMeterOutputViewModel> GetAllTemperatureMeters();
-
-        TemperatureMeter GetTemperatureMeterById(int id);
+        Task UpdateTemperatureMeterAsync(int id, string name);
 
         EditTemperatreMeterViewModel EditTemperatureMeter(int id);
 
-        void UpdateTemperatureMeter(EditTemperatreMeterViewModel input);
+        TemperatureMeter GetTemperatureMeterById(int id);
 
         TemperatureMeter GetTemperatureMeterByName(string name);
 
+        IQueryable<TemperatureMeterOutputViewModel> GetAllTemperatureMeters();
     }
 }
