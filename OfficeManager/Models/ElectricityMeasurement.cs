@@ -32,6 +32,7 @@
         public string Period { get; set; }
 
         public int ElectricityMeterId { get; set; }
+
         public virtual ElectricityMeter ElectricityMeter { get; set; }
     }
 }

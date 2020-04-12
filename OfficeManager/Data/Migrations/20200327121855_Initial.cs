@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace OfficeManager.Data.Migrations
+﻿namespace OfficeManager.Data.Migrations
 {
+    using System;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,7 @@ namespace OfficeManager.Data.Migrations
                     Phone = table.Column<string>(nullable: false),
                     Email = table.Column<string>(nullable: false),
                     Address = table.Column<string>(nullable: false),
-                    Bulstat = table.Column<string>(nullable: false)
+                    Bulstat = table.Column<string>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -37,7 +37,7 @@ namespace OfficeManager.Data.Migrations
                     ElectricityPerKWh = table.Column<decimal>(type: "decimal(18,5)", nullable: false),
                     Excise = table.Column<decimal>(type: "decimal(18,5)", nullable: false),
                     AccessToDistributionGrid = table.Column<decimal>(type: "decimal(18,5)", nullable: false),
-                    NetworkTaxesAndUtilities = table.Column<decimal>(type: "decimal(18,5)", nullable: false)
+                    NetworkTaxesAndUtilities = table.Column<decimal>(type: "decimal(18,5)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -58,7 +58,7 @@ namespace OfficeManager.Data.Migrations
                     Bulstat = table.Column<string>(nullable: false),
                     StartOfContract = table.Column<DateTime>(nullable: false),
                     EndOfContract = table.Column<DateTime>(nullable: true),
-                    hasContract = table.Column<bool>(nullable: false)
+                    hasContract = table.Column<bool>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -85,7 +85,7 @@ namespace OfficeManager.Data.Migrations
                     AmountForCooling = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AmountForElectricity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AmountForCleaning = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Period = table.Column<string>(nullable: true)
+                    Period = table.Column<string>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -120,7 +120,7 @@ namespace OfficeManager.Data.Migrations
                     IssuedOn = table.Column<DateTime>(nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CustomerId = table.Column<int>(nullable: false),
-                    LandlordId = table.Column<int>(nullable: false)
+                    LandlordId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -149,7 +149,7 @@ namespace OfficeManager.Data.Migrations
                     Area = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     RentPerSqMeter = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     isAvailable = table.Column<bool>(nullable: false),
-                    TenantId = table.Column<int>(nullable: true)
+                    TenantId = table.Column<int>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -172,7 +172,7 @@ namespace OfficeManager.Data.Migrations
                     Quantity = table.Column<int>(nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    InvoiceId = table.Column<int>(nullable: true)
+                    InvoiceId = table.Column<int>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -193,7 +193,7 @@ namespace OfficeManager.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: false),
                     PowerSupply = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    OfficeId = table.Column<int>(nullable: true)
+                    OfficeId = table.Column<int>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -213,7 +213,7 @@ namespace OfficeManager.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: false),
-                    OfficeId = table.Column<int>(nullable: true)
+                    OfficeId = table.Column<int>(nullable: true),
                 },
                 constraints: table =>
                 {
@@ -238,7 +238,7 @@ namespace OfficeManager.Data.Migrations
                     StartOfPeriod = table.Column<DateTime>(nullable: false),
                     EndOfPeriod = table.Column<DateTime>(nullable: false),
                     Period = table.Column<string>(nullable: false),
-                    ElectricityMeterId = table.Column<int>(nullable: false)
+                    ElectricityMeterId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {
@@ -262,7 +262,7 @@ namespace OfficeManager.Data.Migrations
                     StartOfPeriod = table.Column<DateTime>(nullable: false),
                     EndOfPeriod = table.Column<DateTime>(nullable: false),
                     Period = table.Column<string>(nullable: false),
-                    TemperatureMeterId = table.Column<int>(nullable: false)
+                    TemperatureMeterId = table.Column<int>(nullable: false),
                 },
                 constraints: table =>
                 {

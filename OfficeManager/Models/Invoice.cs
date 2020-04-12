@@ -10,6 +10,7 @@
         {
             this.InvoiceDescriptions = new HashSet<InvoiceDescription>();
         }
+
         public int Id { get; set; }
 
         public int Number { get; set; }
@@ -20,9 +21,11 @@
         public decimal TotalAmount { get; set; }
 
         public int CustomerId { get; set; }
+
         public virtual Tenant Customer { get; set; }
 
         public int LandlordId { get; set; }
+
         public virtual Landlord Landlord { get; set; }
 
         public virtual ICollection<InvoiceDescription> InvoiceDescriptions { get; set; }

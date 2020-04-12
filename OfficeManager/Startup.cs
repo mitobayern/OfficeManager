@@ -1,28 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
-using OfficeManager.Data;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using OfficeManager.Services;
-using OfficeManager.SeedData;
-using Microsoft.AspNetCore.Mvc;
-
 namespace OfficeManager
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using OfficeManager.Data;
+    using OfficeManager.SeedData;
+    using OfficeManager.Services;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -32,7 +26,7 @@ namespace OfficeManager
         {
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseLazyLoadingProxies().UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    this.Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddMvc(
                 options =>
@@ -61,8 +55,7 @@ namespace OfficeManager
             services.AddTransient<ITemperatureMetersService, TemperatureMetersService>();
             services.AddTransient<IMeasurementsService, MeasurementsService>();
             services.AddTransient<IPricesInformationService, PricesInformationService>();
-            services.AddTransient<IAccontingReportsService, AccountingReportsService>();
-
+            services.AddTransient<IAccountingReportsService, AccountingReportsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,8 +76,6 @@ namespace OfficeManager
                     .GetResult();
             }
 
-
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -93,9 +84,11 @@ namespace OfficeManager
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

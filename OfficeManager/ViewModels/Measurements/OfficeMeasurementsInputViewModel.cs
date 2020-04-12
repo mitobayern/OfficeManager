@@ -11,6 +11,5 @@
         public ElectricityMeasurementInputViewModel ElectricityMeter { get; set; }
 
         public List<TemperatureMeasurementInputViewModel> TemperatureMeters { get; set; }
-
     }
 }

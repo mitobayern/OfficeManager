@@ -16,6 +16,7 @@
         public string Name { get; set; }
 
         public int? OfficeId { get; set; }
+
         public virtual Office Office { get; set; }
 
         public virtual ICollection<TemperatureMeasurement> TemperatureMeasurements { get; set; }

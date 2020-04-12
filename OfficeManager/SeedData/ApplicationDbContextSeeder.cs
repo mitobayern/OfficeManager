@@ -3,76 +3,72 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using OfficeManager.Data;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.DependencyInjection;
+    using OfficeManager.Data;
 
     public class ApplicationDbContextSeeder
     {
-        private const string initialRoleName = "Admin";
-        private const string initialUserName = "Admin";
-        private const string initialUserPassword = "Administrati0n";
-
-        private const string initialUserEmail = "Admin@gmail.com";
-
-
-
+        private const string InitialRoleName = "Admin";
+        private const string InitialUserName = "Admin";
+        private const string InitialUserPassword = "Administrati0n";
+        private const string InitialUserEmail = "Admin@gmail.com";
         private readonly ApplicationDbContext dbContext;
         private readonly UserManager<IdentityUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
-
 
         public ApplicationDbContextSeeder(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
         {
             this.dbContext = dbContext;
             this.userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
             this.roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
-
         }
 
         public async Task SeedDataAsync()
         {
-            await SeedUsersAsync();
-            await SeedRolesAsync();
-            await SeedUserToRolesAsync();
-
+            await this.SeedUsersAsync();
+            await this.SeedRolesAsync();
+            await this.SeedUserToRolesAsync();
         }
+
         private async Task SeedUsersAsync()
         {
-            var user = await userManager.FindByNameAsync(initialUserName);
+            var user = await this.userManager.FindByNameAsync(InitialUserName);
 
             if (user != null)
             {
                 return;
             }
 
-            await userManager.CreateAsync(new IdentityUser
-            {
-                UserName = initialUserName,
-                Email = initialUserEmail,
-                EmailConfirmed = true,
-            }, initialUserPassword);
+            await this.userManager.CreateAsync(
+                new IdentityUser
+                {
+                    UserName = InitialUserName,
+                    Email = InitialUserEmail,
+                    EmailConfirmed = true,
+                },
+                InitialUserPassword);
         }
 
         private async Task SeedRolesAsync()
         {
-            var role = await roleManager.FindByNameAsync(initialRoleName);
+            var role = await this.roleManager.FindByNameAsync(InitialRoleName);
 
             if (role != null)
             {
                 return;
             }
 
-            await roleManager.CreateAsync(new IdentityRole
+            await this.roleManager.CreateAsync(new IdentityRole
             {
-                Name = initialRoleName
+                Name = InitialRoleName,
             });
         }
 
         private async Task SeedUserToRolesAsync()
         {
-            var user = await userManager.FindByNameAsync(initialUserName);
-            var role = await roleManager.FindByNameAsync(initialRoleName);
+            var user = await this.userManager.FindByNameAsync(InitialUserName);
+            var role = await this.roleManager.FindByNameAsync(InitialRoleName);
 
             var exists = this.dbContext.UserRoles.Any(x => x.RoleId == role.Id && x.UserId == user.Id);
 
@@ -81,16 +77,13 @@
                 return;
             }
 
-            dbContext.UserRoles.Add(new IdentityUserRole<string>
+            this.dbContext.UserRoles.Add(new IdentityUserRole<string>
             {
                 RoleId = role.Id,
-                UserId = user.Id
+                UserId = user.Id,
             });
 
-            await dbContext.SaveChangesAsync();
+            await this.dbContext.SaveChangesAsync();
         }
-
-
-
     }
 }

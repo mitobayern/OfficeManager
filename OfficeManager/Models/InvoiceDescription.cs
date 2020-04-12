@@ -2,6 +2,7 @@
 {
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+
     public class InvoiceDescription
     {
         public int Id { get; set; }

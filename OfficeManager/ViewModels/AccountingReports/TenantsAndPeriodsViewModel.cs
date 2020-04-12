@@ -1,10 +1,10 @@
 ﻿namespace OfficeManager.ViewModels.AccountingReports
 {
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Linq;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Rendering;
 
     public class TenantsAndPeriodsViewModel : IValidatableObject
     {
@@ -23,11 +23,11 @@
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (AccountingReports != null)
+            if (this.AccountingReports != null)
             {
-                if (AccountingReports.Any(x => x.CompanyName == Tenant && x.Period == Period))
+                if (this.AccountingReports.Any(x => x.CompanyName == this.Tenant && x.Period == this.Period))
                 {
-                    yield return new ValidationResult($"{Tenant} already has accounting report for {Period}", new List<string> { "Tenant" });
+                    yield return new ValidationResult($"{this.Tenant} already has accounting report for {this.Period}", new List<string> { "Tenant" });
                 }
             }
         }

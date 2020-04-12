@@ -1,82 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using OfficeManager.Areas.Administration.ViewModels.PricesInformation;
-using OfficeManager.Data;
-using OfficeManager.Models;
-using OfficeManager.ViewModels.AccountingReports;
-using OfficeManager.ViewModels.Measurements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.Services
+﻿namespace OfficeManager.Services
 {
-    public class AccountingReportsService : IAccontingReportsService
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.EntityFrameworkCore;
+    using OfficeManager.Data;
+    using OfficeManager.Models;
+    using OfficeManager.ViewModels.AccountingReports;
+    using OfficeManager.ViewModels.Measurements;
+
+    public class AccountingReportsService : IAccountingReportsService
     {
         private readonly ApplicationDbContext dbContext;
         private readonly ITenantsService tenantsService;
         private readonly ILandlordsService landlordsService;
         private readonly IPricesInformationService pricesInformationService;
 
-        public AccountingReportsService(ApplicationDbContext dbContext,
-                                        ITenantsService tenantsService,
-                                        ILandlordsService landlordsService,
-                                        IPricesInformationService pricesInformationService)
+        public AccountingReportsService(
+            ApplicationDbContext dbContext,
+            ITenantsService tenantsService,
+            ILandlordsService landlordsService,
+            IPricesInformationService pricesInformationService)
         {
             this.dbContext = dbContext;
             this.tenantsService = tenantsService;
             this.landlordsService = landlordsService;
             this.pricesInformationService = pricesInformationService;
         }
-        
-        public List<SelectListItem> GetAllTenantsSelectList()
-        {
-            var allTenants = this.dbContext.Tenants.Select(x => x.CompanyName).ToList();
 
-            List<SelectListItem> tenantsViewModel = new List<SelectListItem>();
-
-            foreach (var tenant in allTenants)
-            {
-                tenantsViewModel.Add(new SelectListItem
-                {
-                    Text = tenant,
-                    Value = tenant
-                });
-            }
-
-            return tenantsViewModel;
-        }
-
-        public List<SelectListItem> GetAllPeriodsSelectList()
-        {
-            var allPeriods = this.dbContext.ElectricityMeasurements
-                            .OrderByDescending(x => x.Id)
-                            .Select(x => x.Period)
-                            .Where(x => !x.StartsWith("Starting"))
-                            .ToList();
-
-            List<string> outputPeriods = new List<string>();
-            List<SelectListItem> periodsViewModel = new List<SelectListItem>();
-
-            foreach (var period in allPeriods)
-            {
-                if (!outputPeriods.Contains(period))
-                {
-                    outputPeriods.Add(period);
-                    periodsViewModel.Add(new SelectListItem
-                    {
-                        Text = period,
-                        Value = period
-                    });
-                }
-            }
-
-            return periodsViewModel.Take(12).ToList();
-        }
-
-
-        public void GenerateAccountingReport(AccountingReportViewModel input)
+        public async Task GenerateAccountingReportAsync(AccountingReportViewModel input)
         {
             Tenant tenant = this.tenantsService.GetTenantById(input.TenantId);
             Landlord landlord = this.dbContext.Landlords.FirstOrDefault();
@@ -102,16 +56,61 @@ namespace OfficeManager.Services
                 AmountForCooling = input.AmountForCooling,
                 TotalAmount = input.TotalAmount,
             };
-            
+
             tenant.AccountingReports.Add(accountingReport);
-            this.dbContext.AccountingReports.Add(accountingReport);
-            this.dbContext.SaveChanges();
+            await this.dbContext.AccountingReports.AddAsync(accountingReport);
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public List<SelectListItem> GetAllTenantsSelectList()
+        {
+            var allTenants = this.dbContext.Tenants.Select(x => x.CompanyName).ToList();
+
+            List<SelectListItem> tenantsViewModel = new List<SelectListItem>();
+
+            foreach (var tenant in allTenants)
+            {
+                tenantsViewModel.Add(new SelectListItem
+                {
+                    Text = tenant,
+                    Value = tenant,
+                });
+            }
+
+            return tenantsViewModel;
+        }
+
+        public List<SelectListItem> GetAllPeriodsSelectList()
+        {
+            var allPeriods = this.dbContext.ElectricityMeasurements
+                            .OrderByDescending(x => x.Id)
+                            .Select(x => x.Period)
+                            .Where(x => !x.StartsWith("Starting"))
+                            .ToList();
+
+            List<string> outputPeriods = new List<string>();
+            List<SelectListItem> periodsViewModel = new List<SelectListItem>();
+
+            foreach (var period in allPeriods)
+            {
+                if (!outputPeriods.Contains(period))
+                {
+                    outputPeriods.Add(period);
+                    periodsViewModel.Add(new SelectListItem
+                    {
+                        Text = period,
+                        Value = period,
+                    });
+                }
+            }
+
+            return periodsViewModel.Take(12).ToList();
         }
 
         public AccountingReportViewModel GetAccountingReportById(int accountingReportId)
         {
             var landlord = this.landlordsService.GetLandlord();
-            var currentAccountingReport = this.dbContext.AccountingReports.Include(y=>y.Tenant).FirstOrDefault(x => x.Id == accountingReportId);
+            var currentAccountingReport = this.dbContext.AccountingReports.Include(y => y.Tenant).FirstOrDefault(x => x.Id == accountingReportId);
             var tenant = this.tenantsService.GetTenantByCompanyName(currentAccountingReport.Tenant.CompanyName);
             var currentTenantInfo = GetTenantInfo(tenant);
             var pricesInformation = this.pricesInformationService.GetPricesInformationById(currentAccountingReport.PricesInformationId);
@@ -131,8 +130,9 @@ namespace OfficeManager.Services
                 AmountForElectricity = currentAccountingReport.AmountForElectricity,
                 AmountForHeating = currentAccountingReport.AmountForHeating,
                 AmountForCooling = currentAccountingReport.AmountForCooling,
-                TotalAmount = currentAccountingReport.TotalAmount
+                TotalAmount = currentAccountingReport.TotalAmount,
             };
+
             return accountingReport;
         }
 
@@ -144,26 +144,19 @@ namespace OfficeManager.Services
                 Number = x.Number,
                 CompanyName = x.Tenant.CompanyName,
                 CreatedOn = x.IssuedOn,
-                //CreatedOn = x.IssuedOn.ToString("d.MM.yyyy") + " г.",
-
                 Period = x.Period,
-                //TotalAmount = x.TotalAmount.ToString("F2") + " лв."
-
                 TotalAmount = x.TotalAmount,
-                //AllTenants = GetAllTenants(),
-                //AllPeriods = GetAllPeriods(),
             });
 
             return allAccountingReports;
         }
-               
+
         public TenantElectricityConsummationViewModel GetTenantElectricityConsummationByPeriod(string tenantCompanyName, string period)
         {
             decimal tenantDayTimeElectricityConsummation = 0;
             decimal tenantNightTimeElectricityConsummation = 0;
 
             Tenant tenant = this.tenantsService.GetTenantByCompanyName(tenantCompanyName);
-
 
             foreach (var office in tenant.Offices)
             {
@@ -189,7 +182,7 @@ namespace OfficeManager.Services
             var tenantElectricityConsumation = new TenantElectricityConsummationViewModel
             {
                 DayTimeConsummation = tenantDayTimeElectricityConsummation,
-                NightTimeConsummation = tenantNightTimeElectricityConsummation
+                NightTimeConsummation = tenantNightTimeElectricityConsummation,
             };
 
             return tenantElectricityConsumation;
@@ -226,13 +219,12 @@ namespace OfficeManager.Services
                     tenantHeatingConsummation += heatingConsumation;
                     tenantCoolingConsummation += coolingConsumation;
                 }
-
             }
 
             var tenantTemperatureConsumation = new TenantTemperatureConsummationViewModel
             {
                 HeatingConsummation = tenantHeatingConsummation,
-                CoolingConsummation = tenantCoolingConsummation
+                CoolingConsummation = tenantCoolingConsummation,
             };
 
             return tenantTemperatureConsumation;
@@ -244,11 +236,11 @@ namespace OfficeManager.Services
 
             var consummation = tenantElectricityConsummation.DayTimeConsummation
                              + tenantElectricityConsummation.NightTimeConsummation;
-            
-            var price = (currentPrices.AccessToDistributionGrid
+
+            var price = currentPrices.AccessToDistributionGrid
                        + currentPrices.NetworkTaxesAndUtilities
                        + currentPrices.Excise
-                       + currentPrices.ElectricityPerKWh);
+                       + currentPrices.ElectricityPerKWh;
 
             var amountForElectricity = consummation * price;
 
@@ -257,7 +249,6 @@ namespace OfficeManager.Services
 
         public AccountingReportViewModel GetAccountingReportViewModel(string tenantCompanyName, string period)
         {
-
             int number;
             if (this.dbContext.AccountingReports.Count() == 0)
             {
@@ -269,13 +260,10 @@ namespace OfficeManager.Services
             }
 
             var tenant = this.tenantsService.GetTenantByCompanyName(tenantCompanyName);
-
             var pricesInformation = this.pricesInformationService.GetCurrentPrices();
-
             var electricityConsummation = this.GetTenantElectricityConsummationByPeriod(tenant.CompanyName, period);
             var amountForElectricity = this.AmountForElectricity(electricityConsummation);
             var temperatureConsummation = this.GetTenantTemperatureConsummationByPeriod(tenant.CompanyName, period);
-
             var amountForHeating = temperatureConsummation.HeatingConsummation * pricesInformation.HeatingPerKWh;
             var amountForCooling = temperatureConsummation.CoolingConsummation * pricesInformation.CoolingPerKWh;
             var totalAmount = (amountForElectricity + amountForHeating + amountForCooling) * 1.20M;
@@ -291,7 +279,7 @@ namespace OfficeManager.Services
                 StartOfContract = tenant.StartOfContract,
                 Offices = this.tenantsService.GetTenantOfficesAsText(tenantCompanyName),
             };
-            ;
+
             AccountingReportViewModel accountingReport = new AccountingReportViewModel
             {
                 Number = number,
@@ -314,6 +302,46 @@ namespace OfficeManager.Services
 
             return accountingReport;
         }
+
+        public List<string> AllPeriods()
+        {
+            List<string> allPeriods = new List<string>();
+
+            foreach (var period in this.dbContext.ElectricityMeasurements
+                            .OrderByDescending(x => x.Id)
+                            .Select(x => x.Period)
+                            .Where(x => !x.StartsWith("Starting"))
+                            .ToList())
+            {
+                if (!allPeriods.Contains(period))
+                {
+                    allPeriods.Add(period);
+                }
+
+                if (allPeriods.Count() == 12)
+                {
+                    break;
+                }
+            }
+
+            return allPeriods;
+        }
+
+        public List<string> AlTenants()
+        {
+            List<string> allTenants = new List<string>();
+
+            foreach (var tenant in this.GetAllAccountingReports().Select(x => x.CompanyName).OrderBy(x => x).ToList())
+            {
+                if (!allTenants.Contains(tenant))
+                {
+                    allTenants.Add(tenant);
+                }
+            }
+
+            return allTenants;
+        }
+
         private static TenantAccountingReportViewModel GetTenantInfo(Tenant tenant)
         {
             string eik = string.Empty;
@@ -343,6 +371,7 @@ namespace OfficeManager.Services
                         offices += currentTenantOffices[i] + " и ";
                     }
                 }
+
                 offices += currentTenantOffices[currentTenantOffices.Count - 1];
             }
             else
@@ -362,46 +391,6 @@ namespace OfficeManager.Services
                 Offices = offices,
             };
             return tenantInfo;
-        }
-
-        public List<string> AllPeriods()
-        {
-            List<string> allPeriods = new List<string>();
-
-            foreach (var period in this.dbContext.ElectricityMeasurements
-                            .OrderByDescending(x => x.Id)
-                            .Select(x => x.Period)
-                            .Where(x => !x.StartsWith("Starting"))
-                            .ToList())
-            {
-                if (!allPeriods.Contains(period))
-                {
-                    allPeriods.Add(period);
-                }
-
-                if (allPeriods.Count() == 12)
-                {
-                    break;
-                }
-            }
-
-
-            return allPeriods;
-        }
-
-        public List<string> AlTenants()
-        {
-            List<string> allTenants = new List<string>();
-
-            foreach (var tenant in GetAllAccountingReports().Select(x => x.CompanyName).OrderBy(x => x).ToList())
-            {
-                if (!allTenants.Contains(tenant))
-                {
-                    allTenants.Add(tenant);
-                }
-            }
-
-            return allTenants;
         }
     }
 }

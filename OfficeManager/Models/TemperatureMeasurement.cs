@@ -30,6 +30,7 @@
         public string Period { get; set; }
 
         public int TemperatureMeterId { get; set; }
+
         public virtual TemperatureMeter TemperatureMeter { get; set; }
     }
 }

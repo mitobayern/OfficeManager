@@ -19,7 +19,5 @@
         public DateTime StartOfContract { get; set; }
 
         public string Offices { get; set; }
-
-        
     }
 }

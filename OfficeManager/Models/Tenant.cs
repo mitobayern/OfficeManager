@@ -43,13 +43,12 @@
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? EndOfContract { get; set; }
 
-        public bool hasContract { get; set; }
+        public bool HasContract { get; set; }
 
         public virtual ICollection<Office> Offices { get; set; }
 
         public virtual ICollection<Invoice> Invoices { get; set; }
 
         public virtual ICollection<AccountingReport> AccountingReports { get; set; }
-
     }
 }

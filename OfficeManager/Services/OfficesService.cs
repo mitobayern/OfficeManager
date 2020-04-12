@@ -39,7 +39,7 @@
             {
                 Name = name,
                 Area = area,
-                isAvailable = true,
+                IsAvailable = true,
                 RentPerSqMeter = rentPerSqMeter,
             };
 
@@ -96,7 +96,7 @@
                 }
 
                 currentTenant.Offices.Add(office);
-                office.isAvailable = false;
+                office.IsAvailable = false;
             }
 
             await this.dbContext.SaveChangesAsync();
@@ -115,7 +115,7 @@
                 }
 
                 currentTenant.Offices.Remove(office);
-                office.isAvailable = true;
+                office.IsAvailable = true;
             }
 
             await this.dbContext.SaveChangesAsync();
@@ -191,7 +191,7 @@
 
         public IQueryable<EditOfficeViewModel> GetAllAvailableOffices()
         {
-            var availavleOffices = this.dbContext.Offices.Where(x => x.isAvailable == true).Select(x => new EditOfficeViewModel
+            var availavleOffices = this.dbContext.Offices.Where(x => x.IsAvailable == true).Select(x => new EditOfficeViewModel
             {
                 Id = x.Id,
                 Name = x.Name,

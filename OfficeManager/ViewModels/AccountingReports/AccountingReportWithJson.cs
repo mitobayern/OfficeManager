@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.ViewModels.AccountingReports
+﻿namespace OfficeManager.ViewModels.AccountingReports
 {
     public class AccountingReportWithJson
     {

@@ -24,7 +24,7 @@
         {
             if (this.DayTimeMeasurement < this.DayTimeMinValue)
             {
-                yield return new ValidationResult($"Measurement can not be smaller than {this.DayTimeMinValue}", new List<string> {"DayTimeMeasurement"});
+                yield return new ValidationResult($"Measurement can not be smaller than {this.DayTimeMinValue}", new List<string> { "DayTimeMeasurement" });
             }
 
             if (this.NightTimeMeasurement < this.NightTimeMinValue)
@@ -34,4 +34,3 @@
         }
     }
 }
-

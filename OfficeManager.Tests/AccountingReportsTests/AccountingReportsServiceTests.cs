@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
+using System.Threading.Tasks;
 
 namespace OfficeManager.Tests.AccountingReportsTests
 {
@@ -27,14 +28,14 @@ namespace OfficeManager.Tests.AccountingReportsTests
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
-            IAccontingReportsService accontingReportsService =
+            IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
             SeedData(dbContext);
 
             var accountingReportViewModel = accontingReportsService.GetAccountingReportViewModel("TenantName", "1 януари - 31 януари 2020 г.");
 
-            accontingReportsService.GenerateAccountingReport(accountingReportViewModel);
+            accontingReportsService.GenerateAccountingReportAsync(accountingReportViewModel);
 
             Assert.Equal(1, dbContext.AccountingReports.Count());
         }
@@ -46,7 +47,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
-            IAccontingReportsService accontingReportsService =
+            IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
             SeedData(dbContext);
@@ -69,14 +70,14 @@ namespace OfficeManager.Tests.AccountingReportsTests
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
-            IAccontingReportsService accontingReportsService =
+            IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
             SeedData(dbContext);
 
             var accountingReportViewModel = accontingReportsService.GetAccountingReportViewModel("TenantName", "1 януари - 31 януари 2020 г.");
 
-            accontingReportsService.GenerateAccountingReport(accountingReportViewModel);
+            accontingReportsService.GenerateAccountingReportAsync(accountingReportViewModel);
 
             var result = accontingReportsService.GetAccountingReportById(1);
 
@@ -96,7 +97,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
-            IAccontingReportsService accontingReportsService =
+            IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
             SeedData(dbContext);
@@ -112,7 +113,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
-            IAccontingReportsService accontingReportsService =
+            IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
             SeedData(dbContext);
@@ -130,7 +131,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
-            IAccontingReportsService accontingReportsService =
+            IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
             SeedData(dbContext);
@@ -156,7 +157,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
 
             CreateLandlord(landlordsService);
             CreateTenant(tenantsService);
-            CreateOffice(officesService);
+            CreateOfficeAsync(officesService);
             officesService.AddOfficesToTenantAsync(1, new List<string> { "TestOfficeName" });
             CreateTemperatureMeter(temperatureMetersService);
             CreateElectricityMeter(electricityMetersService);
@@ -178,7 +179,7 @@ namespace OfficeManager.Tests.AccountingReportsTests
                 Bulstat = "BG123456789",
                 Address = "LandlordAddress",
                 Email = "Landlord@email.com",
-                Phone = "0888888888"
+                Phone = "0888888888",
             });
         }
 
@@ -196,9 +197,9 @@ namespace OfficeManager.Tests.AccountingReportsTests
             });
         }
 
-        private static void CreateOffice(IOfficesService officesService)
+        private static async Task CreateOfficeAsync(IOfficesService officesService)
         {
-            officesService.CreateOfficeAsync(new CreateOfficeViewModel
+            await officesService.CreateOfficeAsync(new CreateOfficeViewModel
             {
                 Name = "TestOfficeName",
                 Area = 100M,

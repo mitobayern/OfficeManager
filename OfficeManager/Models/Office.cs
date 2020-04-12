@@ -8,7 +8,7 @@
     {
         public Office()
         {
-            this.isAvailable = true;
+            this.IsAvailable = true;
             this.TemperatureMeters = new HashSet<TemperatureMeter>();
         }
 
@@ -20,16 +20,17 @@
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Area { get; set; }
-        
+
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal RentPerSqMeter { get; set; }
 
         public decimal TotalRent => this.Area * this.RentPerSqMeter;
 
-        public bool isAvailable { get; set; }
+        public bool IsAvailable { get; set; }
 
         public int? TenantId { get; set; }
+
         public virtual Tenant Tenant { get; set; }
 
         public virtual ElectricityMeter ElectricityMeter { get; set; }

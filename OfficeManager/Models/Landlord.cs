@@ -9,6 +9,7 @@
         {
             this.AccountingReports = new HashSet<AccountingReport>();
         }
+
         public int Id { get; set; }
 
         [Required]
@@ -33,6 +34,5 @@
         public virtual ICollection<AccountingReport> AccountingReports { get; set; }
 
         public virtual Invoice Invoice { get; set; }
-
     }
 }

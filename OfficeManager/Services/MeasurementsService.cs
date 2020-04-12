@@ -276,7 +276,6 @@
             return endOfNewPeriod;
         }
 
-
         public List<OfficeMeasurementsInputViewModel> GetOfficesWithLastMeasurements()
         {
             var offices = this.dbContext.Offices.Select(x => new OfficeMeasurementsInputViewModel

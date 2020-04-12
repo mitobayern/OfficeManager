@@ -1,10 +1,9 @@
 ﻿namespace OfficeManager.Areas.Administration.ViewModels.PricesInformation
 {
-    using System;
-
     public class CurrentPricesOutputViewModel
     {
         public int Id { get; set; }
+
         public string CreatedOn { get; set; }
 
         public decimal HeatingPerKWh { get; set; }

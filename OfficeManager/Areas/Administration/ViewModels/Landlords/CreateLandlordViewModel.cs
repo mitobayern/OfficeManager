@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace OfficeManager.Areas.Administration.ViewModels.Landlords
+﻿namespace OfficeManager.Areas.Administration.ViewModels.Landlords
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class CreateLandlordViewModel
     {
         public int Id { get; set; }

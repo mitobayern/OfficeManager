@@ -7,7 +7,7 @@
     {
         public int Id { get; set; }
 
-        public bool isChecked => false;
+        public bool IsChecked => false;
 
         [Required]
         public string Name { get; set; }

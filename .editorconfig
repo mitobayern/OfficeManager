@@ -5,3 +5,24 @@ dotnet_diagnostic.SA1600.severity = none
 
 # SA1633: File should have header
 dotnet_diagnostic.SA1633.severity = none
+
+# SA1201: Elements should appear in the correct order
+dotnet_diagnostic.SA1201.severity = none
+
+# SA1601: Partial elements should be documented
+dotnet_diagnostic.SA1601.severity = none
+
+# SA1649: File name should match first type name
+dotnet_diagnostic.SA1649.severity = none
+
+# SA1117: Parameters should be on same line or separate lines
+dotnet_diagnostic.SA1117.severity = none
+
+# SA1404: Code analysis suppression should have justification
+dotnet_diagnostic.SA1404.severity = none
+
+# SA1309: Field names should not begin with underscore
+dotnet_diagnostic.SA1309.severity = none
+
+# IDE0052: Remove unread private members
+dotnet_diagnostic.IDE0052.severity = none

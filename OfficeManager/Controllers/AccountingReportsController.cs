@@ -1,34 +1,31 @@
 ﻿namespace OfficeManager.Controllers
 {
+    using System.Linq;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Newtonsoft.Json;
     using OfficeManager.Data;
     using OfficeManager.Services;
     using OfficeManager.ViewModels.AccountingReports;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class AccountingReportsController : Controller
     {
-        private readonly IAccontingReportsService accontingReportsService;
+        private const string NumberDescending = "number_desc";
+        private const string DateAscending = "date_asc";
+        private const string DateDescending = "date_desc";
+        private const string TenantsAscending = "tenant_asc";
+        private const string TenantsDescending = "tenant_desc";
+        private const string PeriodAscending = "period_asc";
+        private const string PeriodDescending = "period_desc";
+        private const string TotalAmountAscending = "amount_asc";
+        private const string TotalAmountDescending = "amount_desc";
+        private readonly IAccountingReportsService accountingReportsService;
         private readonly ApplicationDbContext dbContext;
-        private const string numberAscending = "number_asc";
-        private const string numberDescending = "number_desc";
-        private const string dateAscending = "date_asc";
-        private const string dateDescending = "date_desc";
-        private const string tenantsAscending = "tenant_asc";
-        private const string tenantsDescending = "tenant_desc";
-        private const string periodAscending = "period_asc";
-        private const string periodDescending = "period_desc";
-        private const string totalAmountAscending = "amount_asc";
-        private const string totalAmountDescending = "amount_desc";
 
-        public AccountingReportsController(ApplicationDbContext dbContext, IAccontingReportsService accontingReportsService)
+        public AccountingReportsController(ApplicationDbContext dbContext, IAccountingReportsService accontingReportsService)
         {
-            this.accontingReportsService = accontingReportsService;
+            this.accountingReportsService = accontingReportsService;
             this.dbContext = dbContext;
         }
 
@@ -36,9 +33,9 @@
         {
             var tenantsAndPeriods = new TenantsAndPeriodsViewModel
             {
-                Tenants = this.accontingReportsService.GetAllTenantsSelectList(),
-                Periods = this.accontingReportsService.GetAllPeriodsSelectList(),
-                AccountingReports = this.accontingReportsService.GetAllAccountingReports().ToList(),
+                Tenants = this.accountingReportsService.GetAllTenantsSelectList(),
+                Periods = this.accountingReportsService.GetAllPeriodsSelectList(),
+                AccountingReports = this.accountingReportsService.GetAllAccountingReports().ToList(),
             };
 
             return this.View(tenantsAndPeriods);
@@ -47,15 +44,15 @@
         [HttpPost]
         public IActionResult Create(TenantsAndPeriodsViewModel input)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
                 var tenantsAndPeriods = new TenantsAndPeriodsViewModel
                 {
                     Tenant = input.Tenant,
                     Period = input.Period,
-                    Tenants = this.accontingReportsService.GetAllTenantsSelectList(),
-                    Periods = this.accontingReportsService.GetAllPeriodsSelectList(),
-                    AccountingReports = this.accontingReportsService.GetAllAccountingReports().ToList(),
+                    Tenants = this.accountingReportsService.GetAllTenantsSelectList(),
+                    Periods = this.accountingReportsService.GetAllPeriodsSelectList(),
+                    AccountingReports = this.accountingReportsService.GetAllAccountingReports().ToList(),
                 };
 
                 return this.View(tenantsAndPeriods);
@@ -72,36 +69,94 @@
 
         public IActionResult Generate(AccountingReportInputViewModel input)
         {
-            if (!ValidateTenantAndPeriod(input.Tenant, input.Period))
+            if (!this.ValidateTenantAndPeriod(input.Tenant, input.Period))
             {
                 return this.Redirect("/AccountingReports/Create");
             }
 
-            var accountingReport = this.accontingReportsService.GetAccountingReportViewModel(input.Tenant, input.Period);
+            var accountingReport = this.accountingReportsService.GetAccountingReportViewModel(input.Tenant, input.Period);
             var accountingReportJson = JsonConvert.SerializeObject(accountingReport, Formatting.Indented);
 
             return this.View(new AccountingReportWithJson { Json = accountingReportJson, AccountingReport = accountingReport });
         }
 
         [HttpPost]
-        public IActionResult Generate(AccountingReportWithJson input)
+        public async Task<IActionResult> GenerateAsync(AccountingReportWithJson input)
         {
             var accountingReport = JsonConvert.DeserializeObject<AccountingReportViewModel>(input.Json);
-            this.accontingReportsService.GenerateAccountingReport(accountingReport);
+            await this.accountingReportsService.GenerateAccountingReportAsync(accountingReport);
 
             return this.Redirect("/AccountingReports/All");
         }
 
         public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
-            var allAccountingReports = this.accontingReportsService.GetAllAccountingReports();
+            var allAccountingReports = this.accountingReportsService.GetAllAccountingReports();
 
-            allAccountingReports = OrderAccountingReportsAsync(sortOrder, currentFilter, searchString, pageNumber, allAccountingReports);
+            allAccountingReports = this.OrderAccountingReportsAsync(sortOrder, currentFilter, searchString, pageNumber, allAccountingReports);
+            int pageSize = this.GetPageSize(rowsPerPage, allAccountingReports);
 
+            this.ViewData["AllTenants"] = this.accountingReportsService.AlTenants();
+            this.ViewData["AllPeriods"] = this.accountingReportsService.AllPeriods();
+            this.ViewData["RowsPerPage"] = pageSize;
 
+            return this.View(await PaginatedList<AccountingReportListViewModel>.CreateAsync(allAccountingReports.AsNoTracking(), pageNumber ?? 1, pageSize));
+        }
+
+        public IActionResult Details(AccountingReportIdViewModel input)
+        {
+            var accountingReport = this.accountingReportsService.GetAccountingReportById(input.Id);
+
+            return this.View(accountingReport);
+        }
+
+        private IQueryable<AccountingReportListViewModel> OrderAccountingReportsAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<AccountingReportListViewModel> allAccountingReports)
+        {
+            this.ViewData["CurrentSort"] = sortOrder;
+            this.ViewData["NumberSortParm"] = string.IsNullOrEmpty(sortOrder) ? NumberDescending : string.Empty;
+            this.ViewData["DateSortParam"] = sortOrder == DateAscending ? DateDescending : DateAscending;
+            this.ViewData["TenantSortParam"] = sortOrder == TenantsAscending ? TenantsDescending : TenantsAscending;
+            this.ViewData["PeriodSortParam"] = sortOrder == PeriodAscending ? PeriodDescending : PeriodAscending;
+            this.ViewData["TotalAmountSortParam"] = sortOrder == TotalAmountAscending ? TotalAmountDescending : TotalAmountAscending;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            this.ViewData["CurrentFilter"] = searchString;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                allAccountingReports = allAccountingReports.Where(s => s.CompanyName.Contains(searchString)
+                                       || s.Period.Contains(searchString));
+            }
+
+            allAccountingReports = sortOrder switch
+            {
+                NumberDescending => allAccountingReports.OrderByDescending(s => s.Number),
+                DateAscending => allAccountingReports.OrderBy(s => s.CreatedOn),
+                DateDescending => allAccountingReports.OrderByDescending(s => s.CreatedOn),
+                TenantsAscending => allAccountingReports.OrderBy(s => s.CompanyName),
+                TenantsDescending => allAccountingReports.OrderByDescending(s => s.CompanyName),
+                PeriodAscending => allAccountingReports.OrderBy(s => s.Period),
+                PeriodDescending => allAccountingReports.OrderByDescending(s => s.Period),
+                TotalAmountAscending => allAccountingReports.OrderBy(s => s.TotalAmount),
+                TotalAmountDescending => allAccountingReports.OrderByDescending(s => s.TotalAmount),
+                _ => allAccountingReports.OrderBy(s => s.Number),
+            };
+            return allAccountingReports;
+        }
+
+        private int GetPageSize(string rowsPerPage, IQueryable<AccountingReportListViewModel> allAccountingReports)
+        {
             int pageSize;
 
-            if (String.IsNullOrEmpty(rowsPerPage))
+            if (string.IsNullOrEmpty(rowsPerPage))
             {
                 pageSize = 5;
             }
@@ -113,101 +168,20 @@
             {
                 pageSize = int.Parse(rowsPerPage);
             }
-            
 
-            ViewData["AllTenants"] = this.accontingReportsService.AlTenants();
-            ViewData["AllPeriods"] = this.accontingReportsService.AllPeriods();
-            ViewData["RowsPerPage"] = pageSize;
-
-            return View(await PaginatedList<AccountingReportListViewModel>.CreateAsync(allAccountingReports.AsNoTracking(), pageNumber ?? 1, pageSize));
-        }
-
-        private IQueryable<AccountingReportListViewModel> OrderAccountingReportsAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<AccountingReportListViewModel> allAccountingReports)
-        {
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["NumberSortParm"] = String.IsNullOrEmpty(sortOrder) ? numberDescending : "";
-            ViewData["DateSortParam"] = sortOrder == dateAscending ? dateDescending : dateAscending;
-            ViewData["TenantSortParam"] = sortOrder == tenantsAscending ? tenantsDescending : tenantsAscending;
-            ViewData["PeriodSortParam"] = sortOrder == periodAscending ? periodDescending : periodAscending;
-            ViewData["TotalAmountSortParam"] = sortOrder == totalAmountAscending ? totalAmountDescending : totalAmountAscending;
-
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            ViewData["CurrentFilter"] = searchString;
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                allAccountingReports = allAccountingReports.Where(s => s.CompanyName.Contains(searchString)
-                                       || s.Period.Contains(searchString));
-            }
-
-            switch (sortOrder)
-            {
-                case numberDescending:
-                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.Number);
-                    break;
-                case dateAscending:
-                    allAccountingReports = allAccountingReports.OrderBy(s => s.CreatedOn);
-                    break;
-                case dateDescending:
-                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.CreatedOn);
-                    break;
-                case tenantsAscending:
-                    allAccountingReports = allAccountingReports.OrderBy(s => s.CompanyName);
-                    break;
-                case tenantsDescending:
-                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.CompanyName);
-                    break;
-                case periodAscending:
-                    allAccountingReports = allAccountingReports.OrderBy(s => s.Period);
-                    break;
-                case periodDescending:
-                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.Period);
-                    break;
-                case totalAmountAscending:
-                    allAccountingReports = allAccountingReports.OrderBy(s => s.TotalAmount);
-                    break;
-                case totalAmountDescending:
-                    allAccountingReports = allAccountingReports.OrderByDescending(s => s.TotalAmount);
-                    break;
-                default:
-                    allAccountingReports = allAccountingReports.OrderBy(s => s.Number);
-                    break;
-            }
-            return allAccountingReports;
-        }
-
-
-
-
-
-
-
-
-        public IActionResult Details(AccountingReportIdViewModel input)
-        {
-            var accountingReport = this.accontingReportsService.GetAccountingReportById(input.Id);
-
-            return this.View(accountingReport);
+            return pageSize;
         }
 
         private bool ValidateTenantAndPeriod(string tenant, string period)
         {
-            var AccountingReports = this.accontingReportsService.GetAllAccountingReports().ToList();
-            if (AccountingReports != null)
+            var accountingReports = this.accountingReportsService.GetAllAccountingReports().ToList();
+            if (accountingReports != null)
             {
-                var MatchingAccountingReports = AccountingReports.Any(x => x.CompanyName == tenant && x.Period == period);
-                var ExistingTenant = this.dbContext.Tenants.Any(x => x.CompanyName == tenant);
-                var ExistingPeriod = this.dbContext.ElectricityMeasurements.Any(x => x.Period == period);
+                var matchingAccountingReports = accountingReports.Any(x => x.CompanyName == tenant && x.Period == period);
+                var existingTenant = this.dbContext.Tenants.Any(x => x.CompanyName == tenant);
+                var existingPeriod = this.dbContext.ElectricityMeasurements.Any(x => x.Period == period);
 
-                if (MatchingAccountingReports || !ExistingTenant || !ExistingPeriod)
+                if (matchingAccountingReports || !existingTenant || !existingPeriod)
                 {
                     return false;
                 }

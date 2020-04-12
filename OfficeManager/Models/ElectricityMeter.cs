@@ -21,6 +21,7 @@
         public decimal PowerSupply { get; set; }
 
         public int? OfficeId { get; set; }
+
         public virtual Office Office { get; set; }
 
         public virtual ICollection<ElectricityMeasurement> ElectricityMeasurements { get; set; }

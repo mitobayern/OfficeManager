@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using OfficeManager.Areas.Administration.ViewModels.PricesInformation;
-using OfficeManager.ViewModels.AccountingReports;
-using OfficeManager.ViewModels.Measurements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OfficeManager.Services
+﻿namespace OfficeManager.Services
 {
-    public interface IAccontingReportsService
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using OfficeManager.ViewModels.AccountingReports;
+    using OfficeManager.ViewModels.Measurements;
+
+    public interface IAccountingReportsService
     {
+        Task GenerateAccountingReportAsync(AccountingReportViewModel accountingReport);
+
         List<SelectListItem> GetAllPeriodsSelectList();
 
         List<SelectListItem> GetAllTenantsSelectList();
@@ -24,8 +24,6 @@ namespace OfficeManager.Services
         TenantTemperatureConsummationViewModel GetTenantTemperatureConsummationByPeriod(string tenantCompanyName, string period);
 
         decimal AmountForElectricity(TenantElectricityConsummationViewModel tenantElectricityConsummation);
-
-        void GenerateAccountingReport(AccountingReportViewModel accountingReport);
 
         IQueryable<AccountingReportListViewModel> GetAllAccountingReports();
 
