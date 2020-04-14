@@ -17,6 +17,11 @@
 
         public async Task CreateLandlordAsync(CreateLandlordViewModel input)
         {
+            if (this.dbContext.Landlords.Count() == 1)
+            {
+                return;
+            }
+
             Landlord landlord = new Landlord()
             {
                 CompanyName = input.LandlordName,

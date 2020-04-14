@@ -186,11 +186,13 @@
                     this.temperatureMetersService.Object);
 
                 await AddOfficesToTenantAsync(this.inputTenant, tenants, officesService);
+
                 await officesService.AddOfficesToTenantAsync(1, offices);
+                var officesCount = dbContext.Offices.Count();
                 availableOfficesCount = officesService.GetAllAvailableOffices().Count();
             }
 
-            Assert.Equal(1, availableOfficesCount);
+            Assert.Equal(3, availableOfficesCount);
         }
 
         [Fact]
