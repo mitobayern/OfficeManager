@@ -1,37 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
-using OfficeManager.Data;
-using OfficeManager.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xunit;
-
-namespace OfficeManager.Tests.TemperatureMetersTests
+﻿namespace OfficeManager.Tests.TemperatureMetersTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
+    using OfficeManager.Data;
+    using OfficeManager.Services;
+    using Xunit;
+
     public class TemperatureMetersServiceTests
     {
         [Fact]
-        public void TestIfTemperatureMeterIsCreatedCorrectly()
+        public async Task TestIfTemperatureMeterIsCreatedCorrectlyAsync()
         {
             int actualTemperatureMetersCount;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITemperatureMetersService temperatureMetersService = new TemperatureMetersService(dbContext);
 
-                temperatureMetersService.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                {
-                    Name = "TestName1"                    
-                });
+                await temperatureMetersService.CreateTemperatureMeterAsync("TestName1");
 
                 for (int i = 0; i < 3; i++)
                 {
-                    temperatureMetersService.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                    {
-                        Name = "TestName2"
-                    });
+                    await temperatureMetersService.CreateTemperatureMeterAsync("TestName2");
                 }
 
                 actualTemperatureMetersCount = dbContext.TemperatureMeters.Count();
@@ -41,22 +35,20 @@ namespace OfficeManager.Tests.TemperatureMetersTests
         }
 
         [Fact]
-        public void TestIfAllTemperatureMetersAreReturnedCorrectrly()
+        public async Task TestIfAllTemperatureMetersAreReturnedCorrectrlyAsync()
         {
             string names = string.Empty;
             List<TemperatureMeterOutputViewModel> temperatureMeters = new List<TemperatureMeterOutputViewModel>();
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITemperatureMetersService temperatureMetersService = new TemperatureMetersService(dbContext);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    temperatureMetersService.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                    {
-                        Name = i.ToString(),
-                    });
+                    await temperatureMetersService.CreateTemperatureMeterAsync(i.ToString());
                 }
+
                 temperatureMeters = temperatureMetersService.GetAllTemperatureMeters().ToList();
             }
 
@@ -70,20 +62,17 @@ namespace OfficeManager.Tests.TemperatureMetersTests
         }
 
         [Fact]
-        public void TestIfGetTemperatreMeterByIdWorksCorrectly()
+        public async Task TestIfGetTemperatreMeterByIdWorksCorrectlyAsync()
         {
             string temperatureMeterName = string.Empty;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITemperatureMetersService temperatureMetersService = new TemperatureMetersService(dbContext);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    temperatureMetersService.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                    {
-                        Name = "Test" + i.ToString(),
-                    });
+                    await temperatureMetersService.CreateTemperatureMeterAsync("Test" + i.ToString());
                 }
 
                 temperatureMeterName = temperatureMetersService.GetTemperatureMeterById(2).Name;
@@ -93,20 +82,17 @@ namespace OfficeManager.Tests.TemperatureMetersTests
         }
 
         [Fact]
-        public void TestIfGetTemperatureMeterByNameWorksCorrectly()
+        public async Task TestIfGetTemperatureMeterByNameWorksCorrectlyAsync()
         {
             string temperatureMeterName = string.Empty;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITemperatureMetersService temperatureMetersService = new TemperatureMetersService(dbContext);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    temperatureMetersService.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                    {
-                        Name = "Test" + i.ToString()
-                    });
+                    await temperatureMetersService.CreateTemperatureMeterAsync("Test" + i.ToString());
                 }
 
                 temperatureMeterName = temperatureMetersService.GetTemperatureMeterByName("Test2").Name;
@@ -116,26 +102,16 @@ namespace OfficeManager.Tests.TemperatureMetersTests
         }
 
         [Fact]
-        public void TestIfTemperatureMeterIsUpdatedCorrectrly()
+        public async Task TestIfTemperatureMeterIsUpdatedCorrectrlyAsync()
         {
             string temperatureMeterName;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITemperatureMetersService temperatureMetersService = new TemperatureMetersService(dbContext);
 
-                temperatureMetersService.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                {
-                    Name = "TestName1"
-                });
-
-                EditTemperatreMeterViewModel temperatureMeterToUpdate = new EditTemperatreMeterViewModel
-                {
-                    Id = 1,
-                    Name = "Updated"
-                };
-
-                temperatureMetersService.UpdateTemperatureMeterAsync(temperatureMeterToUpdate);
+                await temperatureMetersService.CreateTemperatureMeterAsync("TestName1");
+                await temperatureMetersService.UpdateTemperatureMeterAsync(1, "Updated");
                 temperatureMeterName = temperatureMetersService.GetTemperatureMeterByName("Updated").Name;
             }
 
@@ -143,19 +119,16 @@ namespace OfficeManager.Tests.TemperatureMetersTests
         }
 
         [Fact]
-        public void TestIfEditTemperatreMeterWorksCorrectly()
+        public async Task TestIfEditTemperatreMeterWorksCorrectlyAsync()
         {
             EditTemperatreMeterViewModel temperatureMeterToEdit = new EditTemperatreMeterViewModel();
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITemperatureMetersService temperatureMetersService = new TemperatureMetersService(dbContext);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    temperatureMetersService.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                    {
-                        Name = "Test" + i.ToString(),
-                    });
+                    await temperatureMetersService.CreateTemperatureMeterAsync("Test" + i.ToString());
                 }
 
                 temperatureMeterToEdit = temperatureMetersService.EditTemperatureMeter(2);
