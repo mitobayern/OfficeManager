@@ -1,0 +1,46 @@
+﻿@using OfficeManager.Areas.Administration.ViewModels.Users
+@model List<UserViewModel>
+
+@{
+    ViewData["Title"] = "All Users";
+}
+
+<h1 class="display-4" style="margin: 2%; text-align: center;">All Users</h1>
+<div style="padding: 5%;">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">
+                    User Name
+                </th>
+                <th scope="col" colspan="2">
+                    Role
+                </th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Role</td>
+                @if (@user.Role != "Admin")
+                {
+                    <td>
+                        <div class="button-holder text-right">
+                            <a style="font-size:small"
+                               asp-action="Promote"
+                               asp-route-userName="@user.UserName">
+                                Make Admin
+                            </a>
+                        </div>
+                    </td>
+                }
+
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -56,6 +56,8 @@ namespace OfficeManager
             services.AddTransient<IMeasurementsService, MeasurementsService>();
             services.AddTransient<IPricesInformationService, PricesInformationService>();
             services.AddTransient<IAccountingReportsService, AccountingReportsService>();
+            services.AddScoped<IViewRenderService, ViewRenderService>();
+            services.AddScoped<IHtmlToPdfConverter, HtmlToPdfConverter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

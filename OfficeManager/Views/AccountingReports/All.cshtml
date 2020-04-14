@@ -112,6 +112,9 @@
                         <div class="button-holder text-right">
                             <a href="/AccountingReports/Details?id=@accountingReport.Id" class="btn btn-primary">View</a>
                         </div>
+                        <div class="button-holder text-right">
+                            <a asp-action="GetPdf" asp-route-id="@accountingReport.Id" class="btn btn-primary">GetPDF</a>
+                        </div>
                     </td>
                 </tr>
             }

@@ -2,6 +2,7 @@
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Newtonsoft.Json;
@@ -21,11 +22,22 @@
         private const string TotalAmountAscending = "amount_asc";
         private const string TotalAmountDescending = "amount_desc";
         private readonly IAccountingReportsService accountingReportsService;
+        private readonly IViewRenderService viewRenderService;
+        private readonly IHtmlToPdfConverter htmlToPdfConverter;
+        private readonly IHostingEnvironment environment;
         private readonly ApplicationDbContext dbContext;
 
-        public AccountingReportsController(ApplicationDbContext dbContext, IAccountingReportsService accontingReportsService)
+        public AccountingReportsController(
+            ApplicationDbContext dbContext,
+            IAccountingReportsService accontingReportsService,
+            IViewRenderService viewRenderService,
+            IHtmlToPdfConverter htmlToPdfConverter,
+            IHostingEnvironment environment)
         {
             this.accountingReportsService = accontingReportsService;
+            this.viewRenderService = viewRenderService;
+            this.htmlToPdfConverter = htmlToPdfConverter;
+            this.environment = environment;
             this.dbContext = dbContext;
         }
 
@@ -108,6 +120,16 @@
             var accountingReport = this.accountingReportsService.GetAccountingReportById(input.Id);
 
             return this.View(accountingReport);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPdf(int id)
+        {
+            var accountingReport = this.accountingReportsService.GetAccountingReportById(id);
+
+            var htmlData = await this.viewRenderService.RenderToStringAsync("~/Views/AccountingReports/Details.cshtml", accountingReport);
+            var fileContents = this.htmlToPdfConverter.Convert(this.environment.ContentRootPath, htmlData);
+            return this.File(fileContents, "application/pdf");
         }
 
         private IQueryable<AccountingReportListViewModel> OrderAccountingReportsAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<AccountingReportListViewModel> allAccountingReports)
