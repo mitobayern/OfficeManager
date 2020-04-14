@@ -1,44 +1,42 @@
 ﻿namespace OfficeManager.Tests.LandlolrdsTests
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
+    using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
     using OfficeManager.Areas.Administration.ViewModels.Landlords;
     using OfficeManager.Data;
-    using OfficeManager.Models;
     using OfficeManager.Services;
     using Xunit;
 
     public class LandlordsServiceTests
     {
-        private CreateLandlordViewModel landlord;
+        private readonly CreateLandlordViewModel landlord;
 
         public LandlordsServiceTests()
         {
-            landlord = new CreateLandlordViewModel
+            this.landlord = new CreateLandlordViewModel
             {
                 LandlordName = "TestCompanyName",
                 LandlordOwner = "TestCompanyOwner",
                 Bulstat = "TestBulstat",
                 Address = "TestAddress",
                 Email = "Test@email.com",
-                Phone = "0888888888"
+                Phone = "0888888888",
             };
         }
 
         [Fact]
-        public void TestIfLandlordCreatedCorrectly()
+        public async Task TestIfLandlordCreatedCorrectlyAsync()
         {
             int actualLandlordsCount;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ILandlordsService landlordsService = new LandlordsService(dbContext);
 
-                landlordsService.CreateLandlordAsync(this.landlord);
-                landlordsService.CreateLandlordAsync(this.landlord);
+                await landlordsService.CreateLandlordAsync(this.landlord);
+                await landlordsService.CreateLandlordAsync(this.landlord);
 
                 actualLandlordsCount = dbContext.Landlords.Count();
             }
@@ -47,23 +45,24 @@
         }
 
         [Fact]
-        public void TestIfLandlordIsReturnedCorrectrly()
+        public async Task TestIfLandlordIsReturnedCorrectrlyAsync()
         {
             string landlordName;
             string landlordOwner;
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ILandlordsService landlordsService = new LandlordsService(dbContext);
-                landlordsService.CreateLandlordAsync(this.landlord);
+                await landlordsService.CreateLandlordAsync(this.landlord);
                 landlordName = landlordsService.GetLandlord().LandlordName;
                 landlordOwner = landlordsService.GetLandlord().LandlordOwner;
             }
+
             Assert.Equal("TestCompanyName", landlordName);
             Assert.Equal("TestCompanyOwner", landlordOwner);
         }
 
         [Fact]
-        public void TestIfLandlordIsUpdatedCorrectrly()
+        public async Task TestIfLandlordIsUpdatedCorrectrlyAsync()
         {
             var landlordToUpdate = new CreateLandlordViewModel
             {
@@ -72,17 +71,17 @@
                 Bulstat = "UpdateBulstat",
                 Address = "UpdateAddress",
                 Email = "Update@email.com",
-                Phone = "0888888888"
+                Phone = "0888888888",
             };
 
             string landlordName;
             string landlordOwner;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ILandlordsService landlordsService = new LandlordsService(dbContext);
-                landlordsService.CreateLandlordAsync(this.landlord);
-                landlordsService.UpdateLandlordAsync(landlordToUpdate);
+                await landlordsService.CreateLandlordAsync(this.landlord);
+                await landlordsService.UpdateLandlordAsync(landlordToUpdate);
                 landlordName = landlordsService.GetLandlord().LandlordName;
                 landlordOwner = landlordsService.GetLandlord().LandlordOwner;
             }
