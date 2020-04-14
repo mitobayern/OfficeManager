@@ -1,28 +1,45 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OfficeManager.Areas.Administration.ViewModels.Tenants;
-using OfficeManager.Data;
-using OfficeManager.Models;
-using OfficeManager.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xunit;
-
-namespace OfficeManager.Tests.TenantsTests
+﻿namespace OfficeManager.Tests.TenantsTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using OfficeManager.Areas.Administration.ViewModels.Tenants;
+    using OfficeManager.Data;
+    using OfficeManager.Models;
+    using OfficeManager.Services;
+    using Xunit;
+
     public class TenantsServiceTests
     {
+        private readonly CreateTenantViewModel tenantViewModel;
+
+        public TenantsServiceTests()
+        {
+            this.tenantViewModel = new CreateTenantViewModel
+            {
+                CompanyName = "TestCompanyName",
+                CompanyOwner = "TestCompanyOwner",
+                Bulstat = "123456789",
+                Address = "TestAddress",
+                Email = "test@email.com",
+                Phone = "0888888888",
+                StartOfContract = DateTime.UtcNow,
+            };
+        }
+
         [Fact]
-        public void TestIfTenantIsCreatedCorrectly()
+        public async Task TestIfTenantIsCreatedCorrectlyAsync()
         {
             int actualTenantsCount;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
 
-                tenantsService.CreateTenantAsync(new CreateTenantViewModel
+                await tenantsService.CreateTenantAsync(new CreateTenantViewModel
                 {
                     CompanyName = "FirstTestCompanyName",
                     CompanyOwner = "TestCompanyOwner",
@@ -35,7 +52,7 @@ namespace OfficeManager.Tests.TenantsTests
 
                 for (int i = 0; i < 3; i++)
                 {
-                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
+                    await tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = "SecondTestCompanyName",
                         CompanyOwner = "TestCompanyOwner",
@@ -54,18 +71,18 @@ namespace OfficeManager.Tests.TenantsTests
         }
 
         [Fact]
-        public void TestIfAllTenantsAreReturnedCorrectrly()
+        public async Task TestIfAllTenantsAreReturnedCorrectrlyAsync()
         {
             string names = string.Empty;
             List<TenantOutputViewModel> allTenants = new List<TenantOutputViewModel>();
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
+                    await tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = i.ToString(),
                         CompanyOwner = "TestCompanyOwner",
@@ -76,6 +93,7 @@ namespace OfficeManager.Tests.TenantsTests
                         StartOfContract = DateTime.UtcNow,
                     });
                 }
+
                 allTenants = tenantsService.GetAllTenants().ToList();
             }
 
@@ -89,16 +107,16 @@ namespace OfficeManager.Tests.TenantsTests
         }
 
         [Fact]
-        public void TestIfGetTenantByIdReturnsCorrectrly()
+        public async Task TestIfGetTenantByIdReturnsCorrectrlyAsync()
         {
             string companyName;
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
+                    await tenantsService.CreateTenantAsync(new CreateTenantViewModel
                     {
                         CompanyName = i.ToString(),
                         CompanyOwner = "TestCompanyOwner",
@@ -109,6 +127,7 @@ namespace OfficeManager.Tests.TenantsTests
                         StartOfContract = DateTime.UtcNow,
                     });
                 }
+
                 companyName = tenantsService.GetTenantById(2).CompanyName;
             }
 
@@ -116,37 +135,29 @@ namespace OfficeManager.Tests.TenantsTests
         }
 
         [Fact]
-        public void TestIfGetTenantByCompanyNameReturnsCorrectrly()
+        public async Task TestIfGetTenantByCompanyNameReturnsCorrectrlyAsync()
         {
             string companyOwner;
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
                 {
-                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
-                    {
-                        CompanyName = "TestCompanyName",
-                        CompanyOwner = "TestCompanyOwner",
-                        Bulstat = "123456789",
-                        Address = "TestAddress",
-                        Email = "test@email.com",
-                        Phone = "0888888888",
-                        StartOfContract = DateTime.UtcNow,
-                    });
+                    await tenantsService.CreateTenantAsync(this.tenantViewModel);
                 }
+
                 companyOwner = tenantsService.GetTenantByCompanyName("TestCompanyName").CompanyOwner;
             }
 
             Assert.Equal("TestCompanyOwner", companyOwner);
         }
-        
+
         [Theory]
         [InlineData("123456789")]
         [InlineData("BG123456789")]
         public void TestIfGetTenantEIKReturnsCorrectrly(string bulstat)
         {
             string eik;
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
                 {
@@ -161,6 +172,7 @@ namespace OfficeManager.Tests.TenantsTests
                         StartOfContract = DateTime.UtcNow,
                     });
                 }
+
                 eik = tenantsService.GetTenantEIK("TestCompanyName");
             }
 
@@ -168,23 +180,14 @@ namespace OfficeManager.Tests.TenantsTests
         }
 
         [Fact]
-        public void TestIfTenantOfficesAreReturnedCorrectrly()
+        public async Task TestIfTenantOfficesAreReturnedCorrectrlyAsync()
         {
             int numberOfOffices;
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
                 {
-                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
-                    {
-                        CompanyName = "TestCompanyName",
-                        CompanyOwner = "TestCompanyOwner",
-                        Bulstat = "123456789",
-                        Address = "TestAddress",
-                        Email = "test@email.com",
-                        Phone = "0888888888",
-                        StartOfContract = DateTime.UtcNow,
-                    });
+                    await tenantsService.CreateTenantAsync(this.tenantViewModel);
                     var tenant = tenantsService.GetTenantByCompanyName("TestCompanyName");
                     for (int i = 1; i <= 3; i++)
                     {
@@ -196,7 +199,8 @@ namespace OfficeManager.Tests.TenantsTests
                         };
                         tenant.Offices.Add(office);
                     }
-                    dbContext.SaveChanges();
+
+                    await dbContext.SaveChangesAsync();
 
                     numberOfOffices = tenantsService.GetTenantOffices(new TenantIdViewModel { Id = 1 }).Count();
                 }
@@ -206,17 +210,17 @@ namespace OfficeManager.Tests.TenantsTests
         }
 
         [Fact]
-        public void TestIfTenantOfficesAsTextWithMoreThanOneOfficeAreReturnedCorrectrly()
+        public async Task TestIfTenantOfficesAsTextWithMoreThanOneOfficeAreReturnedCorrectrlyAsync()
         {
             string actualResultSingleOffice;
             string actualResultМanyOffices;
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 ITenantsService tenantsService = new TenantsService(dbContext);
                 {
                     for (int i = 1; i <= 2; i++)
                     {
-                        tenantsService.CreateTenantAsync(new CreateTenantViewModel
+                        await tenantsService.CreateTenantAsync(new CreateTenantViewModel
                         {
                             CompanyName = i.ToString(),
                             CompanyOwner = "TestCompanyOwner",
@@ -226,6 +230,7 @@ namespace OfficeManager.Tests.TenantsTests
                             Phone = "0888888888",
                             StartOfContract = DateTime.UtcNow,
                         });
+
                         var tenant = tenantsService.GetTenantByCompanyName(i.ToString());
                         if (i == 1)
                         {
@@ -250,82 +255,72 @@ namespace OfficeManager.Tests.TenantsTests
                             };
                             tenant.Offices.Add(office);
                         }
-                        dbContext.SaveChanges();
+
+                        await dbContext.SaveChangesAsync();
                     }
+
                     actualResultМanyOffices = tenantsService.GetTenantOfficesAsText("1");
                     actualResultSingleOffice = tenantsService.GetTenantOfficesAsText("2");
                 }
             }
+
             Assert.Equal("офиси 1, 2 и 3", actualResultМanyOffices);
             Assert.Equal("офис Единствен", actualResultSingleOffice);
         }
 
         [Fact]
-        public void TestIfTenantIsUpdatedCorrectrly()
+        public async Task TestIfTenantIsUpdatedCorrectrlyAsync()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITenantsService tenantsService = new TenantsService(dbContext);
             {
-                ITenantsService tenantsService = new TenantsService(dbContext);
+                await tenantsService.CreateTenantAsync(this.tenantViewModel);
+                await dbContext.SaveChangesAsync();
+
+                await tenantsService.UpdateTenantAsync(new TenantToEditViewModel
                 {
-                    tenantsService.CreateTenantAsync(new CreateTenantViewModel
-                    {
-                        CompanyName = "TestCompanyName",
-                        CompanyOwner = "TestCompanyOwner",
-                        Bulstat = "123456789",
-                        Address = "TestAddress",
-                        Email = "test@email.com",
-                        Phone = "0888888888",
-                        StartOfContract = DateTime.UtcNow,
-                    });                    
-                    dbContext.SaveChanges();
+                    Id = 1,
+                    CompanyName = "UpdatedCompanyName",
+                    CompanyOwner = "UpdatedCompanyOwner",
+                    Bulstat = "987654321",
+                    Address = "UpdatedAddress",
+                    Email = "Updated@email.com",
+                    Phone = "0999999999",
+                    StartOfContract = DateTime.UtcNow,
+                });
 
-                    tenantsService.UpdateTenantAsync(new TenantToEditViewModel
-                    {
-                        Id = 1,
-                        CompanyName = "UpdatedCompanyName",
-                        CompanyOwner = "UpdatedCompanyOwner",
-                        Bulstat = "987654321",
-                        Address = "UpdatedAddress",
-                        Email = "Updated@email.com",
-                        Phone = "0999999999",
-                        StartOfContract = DateTime.UtcNow,
-                    });
-
-                    Assert.Equal("UpdatedCompanyName", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").CompanyName);
-                    Assert.Equal("UpdatedCompanyOwner", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").CompanyOwner);
-                    Assert.Equal("987654321", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").Bulstat);
-                    Assert.Equal("UpdatedAddress", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").Address);
-                    Assert.Equal("Updated@email.com", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").Email);
-                    Assert.Equal("0999999999", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").Phone);
-                }
+                Assert.Equal("UpdatedCompanyName", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").CompanyName);
+                Assert.Equal("UpdatedCompanyOwner", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").CompanyOwner);
+                Assert.Equal("987654321", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").Bulstat);
+                Assert.Equal("UpdatedAddress", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").Address);
+                Assert.Equal("Updated@email.com", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").Email);
+                Assert.Equal("0999999999", tenantsService.GetTenantByCompanyName("UpdatedCompanyName").Phone);
             }
         }
 
         [Fact]
         public void TestIfTenantIReturnedForEditionCorrectrly()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITenantsService tenantsService = new TenantsService(dbContext);
             {
-                ITenantsService tenantsService = new TenantsService(dbContext);
+                var tenantToEdit = tenantsService.EditTenant(new Tenant
                 {
-                    var tenantToEdit = tenantsService.EditTenant(new Tenant
-                    {
-                        CompanyName = "TestCompanyName",
-                        CompanyOwner = "TestCompanyOwner",
-                        Bulstat = "123456789",
-                        Address = "TestAddress",
-                        Email = "test@email.com",
-                        Phone = "0888888888",
-                        StartOfContract = DateTime.UtcNow,
-                    });
+                    CompanyName = "TestCompanyName",
+                    CompanyOwner = "TestCompanyOwner",
+                    Bulstat = "123456789",
+                    Address = "TestAddress",
+                    Email = "test@email.com",
+                    Phone = "0888888888",
+                    StartOfContract = DateTime.UtcNow,
+                });
 
-                    Assert.Equal("TestCompanyName", tenantToEdit.CompanyName);
-                    Assert.Equal("TestCompanyOwner", tenantToEdit.CompanyOwner);
-                    Assert.Equal("123456789", tenantToEdit.Bulstat);
-                    Assert.Equal("TestAddress", tenantToEdit.Address);
-                    Assert.Equal("test@email.com", tenantToEdit.Email);
-                    Assert.Equal("0888888888", tenantToEdit.Phone);
-                }
+                Assert.Equal("TestCompanyName", tenantToEdit.CompanyName);
+                Assert.Equal("TestCompanyOwner", tenantToEdit.CompanyOwner);
+                Assert.Equal("123456789", tenantToEdit.Bulstat);
+                Assert.Equal("TestAddress", tenantToEdit.Address);
+                Assert.Equal("test@email.com", tenantToEdit.Email);
+                Assert.Equal("0888888888", tenantToEdit.Phone);
             }
         }
 
