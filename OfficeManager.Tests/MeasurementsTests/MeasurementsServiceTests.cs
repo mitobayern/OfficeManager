@@ -1,19 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moq;
-using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters;
-using OfficeManager.Areas.Administration.ViewModels.Offices;
-using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
-using OfficeManager.Data;
-using OfficeManager.Services;
-using OfficeManager.ViewModels.Measurements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xunit;
-
-namespace OfficeManager.Tests.MeasurementsTests
+﻿namespace OfficeManager.Tests.MeasurementsTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using Moq;
+    using OfficeManager.Data;
+    using OfficeManager.Services;
+    using OfficeManager.ViewModels.Measurements;
+    using Xunit;
+
     public class MeasurementsServiceTests
     {
         private readonly DateTime periodStartTime;
@@ -24,8 +21,6 @@ namespace OfficeManager.Tests.MeasurementsTests
         private readonly decimal nightTimeMeasurement;
         private readonly decimal heatingMeasurement;
         private readonly decimal coolingMeasurement;
-
-
         private Mock<ITenantsService> tenantsService;
         private Mock<IElectricityMetersService> electricityMetersService;
         private Mock<ITemperatureMetersService> temperatureMetersService;
@@ -40,226 +35,215 @@ namespace OfficeManager.Tests.MeasurementsTests
             this.nightTimeMeasurement = 20M;
             this.heatingMeasurement = 30M;
             this.coolingMeasurement = 40M;
-
             this.tenantsService = new Mock<ITenantsService>();
             this.electricityMetersService = new Mock<IElectricityMetersService>();
             this.temperatureMetersService = new Mock<ITemperatureMetersService>();
         }
 
         [Fact]
-        public void TestIfElectricityMeasurementsAreCreatedCorrectly()
+        public async Task TestIfElectricityMeasurementsAreCreatedCorrectlyAsync()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
-            {
-                IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
 
-                IMeasurementsService measurementsService =
-                    new MeasurementsService(dbContext, electricityMeters, temperatureMetersService.Object, tenantsService.Object);
+            IMeasurementsService measurementsService =
+                new MeasurementsService(dbContext, electricityMeters, this.temperatureMetersService.Object);
 
-                electricityMeters.CreateElectricityMeter(new CreateElectricityMeterViewModel
-                {
-                    Name = electricityMeterName,
-                    PowerSupply = 10M,
-                });
+            await electricityMeters.CreateElectricityMeterAsync(this.electricityMeterName, 10M);
+            await measurementsService.CreateElectricityMeasurementAsync(
+                this.periodStartTime,
+                this.periodEndTime,
+                this.electricityMeterName,
+                this.dayTimeMeasurement,
+                this.nightTimeMeasurement);
 
-                measurementsService.CreateElectricityMeasurementAsync(periodStartTime, periodEndTime, electricityMeterName, dayTimeMeasurement, nightTimeMeasurement);
-                var countOfMeasurements = electricityMeters.GetElectricityMeterByName(electricityMeterName).ElectricityMeasurements.Count();
-                string period = electricityMeters.GetElectricityMeterById(1).ElectricityMeasurements.FirstOrDefault().Period;
-                Assert.Equal("1 януари - 31 януари 2020 г.", period);
-                Assert.Equal(1, dbContext.ElectricityMeasurements.Count());
-                Assert.Equal(1, countOfMeasurements);
-            }
+            var countOfMeasurements = electricityMeters.GetElectricityMeterByName(this.electricityMeterName).ElectricityMeasurements.Count();
+            string period = electricityMeters.GetElectricityMeterById(1).ElectricityMeasurements.FirstOrDefault().Period;
+            Assert.Equal("1 януари - 31 януари 2020 г.", period);
+            Assert.Equal(1, dbContext.ElectricityMeasurements.Count());
+            Assert.Equal(1, countOfMeasurements);
         }
 
         [Fact]
-        public void TestIfInitialElectricityMeasurementsAreCreatedCorrectly()
+        public async Task TestIfInitialElectricityMeasurementsAreCreatedCorrectlyAsync()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
-            {
-                IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
 
-                IMeasurementsService measurementsService =
-                    new MeasurementsService(dbContext, electricityMeters, temperatureMetersService.Object, tenantsService.Object);
+            IMeasurementsService measurementsService =
+               new MeasurementsService(dbContext, electricityMeters, this.temperatureMetersService.Object);
 
-                electricityMeters.CreateElectricityMeter(new CreateElectricityMeterViewModel
-                {
-                    Name = electricityMeterName,
-                    PowerSupply = 10M,
-                });
+            await electricityMeters.CreateElectricityMeterAsync(this.electricityMeterName, 10M);
+            await measurementsService.CreateInitialElectricityMeasurementAsync(
+                this.periodEndTime,
+                this.electricityMeterName,
+                this.dayTimeMeasurement,
+                this.nightTimeMeasurement);
 
-                measurementsService.CreateInitialElectricityMeasurementAsync(periodEndTime, electricityMeterName, dayTimeMeasurement, nightTimeMeasurement);
-                var countOfMeasurements = electricityMeters.GetElectricityMeterByName(electricityMeterName).ElectricityMeasurements.Count();
-                string period = electricityMeters.GetElectricityMeterById(1).ElectricityMeasurements.FirstOrDefault().Period;
-                Assert.Equal("Starting period 31 януари 2020 г.", period);
-                Assert.Equal(1, dbContext.ElectricityMeasurements.Count());
-                Assert.Equal(1, countOfMeasurements);
-            }
+            var countOfMeasurements = electricityMeters.GetElectricityMeterByName(this.electricityMeterName).ElectricityMeasurements.Count();
+            string period = electricityMeters.GetElectricityMeterById(1).ElectricityMeasurements.FirstOrDefault().Period;
+            Assert.Equal("Starting period 31 януари 2020 г.", period);
+            Assert.Equal(1, dbContext.ElectricityMeasurements.Count());
+            Assert.Equal(1, countOfMeasurements);
         }
 
         [Fact]
-        public void TestIfTemperatureMeasurementsAreCreatedCorrectly()
+        public async Task TestIfTemperatureMeasurementsAreCreatedCorrectlyAsync()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
-            {
-                ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
 
-                IMeasurementsService measurementsService =
-                    new MeasurementsService(dbContext, electricityMetersService.Object, temperatureMeters, tenantsService.Object);
+            IMeasurementsService measurementsService =
+                new MeasurementsService(dbContext, this.electricityMetersService.Object, temperatureMeters);
 
-                temperatureMeters.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                {
-                    Name = temperatureMeterName
-                });
+            await temperatureMeters.CreateTemperatureMeterAsync(this.temperatureMeterName);
+            await measurementsService.CreateTemperatureMeasurementAsync(
+                this.periodStartTime,
+                this.periodEndTime,
+                this.temperatureMeterName,
+                this.heatingMeasurement,
+                this.coolingMeasurement);
 
-                measurementsService.CreateTemperatureMeasurementAsync(periodStartTime, periodEndTime, temperatureMeterName, heatingMeasurement, coolingMeasurement);
-
-                var countOfMeasurements = temperatureMeters.GetTemperatureMeterByName(temperatureMeterName).TemperatureMeasurements.Count();
-                string period = temperatureMeters.GetTemperatureMeterById(1).TemperatureMeasurements.FirstOrDefault().Period;
-                Assert.Equal("1 януари - 31 януари 2020 г.", period);
-                Assert.Equal(1, dbContext.TemperatureMeasurements.Count());
-                Assert.Equal(1, countOfMeasurements);
-            }
+            var countOfMeasurements = temperatureMeters.GetTemperatureMeterByName(this.temperatureMeterName).TemperatureMeasurements.Count();
+            string period = temperatureMeters.GetTemperatureMeterById(1).TemperatureMeasurements.FirstOrDefault().Period;
+            Assert.Equal("1 януари - 31 януари 2020 г.", period);
+            Assert.Equal(1, dbContext.TemperatureMeasurements.Count());
+            Assert.Equal(1, countOfMeasurements);
         }
 
         [Fact]
-        public void TestIfInitialTemperatureMeasurementsAreCreatedCorrectly()
+        public async Task TestIfInitialTemperatureMeasurementsAreCreatedCorrectlyAsync()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
-            {
-                ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
 
-                IMeasurementsService measurementsService =
-                    new MeasurementsService(dbContext, electricityMetersService.Object, temperatureMeters, tenantsService.Object);
+            IMeasurementsService measurementsService =
+                new MeasurementsService(dbContext, this.electricityMetersService.Object, temperatureMeters);
 
-                temperatureMeters.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                {
-                    Name = temperatureMeterName
-                });
+            await temperatureMeters.CreateTemperatureMeterAsync(this.temperatureMeterName);
+            await measurementsService.CreateInitialTemperatureMeasurementAsync(
+                this.periodEndTime,
+                this.temperatureMeterName,
+                this.heatingMeasurement,
+                this.coolingMeasurement);
 
-                measurementsService.CreateInitialTemperatureMeasurementAsync(periodEndTime, temperatureMeterName, heatingMeasurement, coolingMeasurement);
-
-                var countOfMeasurements = temperatureMeters.GetTemperatureMeterByName(temperatureMeterName).TemperatureMeasurements.Count();
-                string period = temperatureMeters.GetTemperatureMeterById(1).TemperatureMeasurements.FirstOrDefault().Period;
-                Assert.Equal("Starting period 31 януари 2020 г.", period);
-                Assert.Equal(1, dbContext.TemperatureMeasurements.Count());
-                Assert.Equal(1, countOfMeasurements);
-            }
+            var countOfMeasurements = temperatureMeters.GetTemperatureMeterByName(this.temperatureMeterName).TemperatureMeasurements.Count();
+            string period = temperatureMeters.GetTemperatureMeterById(1).TemperatureMeasurements.FirstOrDefault().Period;
+            Assert.Equal("Starting period 31 януари 2020 г.", period);
+            Assert.Equal(1, dbContext.TemperatureMeasurements.Count());
+            Assert.Equal(1, countOfMeasurements);
         }
 
         [Fact]
-        public void TestIfAllMeasurementsAreCreatedAndReturnedCorrectly()
+        public async Task TestIfAllMeasurementsAreCreatedAndReturnedCorrectlyAsync()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
+            IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
+            IOfficesService officesService = new OfficesService(dbContext, this.tenantsService.Object, electricityMeters, temperatureMeters);
+
+            IMeasurementsService measurementsService =
+                new MeasurementsService(dbContext, electricityMeters, temperatureMeters);
+
+            await this.CreateOfficeWithMetersAsync(temperatureMeters, electricityMeters, officesService);
+
+            CreateMeasurementsInputViewModel input = new CreateMeasurementsInputViewModel
             {
-                ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
-                IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
-                IOfficesService officesService = new OfficesService(dbContext, tenantsService.Object, electricityMeters, temperatureMeters);
+                StartOfPeriod = this.periodStartTime,
+                EndOfPeriod = this.periodEndTime,
+                EndOfLastPeriod = this.periodStartTime.AddDays(-1),
+                LastPeriod = "1 декември - 31 декември 2019 г.",
+                Offices = new List<OfficeMeasurementsInputViewModel> { this.GetOfficeInputViewModel() },
+            };
 
-                IMeasurementsService measurementsService =
-                    new MeasurementsService(dbContext, electricityMeters, temperatureMeters, tenantsService.Object);
+            await measurementsService.CreateAllMeasurementsAsync(input);
 
-                CreateOfficeWithMeters(temperatureMeters, electricityMeters, officesService);
+            var result = measurementsService.GetOfficesWithLastMeasurements().FirstOrDefault();
 
-                CreateMeasurementsInputViewModel input = new CreateMeasurementsInputViewModel
-                {
-                    StartOfPeriod = periodStartTime,
-                    EndOfPeriod = periodEndTime,
-                    EndOfLastPeriod = periodStartTime.AddDays(-1),
-                    LastPeriod = "1 декември - 31 декември 2019 г.",
-                    Offices = new List<OfficeMeasurementsInputViewModel> { GetOfficeInputViewModel() },
-                };
-                measurementsService.CreateAllMeasurementsAsync(input);
-
-                var result = measurementsService.GetOfficesWithLastMeasurements().FirstOrDefault();
-                
-                Assert.Equal("TestOfficeName", result.Name);
-                Assert.Equal(electricityMeterName, result.ElectricityMeter.Name);
-                Assert.Equal(dayTimeMeasurement, result.ElectricityMeter.DayTimeMinValue);
-                Assert.Equal(nightTimeMeasurement, result.ElectricityMeter.NightTimeMinValue);
-                Assert.Equal(temperatureMeterName, result.TemperatureMeters.FirstOrDefault().Name);
-                Assert.Equal(heatingMeasurement, result.TemperatureMeters.FirstOrDefault().HeatingMinValue);
-                Assert.Equal(coolingMeasurement, result.TemperatureMeters.FirstOrDefault().CoolingMinValue);
-                Assert.Equal(1, dbContext.TemperatureMeasurements.Count());
-                Assert.Equal(1, dbContext.ElectricityMeasurements.Count());
-            }
+            Assert.Equal("TestOfficeName", result.Name);
+            Assert.Equal(this.electricityMeterName, result.ElectricityMeter.Name);
+            Assert.Equal(this.dayTimeMeasurement, result.ElectricityMeter.DayTimeMinValue);
+            Assert.Equal(this.nightTimeMeasurement, result.ElectricityMeter.NightTimeMinValue);
+            Assert.Equal(this.temperatureMeterName, result.TemperatureMeters.FirstOrDefault().Name);
+            Assert.Equal(this.heatingMeasurement, result.TemperatureMeters.FirstOrDefault().HeatingMinValue);
+            Assert.Equal(this.coolingMeasurement, result.TemperatureMeters.FirstOrDefault().CoolingMinValue);
+            Assert.Equal(1, dbContext.TemperatureMeasurements.Count());
+            Assert.Equal(1, dbContext.ElectricityMeasurements.Count());
         }
 
         [Fact]
-        public void TestIfAllPeriodsAreReturnedCorrectly()
+        public async Task TestIfAllPeriodsAreReturnedCorrectlyAsync()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
+            IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
+            IOfficesService officesService = new OfficesService(dbContext, this.tenantsService.Object, electricityMeters, temperatureMeters);
+
+            IMeasurementsService measurementsService =
+                new MeasurementsService(dbContext, electricityMeters, temperatureMeters);
+
+            await this.CreateOfficeWithMetersAsync(temperatureMeters, electricityMeters, officesService);
+
+            CreateMeasurementsInputViewModel input = new CreateMeasurementsInputViewModel
             {
-                ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
-                IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
-                IOfficesService officesService = new OfficesService(dbContext, tenantsService.Object, electricityMeters, temperatureMeters);
+                StartOfPeriod = this.periodStartTime,
+                EndOfPeriod = this.periodEndTime,
+                EndOfLastPeriod = this.periodStartTime.AddDays(-1),
+                LastPeriod = "1 декември - 31 декември 2019 г.",
+                Offices = new List<OfficeMeasurementsInputViewModel> { this.GetOfficeInputViewModel() },
+            };
 
-                IMeasurementsService measurementsService =
-                    new MeasurementsService(dbContext, electricityMeters, temperatureMeters, tenantsService.Object);
+            await measurementsService.CreateAllMeasurementsAsync(input);
 
-                CreateOfficeWithMeters(temperatureMeters, electricityMeters, officesService);
-
-                CreateMeasurementsInputViewModel input = new CreateMeasurementsInputViewModel
-                {
-                    StartOfPeriod = periodStartTime,
-                    EndOfPeriod = periodEndTime,
-                    EndOfLastPeriod = periodStartTime.AddDays(-1),
-                    LastPeriod = "1 декември - 31 декември 2019 г.",
-                    Offices = new List<OfficeMeasurementsInputViewModel> { GetOfficeInputViewModel() },
-                };
-                measurementsService.CreateAllMeasurementsAsync(input);
-
-                Assert.Equal("1 януари - 31 януари 2020 г.", measurementsService.GetLastPeriodAsText());
-                Assert.Equal(new DateTime(2020, 2, 1), measurementsService.GetStartOfNewPeroid());
-                Assert.Equal(new DateTime(2020, 2, 29), measurementsService.GetEndOfNewPeriod());
-                Assert.Equal(new DateTime(2020, 1, 31), measurementsService.GetEndOfLastPeriod());
-            }
+            Assert.Equal("1 януари - 31 януари 2020 г.", measurementsService.GetLastPeriodAsText());
+            Assert.Equal(new DateTime(2020, 2, 1), measurementsService.GetStartOfNewPeroid());
+            Assert.Equal(new DateTime(2020, 2, 29), measurementsService.GetEndOfNewPeriod());
+            Assert.Equal(new DateTime(2020, 1, 31), measurementsService.GetEndOfLastPeriod());
         }
 
         [Fact]
-        public void TestIfAllInitialMeasurementsAreCreatedCorrectly()
+        public async Task TestIfAllInitialMeasurementsAreCreatedCorrectlyAsync()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
+            IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
+            IOfficesService officesService = new OfficesService(dbContext, this.tenantsService.Object, electricityMeters, temperatureMeters);
+
+            IMeasurementsService measurementsService =
+                new MeasurementsService(dbContext, electricityMeters, temperatureMeters);
+
+            await this.CreateOfficeWithMetersAsync(temperatureMeters, electricityMeters, officesService);
+
+            CreateInitialMeasurementsInputViewModel input = new CreateInitialMeasurementsInputViewModel
             {
-                ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
-                IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
-                IOfficesService officesService = new OfficesService(dbContext, tenantsService.Object, electricityMeters, temperatureMeters);
+                EndOfPeriod = this.periodEndTime,
+                Offices = new List<OfficeMeasurementsInputViewModel> { this.GetOfficeInputViewModel() },
+            };
 
-                IMeasurementsService measurementsService =
-                    new MeasurementsService(dbContext, electricityMeters, temperatureMeters, tenantsService.Object);
+            await measurementsService.CreateInitialMeasurementsAsync(input);
 
-                CreateOfficeWithMeters(temperatureMeters, electricityMeters, officesService);
-
-                CreateInitialMeasurementsInputViewModel input = new CreateInitialMeasurementsInputViewModel
-                {
-                    EndOfPeriod = periodEndTime,
-                    Offices = new List<OfficeMeasurementsInputViewModel> { GetOfficeInputViewModel() },
-                };
-
-                measurementsService.CreateInitialMeasurementsAsync(input);
-
-                Assert.Equal(1, dbContext.TemperatureMeasurements.Count());
-                Assert.Equal(1, dbContext.ElectricityMeasurements.Count());
-                Assert.True(measurementsService.IsFirstPeriod());
-            }
+            Assert.Equal(1, dbContext.TemperatureMeasurements.Count());
+            Assert.Equal(1, dbContext.ElectricityMeasurements.Count());
+            Assert.True(measurementsService.IsFirstPeriod());
         }
 
         private OfficeMeasurementsInputViewModel GetOfficeInputViewModel()
         {
             ElectricityMeasurementInputViewModel electricityMeasurement = new ElectricityMeasurementInputViewModel()
             {
-                Name = electricityMeterName,
-                DayTimeMeasurement = dayTimeMeasurement,
-                DayTimeMinValue = dayTimeMeasurement,
-                NightTimeMeasurement = nightTimeMeasurement,
-                NightTimeMinValue = nightTimeMeasurement,
+                Name = this.electricityMeterName,
+                DayTimeMeasurement = this.dayTimeMeasurement,
+                DayTimeMinValue = this.dayTimeMeasurement,
+                NightTimeMeasurement = this.nightTimeMeasurement,
+                NightTimeMinValue = this.nightTimeMeasurement,
             };
             TemperatureMeasurementInputViewModel temperatureMeasurement = new TemperatureMeasurementInputViewModel
             {
-                Name = temperatureMeterName,
-                HeatingMeasurement = heatingMeasurement,
-                HeatingMinValue = heatingMeasurement,
-                CoolingMeasurement = coolingMeasurement,
-                CoolingMinValue = coolingMeasurement,
+                Name = this.temperatureMeterName,
+                HeatingMeasurement = this.heatingMeasurement,
+                HeatingMinValue = this.heatingMeasurement,
+                CoolingMeasurement = this.coolingMeasurement,
+                CoolingMinValue = this.coolingMeasurement,
             };
 
             OfficeMeasurementsInputViewModel officeViewModel = new OfficeMeasurementsInputViewModel
@@ -272,28 +256,13 @@ namespace OfficeManager.Tests.MeasurementsTests
             return officeViewModel;
         }
 
-        private void CreateOfficeWithMeters(ITemperatureMetersService temperatureMeters, IElectricityMetersService electricityMeters, IOfficesService officesService)
+        private async Task CreateOfficeWithMetersAsync(ITemperatureMetersService temperatureMeters, IElectricityMetersService electricityMeters, IOfficesService officesService)
         {
-            officesService.CreateOfficeAsync(new CreateOfficeViewModel
-            {
-                Name = "TestOfficeName",
-                Area = 50M,
-                RentPerSqMeter = 7.2M
-            });
-
-            electricityMeters.CreateElectricityMeter(new CreateElectricityMeterViewModel
-            {
-                Name = electricityMeterName,
-                PowerSupply = 10M,
-            });
-
-            temperatureMeters.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-            {
-                Name = temperatureMeterName
-            });
-
-            officesService.AddElectricityMeterToOfficeAsync(1, electricityMeterName);
-            officesService.AddTemperatureMetersToOfficeAsync(1, new List<string> { temperatureMeterName });
+            await officesService.CreateOfficeAsync("TestOfficeName", 50M, 7.2M);
+            await electricityMeters.CreateElectricityMeterAsync(this.electricityMeterName, 10M);
+            await temperatureMeters.CreateTemperatureMeterAsync(this.temperatureMeterName);
+            await officesService.AddElectricityMeterToOfficeAsync(1, this.electricityMeterName);
+            await officesService.AddTemperatureMetersToOfficeAsync(1, new List<string> { this.temperatureMeterName });
         }
 
         private DbContextOptions<ApplicationDbContext> GetInMemoryDadabaseOptions()

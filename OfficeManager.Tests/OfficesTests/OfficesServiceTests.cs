@@ -1,30 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moq;
-using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters;
-using OfficeManager.Areas.Administration.ViewModels.Offices;
-using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
-using OfficeManager.Areas.Administration.ViewModels.Tenants;
-using OfficeManager.Data;
-using OfficeManager.Models;
-using OfficeManager.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xunit;
-
-namespace OfficeManager.Tests.OfficesTests
+﻿namespace OfficeManager.Tests.OfficesTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using Moq;
+    using OfficeManager.Areas.Administration.ViewModels.Offices;
+    using OfficeManager.Areas.Administration.ViewModels.Tenants;
+    using OfficeManager.Data;
+    using OfficeManager.Services;
+    using Xunit;
+
     public class OfficesServiceTests
     {
+        private readonly string officeName;
+        private readonly decimal officeArea;
+        private readonly decimal officeRent;
         private CreateTenantViewModel inputTenant;
-        private CreateOfficeViewModel inputOffice;
         private Mock<ITenantsService> tenantsService;
         private Mock<IElectricityMetersService> electricityMetersService;
         private Mock<ITemperatureMetersService> temperatureMetersService;
 
         public OfficesServiceTests()
         {
+            this.officeName = "TestOfficeName";
+            this.officeArea = 50M;
+            this.officeRent = 7.2M;
             this.inputTenant = new CreateTenantViewModel
             {
                 CompanyName = "TestCompanyName",
@@ -35,42 +37,29 @@ namespace OfficeManager.Tests.OfficesTests
                 Phone = "0888888888",
                 StartOfContract = DateTime.UtcNow,
             };
-            this.inputOffice = new CreateOfficeViewModel
-            {
-                Name = "TestOfficeName",
-                Area = 50M,
-                RentPerSqMeter = 7.2M
-            };
-            tenantsService = new Mock<ITenantsService>();
-            electricityMetersService = new Mock<IElectricityMetersService>();
-            temperatureMetersService = new Mock<ITemperatureMetersService>();
+            this.tenantsService = new Mock<ITenantsService>();
+            this.electricityMetersService = new Mock<IElectricityMetersService>();
+            this.temperatureMetersService = new Mock<ITemperatureMetersService>();
         }
 
         [Fact]
-        public void TestIfOfficeIsCreatedCorrectly()
+        public async Task TestIfOfficeIsCreatedCorrectlyAsync()
         {
             int actualOfficesCount;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
+                IOfficesService officesService = new OfficesService(
+                    dbContext,
+                    this.tenantsService.Object,
+                    this.electricityMetersService.Object,
+                    this.temperatureMetersService.Object);
 
-                officesService.CreateOfficeAsync(new CreateOfficeViewModel
-                {
-                    Name = "FirstTestOfficeName",
-                    Area = 50M,
-                    RentPerSqMeter = 7.2M
-                });
+                await officesService.CreateOfficeAsync("FirstTestOfficeName", 50M, 7.2M);
 
                 for (int i = 0; i < 3; i++)
                 {
-                    officesService.CreateOfficeAsync(new CreateOfficeViewModel
-                    {
-                        Name = "SecondTestOfficeName",
-                        Area = 50M,
-                        RentPerSqMeter = 7.2M
-                    });
+                    await officesService.CreateOfficeAsync("SecondTestOfficeName", 50M, 7.2M);
                 }
 
                 actualOfficesCount = dbContext.Offices.Count();
@@ -80,49 +69,54 @@ namespace OfficeManager.Tests.OfficesTests
         }
 
         [Fact]
-        public void TestIfOfficeIsUpdatedCorrectly()
-        {            
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
-            {
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
-
-                officesService.CreateOfficeAsync(inputOffice);
-                officesService.UpdateOfficeAsync(1, "UpdatedOffice", 20M, 10M);
-
-                Assert.Equal("UpdatedOffice", officesService.GetOfficeById(1).Name);
-                Assert.Equal(20M, officesService.GetOfficeByName("UpdatedOffice").Area);
-                Assert.Equal(10M, officesService.GetOfficeByName("UpdatedOffice").RentPerSqMeter);
-            }
-        }
-
-        [Fact]
-        public void TestIfOfficeIsReturnedCorrectly()
+        public async Task TestIfOfficeIsUpdatedCorrectlyAsync()
         {
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
-            {
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
-                officesService.CreateOfficeAsync(inputOffice);
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            IOfficesService officesService = new OfficesService(
+                dbContext,
+                this.tenantsService.Object,
+                this.electricityMetersService.Object,
+                this.temperatureMetersService.Object);
 
-                Assert.Equal("No electricity meter available", officesService.EditOffice(1).ElectricityMeter);
-                Assert.Equal(50M, officesService.EditOffice(1).Area);
-                Assert.Equal(7.2M, officesService.EditOffice(1).RentPerSqMeter);
-            }
+            await officesService.CreateOfficeAsync(this.officeName, this.officeArea, this.officeRent);
+            await officesService.UpdateOfficeAsync(1, "UpdatedOffice", 20M, 10M);
+
+            Assert.Equal("UpdatedOffice", officesService.GetOfficeById(1).Name);
+            Assert.Equal(20M, officesService.GetOfficeByName("UpdatedOffice").Area);
+            Assert.Equal(10M, officesService.GetOfficeByName("UpdatedOffice").RentPerSqMeter);
         }
 
         [Fact]
-        public void TestIfGetOfficeByIdReturnsCorrectrly()
+        public async Task TestIfOfficeIsReturnedCorrectlyAsync()
+        {
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            IOfficesService officesService = new OfficesService(
+                dbContext,
+                this.tenantsService.Object,
+                this.electricityMetersService.Object,
+                this.temperatureMetersService.Object);
+
+            await officesService.CreateOfficeAsync(this.officeName, this.officeArea, this.officeRent);
+
+            Assert.Equal("No electricity meter available", officesService.EditOffice(1).ElectricityMeter);
+            Assert.Equal(50M, officesService.EditOffice(1).Area);
+            Assert.Equal(7.2M, officesService.EditOffice(1).RentPerSqMeter);
+        }
+
+        [Fact]
+        public async Task TestIfGetOfficeByIdReturnsCorrectrlyAsync()
         {
             string officeName;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
+                IOfficesService officesService = new OfficesService(
+                    dbContext,
+                    this.tenantsService.Object,
+                    this.electricityMetersService.Object,
+                    this.temperatureMetersService.Object);
 
-                officesService.CreateOfficeAsync(inputOffice);
-
+                await officesService.CreateOfficeAsync(this.officeName, this.officeArea, this.officeRent);
                 officeName = officesService.GetOfficeById(1).Name;
             }
 
@@ -130,16 +124,19 @@ namespace OfficeManager.Tests.OfficesTests
         }
 
         [Fact]
-        public void TestIfGetOfficeByNameReturnsCorrectrly()
+        public async Task TestIfGetOfficeByNameReturnsCorrectrlyAsync()
         {
             string officeName;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
+                IOfficesService officesService = new OfficesService(
+                    dbContext,
+                    this.tenantsService.Object,
+                    this.electricityMetersService.Object,
+                    this.temperatureMetersService.Object);
 
-                officesService.CreateOfficeAsync(inputOffice);
+                await officesService.CreateOfficeAsync(this.officeName, this.officeArea, this.officeRent);
 
                 officeName = officesService.GetOfficeByName("TestOfficeName").Name;
             }
@@ -148,24 +145,25 @@ namespace OfficeManager.Tests.OfficesTests
         }
 
         [Fact]
-        public void TestIfOfficesAreAddedAndRemovedToTenantCorectly()
+        public async Task TestIfOfficesAreAddedAndRemovedToTenantCorectlyAsync()
         {
             int tenantOfficesCount;
             List<string> officesToAdd = new List<string> { "1", "3", "5" };
             List<string> officesToRemove = new List<string> { "3" };
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
-                ITenantsService tenants =
-                   new TenantsService(dbContext);
+                ITenantsService tenants = new TenantsService(dbContext);
 
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenants, electricityMetersService.Object, temperatureMetersService.Object);
+                IOfficesService officesService = new OfficesService(
+                    dbContext,
+                    tenants,
+                    this.electricityMetersService.Object,
+                    this.temperatureMetersService.Object);
 
-                AddOfficesToTenant(inputTenant, tenants, officesService);
-
-                officesService.AddOfficesToTenantAsync(1, officesToAdd);
-                officesService.RemoveOfficesFromTenantAsync(1, officesToRemove);
+                await AddOfficesToTenantAsync(this.inputTenant, tenants, officesService);
+                await officesService.AddOfficesToTenantAsync(1, officesToAdd);
+                await officesService.RemoveOfficesFromTenantAsync(1, officesToRemove);
                 tenantOfficesCount = dbContext.Tenants.FirstOrDefault(x => x.CompanyName == "TestCompanyName").Offices.Count();
             }
 
@@ -173,21 +171,22 @@ namespace OfficeManager.Tests.OfficesTests
         }
 
         [Fact]
-        public void TestIfAvailableOfficesAreReturnedCorectly()
+        public async Task TestIfAvailableOfficesAreReturnedCorectlyAsync()
         {
             int availableOfficesCount;
             List<string> offices = new List<string> { "1", "3" };
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
-                ITenantsService tenants =
-                  new TenantsService(dbContext);
+                ITenantsService tenants = new TenantsService(dbContext);
 
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenants, electricityMetersService.Object, temperatureMetersService.Object);
+                IOfficesService officesService = new OfficesService(
+                    dbContext,
+                    tenants,
+                    this.electricityMetersService.Object,
+                    this.temperatureMetersService.Object);
 
-                AddOfficesToTenant(inputTenant, tenants, officesService);
-
-                officesService.AddOfficesToTenantAsync(1, offices);
+                await AddOfficesToTenantAsync(this.inputTenant, tenants, officesService);
+                await officesService.AddOfficesToTenantAsync(1, offices);
                 availableOfficesCount = officesService.GetAllAvailableOffices().Count();
             }
 
@@ -195,25 +194,24 @@ namespace OfficeManager.Tests.OfficesTests
         }
 
         [Fact]
-        public void TestIfAllOfficesAreReturnedCorrectrly()
+        public async Task TestIfAllOfficesAreReturnedCorrectrlyAsync()
         {
             string names = string.Empty;
             List<OfficeOutputViewModel> allOffices = new List<OfficeOutputViewModel>();
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMetersService.Object);
+                IOfficesService officesService = new OfficesService(
+                    dbContext,
+                    this.tenantsService.Object,
+                    this.electricityMetersService.Object,
+                    this.temperatureMetersService.Object);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    officesService.CreateOfficeAsync(new CreateOfficeViewModel
-                    {
-                        Name = i.ToString(),
-                        Area = 50M,
-                        RentPerSqMeter = 7.2M
-                    });
+                    await officesService.CreateOfficeAsync(i.ToString(), this.officeArea, this.officeRent);
                 }
+
                 allOffices = officesService.GetAllOffices().ToList();
             }
 
@@ -227,80 +225,68 @@ namespace OfficeManager.Tests.OfficesTests
         }
 
         [Fact]
-        public void TestIfElectricityMeterIsAddedAndRemovedToOfficeCorrectly()
+        public async Task TestIfElectricityMeterIsAddedAndRemovedToOfficeCorrectlyAsync()
         {
             string actualElectricityMetersName;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
-            {
-                IElectricityMetersService electricityMeters =
-                    new ElectricityMetersService(dbContext);
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            IElectricityMetersService electricityMeters = new ElectricityMetersService(dbContext);
 
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenantsService.Object, electricityMeters, temperatureMetersService.Object);
+            IOfficesService officesService = new OfficesService(
+                dbContext,
+                this.tenantsService.Object,
+                electricityMeters,
+                this.temperatureMetersService.Object);
 
-                officesService.CreateOfficeAsync(inputOffice);
+            await officesService.CreateOfficeAsync(this.officeName, this.officeArea, this.officeRent);
+            await electricityMeters.CreateElectricityMeterAsync("TestElectricityMeter", 5M);
+            await officesService.AddElectricityMeterToOfficeAsync(1, "TestElectricityMeter");
+            actualElectricityMetersName = officesService.GetOfficeByName("TestOfficeName").ElectricityMeter.Name;
+            await officesService.RemoveElectricityMeterFromOfficeAsync(1);
 
-                electricityMeters.CreateElectricityMeter(new CreateElectricityMeterViewModel
-                {
-                    Name = "TestElectricityMeter",
-                    PowerSupply = 5M,
-                });
-
-                officesService.AddElectricityMeterToOfficeAsync(1, "TestElectricityMeter");
-
-                actualElectricityMetersName = officesService.GetOfficeByName("TestOfficeName").ElectricityMeter.Name;
-
-                officesService.RemoveElectricityMeterFromOfficeAsync(1);
-                Assert.Throws<NullReferenceException>(() => officesService.GetOfficeByName("TestOfficeName").ElectricityMeter.Name);
-            }
+            Assert.Throws<NullReferenceException>(() => officesService.GetOfficeByName("TestOfficeName").ElectricityMeter.Name);
         }
 
         [Fact]
-        public void TestIfTemperatureMetersAreAddedAndRemovedToOfficeCorrectly()
+        public async Task TestIfTemperatureMetersAreAddedAndRemovedToOfficeCorrectlyAsync()
         {
             int temperatureMetersCount;
             List<string> temperatureMetersToAdd = new List<string> { "1", "3", "5" };
             List<string> temperatureMetersToRemove = new List<string> { "3" };
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
-                ITemperatureMetersService temperatureMeters =
-                    new TemperatureMetersService(dbContext);
+                ITemperatureMetersService temperatureMeters = new TemperatureMetersService(dbContext);
 
-                IOfficesService officesService =
-                    new OfficesService(dbContext, tenantsService.Object, electricityMetersService.Object, temperatureMeters);
+                IOfficesService officesService = new OfficesService(
+                    dbContext,
+                    this.tenantsService.Object,
+                    this.electricityMetersService.Object,
+                    temperatureMeters);
 
-                officesService.CreateOfficeAsync(inputOffice);
+                await officesService.CreateOfficeAsync(this.officeName, this.officeArea, this.officeRent);
 
                 for (int i = 1; i <= 5; i++)
                 {
-                    temperatureMeters.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-                    {
-                        Name = i.ToString()
-                    });
+                    await temperatureMeters.CreateTemperatureMeterAsync(i.ToString());
                 }
 
                 var office = officesService.GetOfficeById(1);
                 var count = dbContext.TemperatureMeters.Count();
-                officesService.AddTemperatureMetersToOfficeAsync(1, temperatureMetersToAdd);
-                officesService.RemoveTemperatureMetersFromOfficeAsync(1, temperatureMetersToRemove);
+                await officesService.AddTemperatureMetersToOfficeAsync(1, temperatureMetersToAdd);
+                await officesService.RemoveTemperatureMetersFromOfficeAsync(1, temperatureMetersToRemove);
                 temperatureMetersCount = officesService.GetOfficeTemperatureMeters(1).ToList().Count();
             }
+
             Assert.Equal(2, temperatureMetersCount);
         }
 
-        private static void AddOfficesToTenant(CreateTenantViewModel inputTenant, ITenantsService tenants, IOfficesService officesService)
+        private static async Task AddOfficesToTenantAsync(CreateTenantViewModel inputTenant, ITenantsService tenants, IOfficesService officesService)
         {
-            tenants.CreateTenantAsync(inputTenant);
+            await tenants.CreateTenantAsync(inputTenant);
 
             for (int i = 1; i <= 5; i++)
             {
-                officesService.CreateOfficeAsync(new CreateOfficeViewModel
-                {
-                    Name = i.ToString(),
-                    Area = 50M,
-                    RentPerSqMeter = 7.2M
-                });
+                await officesService.CreateOfficeAsync(i.ToString(), 50M, 7.2M);
             }
         }
 

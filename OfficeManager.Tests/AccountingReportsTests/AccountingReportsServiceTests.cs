@@ -1,56 +1,50 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Moq;
-using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters;
-using OfficeManager.Areas.Administration.ViewModels.Landlords;
-using OfficeManager.Areas.Administration.ViewModels.Offices;
-using OfficeManager.Areas.Administration.ViewModels.PricesInformation;
-using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
-using OfficeManager.Areas.Administration.ViewModels.Tenants;
-using OfficeManager.Data;
-using OfficeManager.Services;
-using OfficeManager.ViewModels.AccountingReports;
-using OfficeManager.ViewModels.Measurements;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xunit;
-using System.Threading.Tasks;
-
-namespace OfficeManager.Tests.AccountingReportsTests
+﻿namespace OfficeManager.Tests.AccountingReportsTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using OfficeManager.Areas.Administration.ViewModels.Landlords;
+    using OfficeManager.Areas.Administration.ViewModels.PricesInformation;
+    using OfficeManager.Areas.Administration.ViewModels.Tenants;
+    using OfficeManager.Data;
+    using OfficeManager.Services;
+    using OfficeManager.ViewModels.Measurements;
+    using Xunit;
+
     public class AccountingReportsServiceTests
     {
         [Fact]
-        public void TestIfAccountingReportIsGeneratedCorrectrly()
+        public async Task TestIfAccountingReportIsGeneratedCorrectrlyAsync()
         {
-            using var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions());
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
             IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
-            SeedData(dbContext);
+            await SeedDataAsync(dbContext);
 
             var accountingReportViewModel = accontingReportsService.GetAccountingReportViewModel("TenantName", "1 януари - 31 януари 2020 г.");
 
-            accontingReportsService.GenerateAccountingReportAsync(accountingReportViewModel);
+            await accontingReportsService.GenerateAccountingReportAsync(accountingReportViewModel);
 
             Assert.Equal(1, dbContext.AccountingReports.Count());
         }
 
         [Fact]
-        public void TestIfGetAccountingReportViewModelReturnsCorrectrly()
+        public async Task TestIfGetAccountingReportViewModelReturnsCorrectrlyAsync()
         {
-            using var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions());
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
             IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
-            SeedData(dbContext);
+            await SeedDataAsync(dbContext);
 
             var accountingReportViewModel = accontingReportsService.GetAccountingReportViewModel("TenantName", "1 януари - 31 януари 2020 г.");
 
@@ -64,20 +58,20 @@ namespace OfficeManager.Tests.AccountingReportsTests
         }
 
         [Fact]
-        public void TestIfGetAccountingReportbyIdIsRetrnedCorrectrly()
+        public async Task TestIfGetAccountingReportbyIdIsRetrnedCorrectrlyAsync()
         {
-            using var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions());
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
             IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
-            SeedData(dbContext);
+            await SeedDataAsync(dbContext);
 
             var accountingReportViewModel = accontingReportsService.GetAccountingReportViewModel("TenantName", "1 януари - 31 януари 2020 г.");
 
-            accontingReportsService.GenerateAccountingReportAsync(accountingReportViewModel);
+            await accontingReportsService.GenerateAccountingReportAsync(accountingReportViewModel);
 
             var result = accontingReportsService.GetAccountingReportById(1);
 
@@ -91,32 +85,32 @@ namespace OfficeManager.Tests.AccountingReportsTests
         }
 
         [Fact]
-        public void TestIfGetAllPeriodsAndTenantsAreRetrnedCorrectrly()
+        public async Task TestIfGetAllPeriodsAndTenantsAreRetrnedCorrectrlyAsync()
         {
-            using var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions());
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
             IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
-            SeedData(dbContext);
+            await SeedDataAsync(dbContext);
 
             Assert.Single(accontingReportsService.GetAllTenantsSelectList().ToList());
             Assert.Single(accontingReportsService.GetAllPeriodsSelectList().ToList());
         }
 
         [Fact]
-        public void TestIfGetTemperatureAndElectricityConsummationsAreRetrnedCorrectrly()
+        public async Task TestIfGetTemperatureAndElectricityConsummationsAreRetrnedCorrectrlyAsync()
         {
-            using var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions());
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
             IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
-            SeedData(dbContext);
+            await SeedDataAsync(dbContext);
 
             Assert.Equal(10M, accontingReportsService.GetTenantElectricityConsummationByPeriod("TenantName", "1 януари - 31 януари 2020 г.").DayTimeConsummation);
             Assert.Equal(5M, accontingReportsService.GetTenantElectricityConsummationByPeriod("TenantName", "1 януари - 31 януари 2020 г.").NightTimeConsummation);
@@ -125,54 +119,54 @@ namespace OfficeManager.Tests.AccountingReportsTests
         }
 
         [Fact]
-        public void TestIfAmountForElectricityIsRetrnedCorrectrly()
+        public async Task TestIfAmountForElectricityIsRetrnedCorrectrlyAsync()
         {
-            using var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions());
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
             IAccountingReportsService accontingReportsService =
                 new AccountingReportsService(dbContext, tenantsService, landlordsService, pricesInformationService);
 
-            SeedData(dbContext);
+            await SeedDataAsync(dbContext);
 
             var electricityConsummation = new TenantElectricityConsummationViewModel
             {
                 DayTimeConsummation = 10M,
-                NightTimeConsummation = 5M,            
+                NightTimeConsummation = 5M,
             };
 
             Assert.Equal(165, accontingReportsService.AmountForElectricity(electricityConsummation));
         }
 
-        private static void SeedData(ApplicationDbContext dbContext)
+        private static async Task SeedDataAsync(ApplicationDbContext dbContext)
         {
             ITenantsService tenantsService = new TenantsService(dbContext);
             ILandlordsService landlordsService = new LandlordsService(dbContext);
             IElectricityMetersService electricityMetersService = new ElectricityMetersService(dbContext);
             ITemperatureMetersService temperatureMetersService = new TemperatureMetersService(dbContext);
             IPricesInformationService pricesInformationService = new PricesInformationService(dbContext);
-            IMeasurementsService measurementsService = new MeasurementsService(dbContext, electricityMetersService, temperatureMetersService, tenantsService);
+            IMeasurementsService measurementsService = new MeasurementsService(dbContext, electricityMetersService, temperatureMetersService);
             IOfficesService officesService = new OfficesService(dbContext, tenantsService, electricityMetersService, temperatureMetersService);
 
-            CreateLandlord(landlordsService);
-            CreateTenant(tenantsService);
-            CreateOfficeAsync(officesService);
-            officesService.AddOfficesToTenantAsync(1, new List<string> { "TestOfficeName" });
-            CreateTemperatureMeter(temperatureMetersService);
-            CreateElectricityMeter(electricityMetersService);
-            officesService.AddElectricityMeterToOfficeAsync(1, "ElectricityMeterName");
-            officesService.AddTemperatureMetersToOfficeAsync(1, new List<string> { "TemperatureMeterName" });
-            CreateInitialElectricityMeasuremets(measurementsService);
-            CreateElectricityMeasuremets(measurementsService);
-            CreateInitialTemperatureMeasurements(measurementsService);
-            CreateTemperatureMeasuremets(measurementsService);
-            CreatePricelist(pricesInformationService);
+            await CreateLandlordAsync(landlordsService);
+            await CreateTenantAsync(tenantsService);
+            await CreateOfficeAsync(officesService);
+            await officesService.AddOfficesToTenantAsync(1, new List<string> { "TestOfficeName" });
+            await CreateTemperatureMeterAsync(temperatureMetersService);
+            await CreateElectricityMeterAsync(electricityMetersService);
+            await officesService.AddElectricityMeterToOfficeAsync(1, "ElectricityMeterName");
+            await officesService.AddTemperatureMetersToOfficeAsync(1, new List<string> { "TemperatureMeterName" });
+            await CreateInitialElectricityMeasuremetsAsync(measurementsService);
+            await CreateElectricityMeasuremetsAsync(measurementsService);
+            await CreateInitialTemperatureMeasurementsAsync(measurementsService);
+            await CreateTemperatureMeasuremetsAsync(measurementsService);
+            await CreatePricelistAsync(pricesInformationService);
         }
 
-        private static void CreateLandlord(ILandlordsService landlordsService)
+        private static async Task CreateLandlordAsync(ILandlordsService landlordsService)
         {
-            landlordsService.CreateLandlordAsync(new CreateLandlordViewModel
+            await landlordsService.CreateLandlordAsync(new CreateLandlordViewModel
             {
                 LandlordName = "LandlordName",
                 LandlordOwner = "LandlordOwner",
@@ -183,9 +177,9 @@ namespace OfficeManager.Tests.AccountingReportsTests
             });
         }
 
-        private static void CreateTenant(ITenantsService tenantsService)
+        private static async Task CreateTenantAsync(ITenantsService tenantsService)
         {
-            tenantsService.CreateTenantAsync(new CreateTenantViewModel
+            await tenantsService.CreateTenantAsync(new CreateTenantViewModel
             {
                 CompanyName = "TenantName",
                 CompanyOwner = "TenantOwner",
@@ -199,54 +193,42 @@ namespace OfficeManager.Tests.AccountingReportsTests
 
         private static async Task CreateOfficeAsync(IOfficesService officesService)
         {
-            await officesService.CreateOfficeAsync(new CreateOfficeViewModel
-            {
-                Name = "TestOfficeName",
-                Area = 100M,
-                RentPerSqMeter = 7.2M
-            });
+            await officesService.CreateOfficeAsync("TestOfficeName", 100M, 7.2M);
         }
 
-        private static void CreateTemperatureMeter(ITemperatureMetersService temperatureMetersService)
+        private static async Task CreateTemperatureMeterAsync(ITemperatureMetersService temperatureMetersService)
         {
-            temperatureMetersService.CreateTemperatureMeter(new CreateTemperatureMeterViewModel
-            {
-                Name = "TemperatureMeterName"
-            });
+            await temperatureMetersService.CreateTemperatureMeterAsync("TemperatureMeterName");
         }
 
-        private static void CreateElectricityMeter(IElectricityMetersService electricityMetersService)
+        private static async Task CreateElectricityMeterAsync(IElectricityMetersService electricityMetersService)
         {
-            electricityMetersService.CreateElectricityMeter(new CreateElectricityMeterViewModel
-            {
-                Name = "ElectricityMeterName",
-                PowerSupply = 10M,
-            });
+            await electricityMetersService.CreateElectricityMeterAsync("ElectricityMeterName", 10M);
         }
 
-        private static void CreateInitialElectricityMeasuremets(IMeasurementsService measurementsService)
+        private static async Task CreateInitialElectricityMeasuremetsAsync(IMeasurementsService measurementsService)
         {
-            measurementsService.CreateInitialElectricityMeasurementAsync(new DateTime(2020, 1, 1), "ElectricityMeterName", 0M, 0M);
+            await measurementsService.CreateInitialElectricityMeasurementAsync(new DateTime(2020, 1, 1), "ElectricityMeterName", 0M, 0M);
         }
 
-        private static void CreateElectricityMeasuremets(IMeasurementsService measurementsService)
+        private static async Task CreateElectricityMeasuremetsAsync(IMeasurementsService measurementsService)
         {
-            measurementsService.CreateElectricityMeasurementAsync(new DateTime(2020, 1, 1), new DateTime(2020, 1, 31), "ElectricityMeterName", 10M, 5M);
+            await measurementsService.CreateElectricityMeasurementAsync(new DateTime(2020, 1, 1), new DateTime(2020, 1, 31), "ElectricityMeterName", 10M, 5M);
         }
 
-        private static void CreateInitialTemperatureMeasurements(IMeasurementsService measurementsService)
+        private static async Task CreateInitialTemperatureMeasurementsAsync(IMeasurementsService measurementsService)
         {
-            measurementsService.CreateInitialTemperatureMeasurementAsync(new DateTime(2020, 1, 1), "TemperatureMeterName", 0M, 0M);
+            await measurementsService.CreateInitialTemperatureMeasurementAsync(new DateTime(2020, 1, 1), "TemperatureMeterName", 0M, 0M);
         }
 
-        private static void CreateTemperatureMeasuremets(IMeasurementsService measurementsService)
+        private static async Task CreateTemperatureMeasuremetsAsync(IMeasurementsService measurementsService)
         {
-            measurementsService.CreateTemperatureMeasurementAsync(new DateTime(2020, 1, 1), new DateTime(2020, 1, 31), "TemperatureMeterName", 10M, 5M);
+            await measurementsService.CreateTemperatureMeasurementAsync(new DateTime(2020, 1, 1), new DateTime(2020, 1, 31), "TemperatureMeterName", 10M, 5M);
         }
 
-        private static void CreatePricelist(IPricesInformationService pricesInformationService)
+        private static async Task CreatePricelistAsync(IPricesInformationService pricesInformationService)
         {
-            pricesInformationService.CreatePricelistAsync(new CreatePricesInputViewModel
+            await pricesInformationService.CreatePricelistAsync(new CreatePricesInputViewModel
             {
                 ElectricityPerKWh = 10M,
                 HeatingPerKWh = 10M,

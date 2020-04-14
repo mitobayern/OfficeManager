@@ -1,39 +1,40 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters;
-using OfficeManager.Data;
-using OfficeManager.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xunit;
-
-namespace OfficeManager.Tests.ElectricityMetersTests
+﻿namespace OfficeManager.Tests.ElectricityMetersTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+    using OfficeManager.Areas.Administration.ViewModels.ElectricityMeters;
+    using OfficeManager.Data;
+    using OfficeManager.Services;
+    using Xunit;
+
     public class ElectricityMetersServiceTests
     {
+        private readonly string name;
+        private readonly decimal powerSupply;
+
+        public ElectricityMetersServiceTests()
+        {
+            this.name = "Test";
+            this.powerSupply = 10M;
+        }
+
         [Fact]
-        public void TestIfElectricityMeterIsCreatedCorrectly()
+        public async Task TestIfElectricityMeterIsCreatedCorrectlyAsync()
         {
             int actualElectricityMetersCount;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 IElectricityMetersService electricityMetersService = new ElectricityMetersService(dbContext);
 
-                electricityMetersService.CreateElectricityMeter(new CreateElectricityMeterViewModel
-                {
-                    Name = "TestName1",
-                    PowerSupply = 10M,
-                });
+                await electricityMetersService.CreateElectricityMeterAsync("TestName1", this.powerSupply);
 
                 for (int i = 0; i < 3; i++)
                 {
-                    electricityMetersService.CreateElectricityMeter(new CreateElectricityMeterViewModel
-                    {
-                        Name = "TestName2",
-                        PowerSupply = 10M,
-                    });
+                    await electricityMetersService.CreateElectricityMeterAsync("TestName2", this.powerSupply);
                 }
 
                 actualElectricityMetersCount = dbContext.ElectricityMeters.Count();
@@ -43,23 +44,20 @@ namespace OfficeManager.Tests.ElectricityMetersTests
         }
 
         [Fact]
-        public void TestIfAllElectricityMetersAreReturnedCorrectrly()
+        public async Task TestIfAllElectricityMetersAreReturnedCorrectrlyAsync()
         {
             string names = string.Empty;
             List<ElectricityMeterOutputViewModel> electricityMeters = new List<ElectricityMeterOutputViewModel>();
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 IElectricityMetersService electricityMetersService = new ElectricityMetersService(dbContext);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    electricityMetersService.CreateElectricityMeter(new CreateElectricityMeterViewModel
-                    {
-                        Name = i.ToString(),
-                        PowerSupply = 10M,
-                    });
+                    await electricityMetersService.CreateElectricityMeterAsync(i.ToString(), this.powerSupply);
                 }
+
                 electricityMeters = electricityMetersService.GetAllElectricityMeters().ToList();
             }
 
@@ -73,21 +71,17 @@ namespace OfficeManager.Tests.ElectricityMetersTests
         }
 
         [Fact]
-        public void TestIfGetElectricityMeterByIdWorksCorrectly()
+        public async Task TestIfGetElectricityMeterByIdWorksCorrectlyAsync()
         {
             string electricityMeterName = string.Empty;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 IElectricityMetersService electricityMetersService = new ElectricityMetersService(dbContext);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    electricityMetersService.CreateElectricityMeter(new CreateElectricityMeterViewModel
-                    {
-                        Name = "Test" + i.ToString(),
-                        PowerSupply = 10M,
-                    });
+                    await electricityMetersService.CreateElectricityMeterAsync(this.name + i.ToString(), this.powerSupply);
                 }
 
                 electricityMeterName = electricityMetersService.GetElectricityMeterById(2).Name;
@@ -97,21 +91,17 @@ namespace OfficeManager.Tests.ElectricityMetersTests
         }
 
         [Fact]
-        public void TestIfGetElectricityMeterByNameWorksCorrectly()
+        public async Task TestIfGetElectricityMeterByNameWorksCorrectlyAsync()
         {
             string electricityMeterName = string.Empty;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 IElectricityMetersService electricityMetersService = new ElectricityMetersService(dbContext);
 
                 for (int i = 1; i <= 3; i++)
                 {
-                    electricityMetersService.CreateElectricityMeter(new CreateElectricityMeterViewModel
-                    {
-                        Name = "Test" + i.ToString(),
-                        PowerSupply = 10M,
-                    });
+                    await electricityMetersService.CreateElectricityMeterAsync(this.name + i.ToString(), this.powerSupply);
                 }
 
                 electricityMeterName = electricityMetersService.GetElectricityMeterByName("Test2").Name;
@@ -121,28 +111,17 @@ namespace OfficeManager.Tests.ElectricityMetersTests
         }
 
         [Fact]
-        public void TestIfElectricityMeterIsUpdatedCorrectrly()
+        public async Task TestIfElectricityMeterIsUpdatedCorrectrlyAsync()
         {
             string electricityMeterName;
             decimal electricityMeterPowerSupply;
 
-            using (var dbContext = new ApplicationDbContext(GetInMemoryDadabaseOptions()))
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
             {
                 IElectricityMetersService electricityMetersService = new ElectricityMetersService(dbContext);
 
-                electricityMetersService.CreateElectricityMeter(new CreateElectricityMeterViewModel
-                {
-                    Name = "Test",
-                    PowerSupply = 10M,
-                });
-
-                ElectricityMeterOutputViewModel electricityMeterToUpdate = new ElectricityMeterOutputViewModel
-                {
-                    Id = 1,
-                    Name = "Updated",
-                    PowerSupply = 20M,
-                };
-                electricityMetersService.UpdateElectricityMeter(electricityMeterToUpdate);
+                await electricityMetersService.CreateElectricityMeterAsync(this.name, this.powerSupply);
+                await electricityMetersService.UpdateElectricityMeterAsync(1, "Updated", 20M);
                 electricityMeterName = electricityMetersService.GetElectricityMeterById(1).Name;
                 electricityMeterPowerSupply = electricityMetersService.GetElectricityMeterByName(electricityMeterName).PowerSupply;
             }
