@@ -37,7 +37,6 @@
 
                 await landlordsService.CreateLandlordAsync(this.landlord);
                 await landlordsService.CreateLandlordAsync(this.landlord);
-
                 actualLandlordsCount = dbContext.Landlords.Count();
             }
 
