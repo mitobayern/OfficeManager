@@ -7,6 +7,7 @@
         {
             if (this.User.IsInRole("Admin"))
             {
+                <!-- LANDLORD -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarLandlordsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Landlord
@@ -16,6 +17,8 @@
                         <a class="dropdown-item" href="/Administration/Landlords/Details">Landlord Details</a>
                     </div>
                 </li>
+
+                <!-- PRICES -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarPricesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Prices
@@ -25,6 +28,8 @@
                         <a class="dropdown-item" href="/Administration/PricesInformation/CurrentPrices">Current Prices</a>
                     </div>
                 </li>
+
+                <!-- METERS -->
                 <li id="dropdown" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarMetersDropdown" role="button" data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
@@ -47,24 +52,8 @@
                         </div>
                     </div>
                 </li>
-                @*<li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarElectricityMetersDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Electricity
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/Administration/ElectricityMeters/Create">Create Electricity Meter</a>
-                        <a class="dropdown-item" href="/Administration/ElectricityMeters/All">All Electricity Meters</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarTemperatureMetersDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Temperature
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/Administration/TemperatureMeters/Create">Create Temperature Meter</a>
-                        <a class="dropdown-item" href="/Administration/TemperatureMeters/All">All Temperature Meters</a>
-                    </div>
-                </li>*@
+
+                <!-- OFFICES -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarOfficesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Offices
@@ -74,6 +63,8 @@
                         <a class="dropdown-item" href="/Administration/Offices/All">All Offices</a>
                     </div>
                 </li>
+
+                <!-- TENANTS -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarTenantsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Tenants
@@ -83,7 +74,18 @@
                         <a class="dropdown-item" href="/Administration/Tenants/All">All Tenants</a>
                     </div>
                 </li>
+
+                <!-- USERS -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarMeasurementsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Users
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/Administration/Users/All">All users</a>
+                    </div>
+                </li>
             }
+
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarLandlordsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Accounting
@@ -99,14 +101,6 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="/Measurements/CreateMeasurements">Create Measurements</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarMeasurementsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Users
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/Administration/Users/All">All users</a>
                 </div>
             </li>
             <li class="nav-item">

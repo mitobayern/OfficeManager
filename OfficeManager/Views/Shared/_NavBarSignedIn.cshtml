@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+<!-- ACCOUNTING REPORTS -->
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarLandlordsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Accounting
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="/AccountingReports/Create">Create Accounting Report</a>
+        <a class="dropdown-item" href="/AccountingReports/All">All Accounting Reports</a>
+    </div>
+</li>
+
+<!-- MEASUREMENTS -->
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarMeasurementsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Measurements
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="/Measurements/CreateMeasurements">Create Measurements</a>
+    </div>
+</li>
+
+<!-- GREETINGS -->
+<li class="nav-item">
+    <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+</li>
+
+<!-- LOGOUT -->
+<li class="nav-item">
+    <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <button type="submit" class="nav-link btn btn-link">Logout</button>
+    </form>
+</li>
