@@ -1,4 +1,11 @@
-﻿
+﻿@using OfficeManager.ViewModels.AccountingReports
+@model List<AccountingReportListViewModel>
 
 
-<h1>@Model</h1>
+@foreach (var accountingReport in @Model)
+{
+    <h5>Period: @accountingReport.Period / Amount for Electricity:@accountingReport.AmountForElectricity</h5>
+    <h5>Period: @accountingReport.Period / Amount for Heating:@accountingReport.AmountForHeating</h5>
+    <h5>Period: @accountingReport.Period / Amount for Heating:@accountingReport.AmountForCooling</h5>
+    <h5>Period: @accountingReport.Period / Total Amount:@accountingReport.TotalAmount</h5>
+}

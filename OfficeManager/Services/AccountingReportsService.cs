@@ -145,6 +145,9 @@
                 CompanyName = x.Tenant.CompanyName,
                 CreatedOn = x.IssuedOn,
                 Period = x.Period,
+                AmountForElectricity = x.AmountForElectricity,
+                AmountForHeating = x.AmountForHeating,
+                AmountForCooling = x.AmountForCooling,
                 TotalAmount = x.TotalAmount,
             });
 

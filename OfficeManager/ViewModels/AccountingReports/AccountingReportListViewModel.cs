@@ -14,6 +14,12 @@
 
         public string CompanyName { get; set; }
 
+        public decimal AmountForElectricity { get; set; }
+
+        public decimal AmountForHeating { get; set; }
+
+        public decimal AmountForCooling { get; set; }
+
         public decimal TotalAmount { get; set; }
     }
 }
