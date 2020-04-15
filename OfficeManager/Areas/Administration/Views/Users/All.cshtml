@@ -4,42 +4,62 @@
 @{
     ViewData["Title"] = "All Users";
 }
-
-<h1 class="display-4" style="margin: 2%; text-align: center;">All Users</h1>
+<style>
+    .slow .toggle-group {
+        transition: left 0.7s;
+        -webkit-transition: left 0.7s;
+    }
+</style>
+<br />
+<h1 class="display-4" style="text-align: center;">All Users</h1>
 <div style="padding: 5%;">
-    <table class="table table-striped">
+    <table class="table table-striped" align="center" width="600">
         <thead class="thead-dark">
             <tr>
                 <th scope="col">
                     User Name
                 </th>
-                <th scope="col" colspan="2">
+                <th scope="col">
                     Role
                 </th>
-
-
+                <th scope="col">
+                    Actions
+                </th>
             </tr>
         </thead>
         <tbody>
             @foreach (var user in Model)
             {
-            <tr>
-                <td>@user.UserName</td>
-                <td>@user.Role</td>
-                @if (@user.Role != "Admin")
-                {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Role</td>
                     <td>
-                        <div class="button-holder text-right">
-                            <a style="font-size:small"
-                               asp-action="Promote"
-                               asp-route-userName="@user.UserName">
-                                Make Admin
-                            </a>
-                        </div>
-                    </td>
-                }
+                        @if (@user.UserName != User.Identity.Name)
+                        {
+                            <input data-style="slow" type="checkbox" checked data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="primary" data-offstyle="dark">
+                            
+                        }
+                        else
+                        {
+                            <input data-style="slow" type="checkbox" disabled checked data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="primary" data-offstyle="dark">
 
-            </tr>
+                        }
+                    </td>
+
+                    @*@if (@user.Role != "Admin")
+                        {
+                            <td>
+                                <div class="button-holder text-right">
+                                    <a style="font-size:small"
+                                       asp-action="Promote"
+                                       asp-route-userName="@user.UserName">
+                                        Make Admin
+                                    </a>
+                                </div>
+                            </td>
+                        }*@
+
+                </tr>
             }
         </tbody>
     </table>

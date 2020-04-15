@@ -51,7 +51,7 @@
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="info">
-                    <a href="#" class="d-block">Alexander Pierce</a>
+                    <a href="#" class="d-block">@User.Identity.Name</a>
                 </div>
             </div>
 
@@ -59,7 +59,7 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class
-                    with font-awesome or any other icon font library -->
+    with font-awesome or any other icon font library -->
                     <!-- USERS -->
                     <li class="nav-item">
                         <a href="/Administration/Users/All" class="nav-link">
@@ -156,13 +156,13 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="/Administration/PricesInformation/CreatePricelist" class="nav-link">
+                                <a href="/Administration/TemperatureMeters/Create" class="nav-link">
                                     <i class="fas fa-plus nav-icon"></i>
                                     <p>Create Temperature meter</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/Administration/PricesInformation/CurrentPrices" class="nav-link">
+                                <a href="/Administration/TemperatureMeters/All" class="nav-link">
                                     <i class="fas fa-folder-open nav-icon"></i>
                                     <p>All Temperature meters</p>
                                 </a>
@@ -181,13 +181,13 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="/Administration/PricesInformation/CreatePricelist" class="nav-link">
+                                <a href="/Administration/ElectricityMeters/Create" class="nav-link">
                                     <i class="fas fa-plus nav-icon"></i>
                                     <p>Create Electricity meter</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/Administration/PricesInformation/CurrentPrices" class="nav-link">
+                                <a href="/Administration/ElectricityMeters/All" class="nav-link">
                                     <i class="fas fa-folder-open nav-icon"></i>
                                     <p>All Electricity meters</p>
                                 </a>
@@ -217,6 +217,20 @@
                                     <p>Current Prices</p>
                                 </a>
                             </li>
+                        </ul>
+                    </li>
+
+                    <!-- Charts -->
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-chart-bar"></i>
+                            <p>
+                                Charts
+                                <i class="fas fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <partial name="_TenantsPartitial" />
                         </ul>
                     </li>
                 </ul>
