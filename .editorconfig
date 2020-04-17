@@ -26,3 +26,6 @@ dotnet_diagnostic.SA1309.severity = none
 
 # IDE0052: Remove unread private members
 dotnet_diagnostic.IDE0052.severity = none
+
+# SA1401: Fields should be private
+dotnet_diagnostic.SA1401.severity = none

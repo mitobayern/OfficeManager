@@ -1,11 +1,72 @@
-﻿@using OfficeManager.ViewModels.AccountingReports
-@model List<AccountingReportListViewModel>
+﻿@using OfficeManager.Areas.Administration.ViewModels.Charts
+@using Newtonsoft.Json;
+@model ChartsJsonOutputViewModel
+@*@{
+        var periods = Model.Select(x => x.Period).ToArray();
+        var amountForElectricity = Model.Select(x => x.AmountForElectricity).ToArray();
+    }*@
 
 
-@foreach (var accountingReport in @Model)
-{
-    <h5>Period: @accountingReport.Period / Amount for Electricity:@accountingReport.AmountForElectricity</h5>
-    <h5>Period: @accountingReport.Period / Amount for Heating:@accountingReport.AmountForHeating</h5>
-    <h5>Period: @accountingReport.Period / Amount for Heating:@accountingReport.AmountForCooling</h5>
-    <h5>Period: @accountingReport.Period / Total Amount:@accountingReport.TotalAmount</h5>
-}
+<!DOCTYPE HTML>
+<html>
+<head>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha256-TQq84xX6vkwR0Qs1qH5ADkP+MvH0W+9E7TdHJsoIQiM=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+
+</head>
+
+<body>
+    <div style="padding: 5%;">
+
+        @*<canvas id="lineChart"></canvas>*@
+        <canvas id="lineChart"></canvas>
+    </div>
+    <script>
+        var ctx = document.getElementById('lineChart').getContext('2d');
+        let chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        label: 'Electricity',
+                        fill: false,
+                        lineTension: 0.2,
+                        borderColor: "rgba(110, 255, 0, 1)",
+                        data: @Html.Raw(Model.AmountsForElectricity)
+                    },{
+                        label: 'Heating',
+                        fill: false,
+                        lineTension: 0.2,
+                        borderColor: "rgba(255, 0, 0, 1)",
+
+
+                        data: @Html.Raw(Model.AmountsForHeating)
+                    },{
+                        label: 'Cooling',
+                        fill: false,
+                        lineTension:0.2,
+                        borderColor: "rgba(0, 0, 255, 1)",
+
+
+                        data: @Html.Raw(Model.AmountsForCooling)
+                    }
+                ],
+                labels:@Html.Raw(Model.Periods)
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            suggestedMin: 50,
+                            suggestedMax: 100
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
