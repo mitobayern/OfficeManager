@@ -5,17 +5,18 @@
     ViewData["Title"] = "All Tenants";
 }
 
-<h1 class="display-4" style="margin: 2%; text-align: center;">All Tenants</h1>
 <div style="padding: 5%;">
+<h1 class="display-4" style="margin-bottom: 100px; text-align: center;">All Tenants</h1>
     <form asp-action="All" method="get">
         <div class="form-actions no-color">
-            <p>
-                Find by name: <input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
-                <input type="submit" value="Search" class="btn btn-default" /> |
-                <a asp-action="All">Back to Full List</a>
-            </p>
+            <h5>
+                <i>Find by name: </i><input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-primary" /> |
+                <a asp-action="All" class="btn btn-dark">Back to Full List</a>
+            </h5>
         </div>
     </form>
+    <br />
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>

@@ -5,41 +5,41 @@
     ViewData["Title"] = "Tenant Details";
 }
 
-<h1 class="display-4" style="text-align:center;">Tenant Details</h1>
 <div style="padding: 5%;">
+    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">Tenant Details</h1>
     <form asp-area="Administration" asp-controller="Tenants" asp-action="Details" method="post">
         <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
         <div class="row" style="margin-bottom:20px">
             <div class="col-5">
                 <label asp-for="CompanyName"><i>Company Name</i></label>
-                <input asp-for="CompanyName" class="form-control" placeholder="Company Name">
+                <input asp-for="CompanyName" class="form-control">
                 <span asp-validation-for="CompanyName" class="text-danger"></span>
             </div>
             <div class="col-4">
                 <label asp-for="CompanyOwner"><i>Company Owner</i></label>
-                <input asp-for="CompanyOwner" class="form-control" placeholder="Company Owner">
+                <input asp-for="CompanyOwner" class="form-control">
                 <span asp-validation-for="CompanyOwner" class="text-danger"></span>
             </div>
             <div class="col-3">
                 <label asp-for="Bulstat"><i>Bulstat</i></label>
-                <input asp-for="Bulstat" class="form-control" placeholder="Bulstat">
+                <input asp-for="Bulstat" class="form-control">
                 <span asp-validation-for="Bulstat" class="text-danger"></span>
             </div>
         </div>
         <div class="row" style="margin-bottom:20px">
             <div class="col-5">
                 <label asp-for="Address"><i>Address</i></label>
-                <input asp-for="Address" class="form-control" placeholder="Address">
+                <input asp-for="Address" class="form-control">
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
             <div class="col-4">
                 <label asp-for="Email"><i>Email</i></label>
-                <input asp-for="Email" type="email" class="form-control" placeholder="Email" validate>
+                <input asp-for="Email" type="email" class="form-control" validate>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="col-3">
                 <label asp-for="Phone"><i>Phone</i></label>
-                <input asp-for="Phone" class="form-control" placeholder="Phone">
+                <input asp-for="Phone" class="form-control">
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
         </div>
@@ -50,14 +50,8 @@
                 <span asp-validation-for="StartOfContract" class="text-danger"></span>
             </div>
         </div>
-        <div class="row">
-            <div class="col-2">
-                <button type="submit" class="btn btn-primary" style="width:165px">Save Changes</button>
-            </div>
-            <div class="col-2">
-                <a href="/Administration/Tenants/All" class="btn btn-dark" role="button" style="width:165px">Back</a>
-            </div>
-        </div>
+        <button type="submit" class="btn btn-primary" style="width:195px">Save Changes</button>
+        <a href="/Administration/Tenants/All" class="btn btn-dark" role="button" style="width:195px">Back</a>
     </form>
     <br />
     <br />
@@ -66,12 +60,6 @@
             <h5><i>Rented Offices: <b style="color:brown">@String.Join(", ", Model.Offices)</b></i></h5>
         </div>
     </div>
-    <div class="row">
-        <div class="col-2">
-            <a href="/Administration/Tenants/AddOffices?id=@Model.Id" class="btn btn-primary" style="width:165px">Add Offices</a>
-        </div>
-        <div class="col-2">
-            <a href="/Administration/Tenants/RemoveOffices?id=@Model.Id" class="btn btn-danger" style="width:165px">Remove Offices</a>
-        </div>
-    </div>
+    <a href="/Administration/Tenants/AddOffices?id=@Model.Id" class="btn btn-primary" style="width:195px">Add Offices</a>
+    <a href="/Administration/Tenants/RemoveOffices?id=@Model.Id" class="btn btn-danger" style="width:195px">Remove Offices</a>
 </div>
