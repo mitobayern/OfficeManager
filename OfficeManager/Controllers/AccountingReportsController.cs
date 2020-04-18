@@ -12,7 +12,7 @@
 
     public class AccountingReportsController : Controller
     {
-        private const string NumberDescending = "number_desc";
+        private const string NumberAscending = "number_asc";
         private const string DateAscending = "date_asc";
         private const string DateDescending = "date_desc";
         private const string TenantsAscending = "tenant_asc";
@@ -135,7 +135,7 @@
         private IQueryable<AccountingReportListViewModel> OrderAccountingReportsAsync(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<AccountingReportListViewModel> allAccountingReports)
         {
             this.ViewData["CurrentSort"] = sortOrder;
-            this.ViewData["NumberSortParm"] = string.IsNullOrEmpty(sortOrder) ? NumberDescending : string.Empty;
+            this.ViewData["NumberSortParm"] = string.IsNullOrEmpty(sortOrder) ? NumberAscending : string.Empty;
             this.ViewData["DateSortParam"] = sortOrder == DateAscending ? DateDescending : DateAscending;
             this.ViewData["TenantSortParam"] = sortOrder == TenantsAscending ? TenantsDescending : TenantsAscending;
             this.ViewData["PeriodSortParam"] = sortOrder == PeriodAscending ? PeriodDescending : PeriodAscending;
@@ -160,7 +160,7 @@
 
             allAccountingReports = sortOrder switch
             {
-                NumberDescending => allAccountingReports.OrderByDescending(s => s.Number),
+                NumberAscending => allAccountingReports.OrderBy(s => s.Number),
                 DateAscending => allAccountingReports.OrderBy(s => s.CreatedOn),
                 DateDescending => allAccountingReports.OrderByDescending(s => s.CreatedOn),
                 TenantsAscending => allAccountingReports.OrderBy(s => s.CompanyName),
@@ -169,7 +169,7 @@
                 PeriodDescending => allAccountingReports.OrderByDescending(s => s.Period),
                 TotalAmountAscending => allAccountingReports.OrderBy(s => s.TotalAmount),
                 TotalAmountDescending => allAccountingReports.OrderByDescending(s => s.TotalAmount),
-                _ => allAccountingReports.OrderBy(s => s.Number),
+                _ => allAccountingReports.OrderByDescending(s => s.Number),
             };
             return allAccountingReports;
         }

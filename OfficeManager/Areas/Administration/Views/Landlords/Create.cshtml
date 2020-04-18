@@ -5,10 +5,11 @@
     ViewData["Title"] = "Create Landlord";
 }
 
-<h1 class="display-4" style="margin: 2%; text-align: center;">Create Landlord</h1>
 <div style="padding: 5%;">
+    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">Create Landlord</h1>
     <form asp-area="Administration" asp-controller="Landlords" asp-action="Create" method="post">
-        <div class="row" style="margin-bottom:20px">
+        <partial name="_LandlordPartial" />
+        @*<div class="row" style="margin-bottom:20px">
             <div class="col-md-5">
                 <label asp-for="LandlordName"><i>Landlord Name</i></label>
                 <input asp-for="LandlordName" class="form-control">
@@ -42,7 +43,7 @@
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
         </div>
-        <br />
+        <br />*@
         <button type="submit" class="btn btn-primary" style="width:195px">Create Landlord</button>
     </form>
 </div>
