@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using OfficeManager.ViewModels.Measurements;
 
@@ -18,6 +19,16 @@
         Task CreateInitialMeasurementsAsync(CreateInitialMeasurementsInputViewModel input);
 
         Task CreateAllMeasurementsAsync(CreateMeasurementsInputViewModel input);
+
+        Task EditElectricityMeasurementAsync(DateTime periodStartTime, DateTime periodEndTime, string elMeterName, decimal dayTimeMeasurement, decimal nightTimeMeasurement);
+
+        Task EditTemperatureMeasurementAsync(DateTime periodStartTime, DateTime periodEndTime, string tempMeterName, decimal heatingMeasurement, decimal coolingMeasurement);
+
+        Task EditAllMeasurementsAsync(CreateMeasurementsInputViewModel input);
+
+        IQueryable<AllMeasurementsOutputViewModel> GetAllMeasurements();
+
+        CreateMeasurementsInputViewModel GetMeasurementsByStartingPeriod(DateTime startOfPeriod);
 
         bool IsFirstPeriod();
 

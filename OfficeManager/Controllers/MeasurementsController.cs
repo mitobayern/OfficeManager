@@ -5,12 +5,14 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using OfficeManager.Data;
     using OfficeManager.Services;
     using OfficeManager.ViewModels.Measurements;
 
     public class MeasurementsController : Controller
     {
+        private const string CreatedOnDescending = "createdOn_desc";
         private readonly ApplicationDbContext dbContext;
         private readonly IMeasurementsService measurementsService;
 
@@ -53,7 +55,7 @@
 
             await this.measurementsService.CreateAllMeasurementsAsync(input);
 
-            return this.Redirect("/Home/Index");
+            return this.Redirect("/Measurements/All");
         }
 
         public IActionResult InitialMeasurements()
@@ -76,7 +78,82 @@
 
             await this.measurementsService.CreateInitialMeasurementsAsync(input);
 
-            return this.Redirect("/Home/Index");
+            return this.Redirect("/Measurements/All");
+        }
+
+        public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
+        {
+            var allMeasurements = this.measurementsService.GetAllMeasurements();
+            allMeasurements = this.OrderMeasurements(sortOrder, currentFilter, searchString, pageNumber, allMeasurements);
+            int pageSize = GetPageSize(rowsPerPage, allMeasurements);
+
+            this.ViewData["RowsPerPage"] = pageSize;
+
+            return this.View(await PaginatedList<AllMeasurementsOutputViewModel>.CreateAsync(allMeasurements.AsNoTracking(), pageNumber ?? 1, pageSize));
+        }
+
+        public IActionResult Edit(DateTime period)
+        {
+            var measurementsToEdit = this.measurementsService.GetMeasurementsByStartingPeriod(period);
+
+            return this.View(measurementsToEdit);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CreateMeasurementsInputViewModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            await this.measurementsService.EditAllMeasurementsAsync(input);
+
+            return this.Redirect("/Measurements/All");
+        }
+
+        private static int GetPageSize(string rowsPerPage, IQueryable<AllMeasurementsOutputViewModel> allElectricityMeters)
+        {
+            int pageSize;
+
+            if (string.IsNullOrEmpty(rowsPerPage))
+            {
+                pageSize = 5;
+            }
+            else if (rowsPerPage == "All")
+            {
+                pageSize = allElectricityMeters.Count();
+            }
+            else
+            {
+                pageSize = int.Parse(rowsPerPage);
+            }
+
+            return pageSize;
+        }
+
+        private IQueryable<AllMeasurementsOutputViewModel> OrderMeasurements(string sortOrder, string currentFilter, string searchString, int? pageNumber, IQueryable<AllMeasurementsOutputViewModel> allElectricityMeters)
+        {
+            this.ViewData["CurrentSort"] = sortOrder;
+            this.ViewData["MeasurementsSortParam"] = string.IsNullOrEmpty(sortOrder) ? CreatedOnDescending : string.Empty;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            this.ViewData["CurrentFilter"] = searchString;
+
+            allElectricityMeters = sortOrder switch
+            {
+                CreatedOnDescending => allElectricityMeters.OrderByDescending(s => s.StartOfPeriod),
+                _ => allElectricityMeters.OrderBy(s => s.StartOfPeriod),
+            };
+            return allElectricityMeters;
         }
 
         private bool ValidatePeriod(DateTime startOfPeriod, DateTime endOfPeriod)
