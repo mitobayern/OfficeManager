@@ -108,6 +108,7 @@
             allAccountingReports = this.OrderAccountingReportsAsync(sortOrder, currentFilter, searchString, pageNumber, allAccountingReports);
             int pageSize = this.GetPageSize(rowsPerPage, allAccountingReports);
 
+            this.ViewData["TenantsCount"] = this.accountingReportsService.AlTenants().Count() / 2;
             this.ViewData["AllTenants"] = this.accountingReportsService.AlTenants();
             this.ViewData["AllPeriods"] = this.accountingReportsService.AllPeriods();
             this.ViewData["RowsPerPage"] = pageSize;

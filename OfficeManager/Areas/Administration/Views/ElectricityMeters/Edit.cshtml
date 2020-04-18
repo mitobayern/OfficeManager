@@ -5,8 +5,8 @@
     ViewData["Title"] = "Edit Electricity Meter";
 }
 
-<h1 class="display-4" style="margin: 2%; text-align: center;">Edit Electricity Meter</h1>
 <div style="padding: 5%;">
+<h1 class="display-4" style="margin-bottom: 100px; text-align: center;">Edit Electricity Meter</h1>
     <form asp-area="Administration" asp-controller="ElectricityMeters" asp-action="Edit" method="post">
         <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
         <div class="row" style="margin-bottom:20px">

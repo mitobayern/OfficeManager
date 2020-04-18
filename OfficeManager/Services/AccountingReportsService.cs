@@ -311,7 +311,7 @@
             List<string> allPeriods = new List<string>();
 
             foreach (var period in this.dbContext.ElectricityMeasurements
-                            .OrderByDescending(x => x.Id)
+                            .OrderBy(x => x.Id)
                             .Select(x => x.Period)
                             .Where(x => !x.StartsWith("Starting"))
                             .ToList())
