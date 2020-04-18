@@ -4,8 +4,8 @@
     ViewData["Title"] = "Office Details";
 }
 
-<h1 class="display-4" style="margin: 2%; text-align: center;">Office Details</h1>
 <div style="padding: 5%;">
+    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">Office Details</h1>
     <form asp-area="Administration" asp-controller="Offices" asp-action="Edit" method="post">
         <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
         <div class="row" style="margin-bottom:20px">
@@ -25,8 +25,9 @@
                 <span asp-validation-for="RentPerSqMeter" class="text-danger"></span>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a class="btn btn-dark" href="/Administration/Offices/All" role="button" style="width:150px">Back</a>
+        <br />
+        <button type="submit" class="btn btn-primary" style="width:195px">Save Changes</button>
+        <a class="btn btn-dark" href="/Administration/Offices/All" role="button" style="width:195px">Back</a>
     </form>
     <br />
     <br />
@@ -46,27 +47,16 @@
             </div>
         </div>
     }
-    <div class="row">
-        @if (Model.ElectricityMeter == "No electricity meter available")
-        {
-            <div class="col-3">
-                <a href="/Administration/Offices/AddElectricityMeter?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
-            </div>
-            <div class="col-3">
-                <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
-            </div>
-        }
-        else
-        {
-            <div class="col-3">
-
-                <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
-            </div>
-            <div class="col-3">
-                <a href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
-            </div>
-        }
-    </div>
+    @if (Model.ElectricityMeter == "No electricity meter available")
+    {
+        <a href="/Administration/Offices/AddElectricityMeter?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
+        <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
+    }
+    else
+    {
+        <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
+        <a href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
+    }
     <br />
     <br />
     @if (Model.TemperatureMeters.Count() == 0)
@@ -85,12 +75,9 @@
             </div>
         </div>
     }
-    <div class="row">
-        <div class="col-3">
-            <a href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Temperature Meters</a>
-        </div>
-        <div class="col-3">
-            <a href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Temperature Meters</a>
-        </div>
-    </div>
+
+    <a href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Temperature Meters</a>
+
+    <a href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Temperature Meters</a>
+
 </div>

@@ -4,21 +4,20 @@
     ViewData["Title"] = "Add Electricity Meter";
 }
 
-<h1 class="display-4" style="text-align:center;">Add Electricity Meter to Office</h1>
-<h5 style="margin-top:50px; margin-bottom:20px" ; text-align:left;">Available Electricity Meters</h5>
-<form asp-area="Administration" asp-controller="Offices" asp-action="AddElectricityMeter" method="post" class="form">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <tr>
-        <th>Electricity Meter Number</th>
-    </tr>
+<div style="padding: 5%;">
+    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">Add Electricity Meter to Office</h1>
+    <h5 style="margin-top:50px; margin-bottom:20px; text-align:left;"><i>Available Electricity Meters</i></h5>
+    <form asp-area="Administration" asp-controller="Offices" asp-action="AddElectricityMeter" method="post" class="form">
+        <input type="hidden" name="id" value="@Model.Id" />
 
-    @foreach (var electricityMeter in Model.AvailavleElectricityMeters.OrderBy(x=>x.Name))
-    {
-        <div>
-            <input name="IsChecked" type="radio" value="@electricityMeter.Name" />@electricityMeter.Name<br />
-        </div>
-    }
-
-    <button type="submit" class="btn btn-outline-primary">Add</button>
-    <a class="btn btn-outline-dark" href="/Administration/Offices/Edit?id=@Model.Id" role="button" style="width:150px">Back</a>
-</form>
+        @foreach (var electricityMeter in Model.AvailavleElectricityMeters.OrderBy(x => x.Name))
+        {
+            <div>
+                <input name="IsChecked" type="radio" value="@electricityMeter.Name" />@electricityMeter.Name<br />
+            </div>
+        }
+        <br />
+        <button type="submit" class="btn btn-primary" style="width:195px">Add</button>
+        <a class="btn btn-dark" href="/Administration/Offices/Edit?id=@Model.Id" role="button" style="width:195px">Back</a>
+    </form>
+</div>

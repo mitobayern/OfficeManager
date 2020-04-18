@@ -5,8 +5,8 @@
     ViewData["Title"] = "Create Office";
 }
 
-<h1 class="display-4" style="margin: 2%; text-align: center;">Create Office</h1>
 <div style="padding: 5%;">
+    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">Create Office</h1>
     <form asp-area="Administration" asp-controller="Offices" asp-action="Create" method="post">
         <div class="row" style="margin-bottom:20px">
             <div class="col-4">
@@ -14,7 +14,7 @@
                 <input asp-for="Name" class="form-control">
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="col--4">
+            <div class="col-4">
                 <label asp-for="Area"><i>Office Area</i></label>
                 <input asp-for="Area" class="form-control">
                 <span asp-validation-for="Area" class="text-danger"></span>
