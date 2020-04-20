@@ -61,10 +61,10 @@
 
         public IActionResult Details(TenantIdViewModel input)
         {
-            if (!this.ValidateTenant(input.Id))
-            {
-                return this.Redirect("/Administration/Tenants/All");
-            }
+            //if (!this.ValidateTenant(input.Id))
+            //{
+            //    return this.Redirect("/Administration/Tenants/All");
+            //}
 
             var currentTenant = this.tenantsService.GetTenantById(input.Id);
             var tenantToEdit = this.tenantsService.EditTenant(currentTenant);
