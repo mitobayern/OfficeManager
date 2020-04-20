@@ -2,123 +2,124 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
-    <ul class="navbar-nav">
-        @if (SignInManager.IsSignedIn(User))
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        if (this.User.IsInRole("Admin"))
         {
-            if (this.User.IsInRole("Admin"))
-            {
-                <!-- LANDLORD -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarLandlordsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Landlord
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/Administration/Landlords/Create">Create Landlord</a>
-                        <a class="dropdown-item" href="/Administration/Landlords/Details">Landlord Details</a>
-                    </div>
-                </li>
-
-                <!-- PRICES -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPricesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Prices
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/Administration/PricesInformation/CreatePricelist">Create Pricelist</a>
-                        <a class="dropdown-item" href="/Administration/PricesInformation/CurrentPrices">Current Prices</a>
-                    </div>
-                </li>
-
-                <!-- METERS -->
-                <li id="dropdown" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarMetersDropdown" role="button" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        Meters
-                    </a>
-                    <div class="dropdown-menu">
-                        <div class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#">Electricity Meters</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/Administration/ElectricityMeters/Create">Create Meter</a></li>
-                                <li><a class="dropdown-item" href="/Administration/ElectricityMeters/All">All Meters</a></li>
-                            </ul>
-                        </div>
-                        <div class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#">Temperature Meters</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/Administration/TemperatureMeters/Create">Create Meter</a></li>
-                                <li><a class="dropdown-item" href="/Administration/TemperatureMeters/All">All Meters</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- OFFICES -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarOfficesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Offices
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/Administration/Offices/Create">Create Office</a>
-                        <a class="dropdown-item" href="/Administration/Offices/All">All Offices</a>
-                    </div>
-                </li>
-
-                <!-- TENANTS -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarTenantsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Tenants
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/Administration/Tenants/Create">Create Tenant</a>
-                        <a class="dropdown-item" href="/Administration/Tenants/All">All Tenants</a>
-                    </div>
-                </li>
-
-                <!-- USERS -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarMeasurementsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Users
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/Administration/Users/All">All users</a>
-                    </div>
-                </li>
-            }
-
+            <!-- LANDLORD -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarLandlordsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Accounting
+                    Landlord
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/AccountingReports/Create">Create Accounting Report</a>
-                    <a class="dropdown-item" href="/AccountingReports/All">All Accounting Reports</a>
+                    <a class="dropdown-item" href="/Administration/Landlords/Create">Create Landlord</a>
+                    <a class="dropdown-item" href="/Administration/Landlords/Details">Landlord Details</a>
                 </div>
             </li>
+
+            <!-- PRICES -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarPricesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Prices
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/Administration/PricesInformation/CreatePricelist">Create Pricelist</a>
+                    <a class="dropdown-item" href="/Administration/PricesInformation/CurrentPrices">Current Prices</a>
+                </div>
+            </li>
+
+            <!-- METERS -->
+            <li id="dropdown" class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarMetersDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Meters
+                </a>
+                <div class="dropdown-menu">
+                    <div class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle" href="#">Electricity Meters</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/Administration/ElectricityMeters/Create">Create Meter</a></li>
+                            <li><a class="dropdown-item" href="/Administration/ElectricityMeters/All">All Meters</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown-submenu">
+                        <a class="dropdown-item dropdown-toggle" href="#">Temperature Meters</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/Administration/TemperatureMeters/Create">Create Meter</a></li>
+                            <li><a class="dropdown-item" href="/Administration/TemperatureMeters/All">All Meters</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+
+            <!-- OFFICES -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarOfficesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Offices
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/Administration/Offices/Create">Create Office</a>
+                    <a class="dropdown-item" href="/Administration/Offices/All">All Offices</a>
+                </div>
+            </li>
+
+            <!-- TENANTS -->
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarTenantsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Tenants
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/Administration/Tenants/Create">Create Tenant</a>
+                    <a class="dropdown-item" href="/Administration/Tenants/All">All Tenants</a>
+                </div>
+            </li>
+
+            <!-- USERS -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarMeasurementsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Measurements
+                    Users
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="/Measurements/CreateMeasurements">Create Measurements</a>
+                    <a class="dropdown-item" href="/Administration/Users/All">All users</a>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
-            </li>
-            <li class="nav-item">
-                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                    <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-                </form>
-            </li>
         }
-        else
-        {
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-            </li>
-        }
-    </ul>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarLandlordsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Accounting
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="/AccountingReports/Create">Create Accounting Report</a>
+                <a class="dropdown-item" href="/AccountingReports/All">All Accounting Reports</a>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarMeasurementsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Measurements
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="/Measurements/CreateMeasurements">Create Measurements</a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>

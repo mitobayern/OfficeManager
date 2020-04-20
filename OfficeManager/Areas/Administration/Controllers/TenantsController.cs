@@ -1,6 +1,5 @@
 ﻿namespace OfficeManager.Areas.Administration.Controllers
 {
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
@@ -61,10 +60,10 @@
 
         public IActionResult Details(TenantIdViewModel input)
         {
-            //if (!this.ValidateTenant(input.Id))
-            //{
-            //    return this.Redirect("/Administration/Tenants/All");
-            //}
+            if (!this.ValidateTenant(input.Id))
+            {
+                return this.Redirect("/Home/Error");
+            }
 
             var currentTenant = this.tenantsService.GetTenantById(input.Id);
             var tenantToEdit = this.tenantsService.EditTenant(currentTenant);
@@ -75,11 +74,6 @@
         [HttpPost]
         public async Task<IActionResult> Details(TenantToEditViewModel input)
         {
-            if (!this.ValidateTenant(input.Id))
-            {
-                return this.Redirect("/Administration/Tenants/All");
-            }
-
             if (!this.ModelState.IsValid)
             {
                 var currentTenant = this.tenantsService.GetTenantById(input.Id);
@@ -97,7 +91,7 @@
         {
             if (!this.ValidateTenant(input.Id))
             {
-                return this.Redirect("/Administration/Tenants/All");
+                return this.Redirect("/Home/Error");
             }
 
             var availableOffices = this.officesService.GetAllAvailableOffices().ToList();
@@ -108,11 +102,6 @@
         [HttpPost]
         public async Task<IActionResult> AddOffices(AddRemoveOfficeViewModel input)
         {
-            if (!this.ValidateTenant(input.Id))
-            {
-                return this.Redirect("/Administration/Tenants/All");
-            }
-
             if (input.AreChecked == null)
             {
                 return this.RedirectToAction("AddOffices", new TenantIdViewModel { Id = input.Id });
@@ -125,11 +114,6 @@
 
         public IActionResult RemoveOffices(TenantIdViewModel input)
         {
-            if (!this.ValidateTenant(input.Id))
-            {
-                return this.Redirect("/Administration/Tenants/All");
-            }
-
             var currentTenantOffices = this.tenantsService.GetTenantOffices(input).ToList();
 
             return this.View(new TenantWithAllOfficesViewModel { Id = input.Id, CurrentOffices = currentTenantOffices });
@@ -138,11 +122,6 @@
         [HttpPost]
         public async Task<IActionResult> RemoveOfficesAsync(AddRemoveOfficeViewModel input)
         {
-            if (!this.ValidateTenant(input.Id))
-            {
-                return this.Redirect("/Administration/Tenants/All");
-            }
-
             if (input.AreChecked == null)
             {
                 return this.RedirectToAction("RemoveOffices", new TenantIdViewModel { Id = input.Id });

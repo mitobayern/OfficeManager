@@ -6,7 +6,7 @@
 }
 
 <div style="padding: 5%;">
-    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">All Measurements</h1>
+    <h1 class="display-4 text-center mb-5">All Measurements</h1>
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
@@ -43,12 +43,12 @@
         </tbody>
     </table>
     <div class="row">
-        <div class="col-10">
+        <div class="col-12 col-sm-8 order-1 order-sm-0">
             @{
                 var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
                 var nextDisabled = !Model.HasNextPage ? "disabled" : "";
             }
-            <ul class="pagination">
+            <ul class="pagination justify-content-center justify-content-sm-start">
                 <li class="page-item">
                     <a class="page-link btn btn-default @prevDisabled" style="color:black"
                        asp-action="All"
@@ -100,7 +100,7 @@
                 </li>
             </ul>
         </div>
-        <div class="col-2">
+        <div class="col-12 col-sm-4 mb-3 mb-sm-0 text-center text-sm-right order-0 order-sm-1">
             <div class="btn-group">
                 <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Rows per page

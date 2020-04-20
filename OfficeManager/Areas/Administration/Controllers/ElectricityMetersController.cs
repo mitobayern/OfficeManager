@@ -49,7 +49,7 @@
         {
             if (!this.ValidateElectricityMeter(input.Id))
             {
-                return this.Redirect("/Administration/ElectricityMeters/All");
+                return this.Redirect("/Home/Error");
             }
 
             var electricityMeterToEdit = this.electricityMetersService.GetElectricityMeterById(input.Id);

@@ -47,7 +47,7 @@
         {
             if (!this.ValidateTemperatureMeter(input.Id))
             {
-                return this.Redirect("/Administration/TemperatureMeters/All");
+                return this.Redirect("/Home/Error");
             }
 
             var temperatureMeterToEdit = this.temperatureMetersService.EditTemperatureMeter(input.Id);

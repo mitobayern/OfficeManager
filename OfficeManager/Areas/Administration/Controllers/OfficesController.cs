@@ -58,7 +58,7 @@
         {
             if (!this.ValidateOffice(input.Id))
             {
-                return this.Redirect("/Administration/Offices/All");
+                return this.Redirect("/Home/Error");
             }
 
             var officeToEdit = this.officesService.EditOffice(input.Id);
@@ -97,7 +97,7 @@
         {
             if (!this.ValidateOffice(input.Id))
             {
-                return this.Redirect("/Administration/Offices/All");
+                return this.Redirect("/Home/Error");
             }
 
             var allAvailableTemperatureMeters = this.temperatureMetersService
@@ -123,11 +123,6 @@
 
         public IActionResult RemoveTemperatureMeters(OfficeIdViewModel input)
         {
-            if (!this.ValidateOffice(input.Id))
-            {
-                return this.Redirect("/Administration/Offices/All");
-            }
-
             var currentOfficeTemperatreMeters = this.officesService.GetOfficeTemperatureMeters(input.Id).ToList();
 
             return this.View(new OfficeWithCurrentTemperatureMetersViewModel { Id = input.Id, CurrentTemperatureMeters = currentOfficeTemperatreMeters });
@@ -150,7 +145,7 @@
         {
             if (!this.ValidateOffice(input.Id))
             {
-                return this.Redirect("/Administration/Offices/All");
+                return this.Redirect("/Home/Error");
             }
 
             var office = this.dbContext.Offices.FirstOrDefault(x => x.Id == input.Id);
@@ -185,7 +180,7 @@
         {
             if (!this.ValidateOffice(input.Id))
             {
-                return this.Redirect("/Administration/Offices/All");
+                return this.Redirect("/Home/Error");
             }
 
             await this.officesService.RemoveElectricityMeterFromOfficeAsync(input.Id);

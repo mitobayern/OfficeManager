@@ -93,3 +93,25 @@ body {
     left: 100%;
     margin-left: .25rem;
 }
+
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link span {
+    margin-left: -10px;
+    opacity: 0; 
+    visibility: hidden;
+}
+
+.sidebar-mini.sidebar-collapse .nav-sidebar .nav-link span {
+    width: 0;
+}
+
+.sidebar-mini.sidebar-collapse .main-sidebar.sidebar-focused .nav-sidebar .nav-link span,
+.sidebar-mini.sidebar-collapse .main-sidebar:hover .nav-sidebar .nav-link span {
+    display: inline-block;
+    margin-left: 0;
+    opacity: 1;
+    visibility: visible;
+}
+
+.no-sidebar-margin {
+    margin-left: 0!important;
+}

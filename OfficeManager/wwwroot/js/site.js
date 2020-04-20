@@ -14,4 +14,9 @@
         $('#dropdown .dropdown-submenu .show').removeClass('show');
         $('#dropdown a.dropdown-toggle').removeClass('show');
     });
+
+    const createMeasurement = document.getElementById('createMeasurement');
+    if (createMeasurement) {
+        createMeasurement.querySelectorAll('input[type="text"]').forEach(el => el.value = '');
+    }
 });

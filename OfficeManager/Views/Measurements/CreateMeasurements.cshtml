@@ -9,7 +9,7 @@
     <br />
     <i style="color:orangered;"><b>Last period: @Model.LastPeriod</b></i>
     <br />
-    <form asp-controller="Measurements" asp-action="CreateMeasurements" method="post">
+    <form id="createMeasurement" asp-controller="Measurements" asp-action="CreateMeasurements" method="post">
         <partial name="_MeasurementsPartitial" />
     </form>
 </div>
