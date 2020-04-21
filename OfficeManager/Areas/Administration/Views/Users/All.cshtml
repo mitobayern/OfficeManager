@@ -34,7 +34,7 @@
                     <td>@user.Role</td>
                     <td>
                         @if (@user.UserName != User.Identity.Name)
-                        { 
+                        {
                             <input data-style="slow" type="checkbox" checked data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="primary" data-offstyle="secondary">
                         }
                         else
@@ -43,7 +43,6 @@
 
                         }
                     </td>
-
                     @{
                         if (@user.Role != "Admin")
                         {
@@ -70,7 +69,19 @@
                             </td>
                         }
                     }
-
+                    <td>
+                        @if (@user.UserName != User.Identity.Name)
+                        {
+                            <div class="button-holder text-right">
+                                <a style="font-size:small"
+                                   class="btn btn-danger"
+                                   asp-action="Delete"
+                                   asp-route-userName="@user.UserName">
+                                    Delete User
+                                </a>
+                            </div>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>

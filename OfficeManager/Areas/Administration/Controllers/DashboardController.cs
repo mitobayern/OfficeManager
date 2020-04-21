@@ -1,11 +1,11 @@
 ﻿namespace OfficeManager.Areas.Administration.Controllers
 {
+    using System.Linq;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using OfficeManager.Areas.Administration.ViewModels.Dashboard;
     using OfficeManager.Data;
     using OfficeManager.Services;
-    using System.Linq;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]

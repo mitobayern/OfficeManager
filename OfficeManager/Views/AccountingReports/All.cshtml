@@ -8,188 +8,114 @@
     <h1 class="display-4 text-center mb-5">All Accounting Reports</h1>
 
     <div class="row">
-        <div class="col-6">
-            <div class="row">
-                <div class="col-4">
-                    @{
-                    int countCol1 = 0;
-                    int maxCount = (int)ViewData["TenantsCount"];
-                    foreach (var tenant in (List<string>)ViewData["AllTenants"])
-                    {
-                        countCol1++;
-                        @if(countCol1<= maxCount)
-                        {
-                        <div class="row">
-                            <a style="font-size:small; width:200px; margin-bottom:2px"
-                               class="btn btn-dark btn-xs"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-currentFilter="@tenant"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @tenant
-                            </a>
-                        </div>
-                        }
-                    }
-                    }
+        <div class="col-8">
+            <form asp-action="All" method="get">
+                <br />
+                <div class="form-actions no-color">
+                    <h5>
+                        <i>Find by name: </i><input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
+                        <input type="submit" value="Search" class="btn btn-primary" /> |
+                        <a asp-action="All" class="btn btn-dark">Back to Full List</a>
+                    </h5>
                 </div>
-                <div class="col-4">
-                    @{
-                    int countCol2 = 0;
-                    foreach (var tenant in (List<string>)ViewData["AllTenants"])
+                <br />
+            </form>
+        </div>
+        <div class="col-2">
+            <div class="dropdown show">
+                <a class="btn btn-dark btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Filter by Tenant
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    @foreach (var tenant in (List<string>)ViewData["AllTenants"])
                     {
-                        countCol2++;
-                        @if(countCol2 > maxCount)
-                        {
-                        <div class="row">
-                            <a style="font-size:small; width:200px; margin-bottom:2px"
-                               class="btn btn-outline-dark btn-xs"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-currentFilter="@tenant"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @tenant
-                            </a>
-                        </div>
-                        }
+                        <a class="dropdown-item"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-currentFilter="@tenant"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            @tenant
+                        </a>
                     }
-                    }
+
                 </div>
             </div>
-         </div>
-        <div class="col-6">
-            <div class="row">
-                <div class="col-4">
-                    @{
-                    int count1 = 0;
-                    foreach (var period in (List<string>)ViewData["AllPeriods"])
+        </div>
+        <div class="col-2">
+            <div class="dropdown show">
+                <a class="btn btn-dark btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Filter by Period
+                </a>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    @foreach (var period in (List<string>)ViewData["AllPeriods"])
                     {
-                        count1 ++;
-                        @if(count1<=4)
-                        {
-                        <div class="row">
-                            <a style="font-size:small; width:250px; margin-bottom:2px"
-                               class="btn btn-outline-dark btn-xs"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-currentFilter="@period"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @period
-                            </a>
-                        </div>
-                        }
-                    }
-                    }
-                </div>
-                <div class="col-4">
-                    @{
-                    int count2 = 0;
-                    foreach (var period in (List<string>)ViewData["AllPeriods"])
-                    {
-                        count2 ++;
-                        @if(count2 > 4 && count2 <= 8)
-                        {
-                        <div class="row" style="margin-bottom:2px">
-                            <a style="font-size:small; width:250px;"
-                               class="btn btn-dark btn-xs"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-currentFilter="@period"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @period
-                            </a>
-                        </div>
-                        }
-                    }
-                    }
-                </div>
-                <div class="col-4">
-                    @{
-                    int count3 = 0;
-                    foreach (var period in (List<string>)ViewData["AllPeriods"])
-                    {
-                        count3 ++;
-                        @if(count3 > 8)
-                        {
-                        <div class="row">
-                            <a style="font-size:small; width:250px; margin-bottom:2px"
-                               class="btn btn-dark btn-xs"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-currentFilter="@period"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @period
-                            </a>
-                        </div>
-                        }
-                    }
+                        <a class="dropdown-item"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-currentFilter="@period"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            @period
+                        </a>
                     }
                 </div>
             </div>
         </div>
-        <form asp-action="All" method="get">
-            <br />
-            <div class="form-actions no-color">
-                <h5>
-                    <i>Find by name: </i><input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
-                    <input type="submit" value="Search" class="btn btn-primary" /> |
-                    <a asp-action="All" class="btn btn-dark">Back to Full List</a>
-                </h5>
-            </div>
-            <br />
-        </form>
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">
-                        <a style="color:white"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["NumberSortParm"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            Number
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <a style="color:white"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["DateSortParam"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            Created On
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <a style="color:white"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["TenantSortParam"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            Company Name
-                        </a>
-                    </th>
-                    <th scope="col">
-                        <a style="color:white"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["PeriodSortParam"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            Period
-                        </a>
-                    </th>
-                    <th scope="col" colspan="2">
-                        <a style="color:white"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["TotalAmountSortParam"]"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            Total Amount
-                        </a>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var accountingReport in Model)
+
+    </div>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">
+                    <a style="color:white"
+                       asp-action="All"
+                       asp-route-sortOrder="@ViewData["NumberSortParm"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                        Number
+                    </a>
+                </th>
+                <th scope="col">
+                    <a style="color:white"
+                       asp-action="All"
+                       asp-route-sortOrder="@ViewData["DateSortParam"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                        Created On
+                    </a>
+                </th>
+                <th scope="col">
+                    <a style="color:white"
+                       asp-action="All"
+                       asp-route-sortOrder="@ViewData["TenantSortParam"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                        Company Name
+                    </a>
+                </th>
+                <th scope="col">
+                    <a style="color:white"
+                       asp-action="All"
+                       asp-route-sortOrder="@ViewData["PeriodSortParam"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                        Period
+                    </a>
+                </th>
+                <th scope="col" colspan="2">
+                    <a style="color:white"
+                       asp-action="All"
+                       asp-route-sortOrder="@ViewData["TotalAmountSortParam"]"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                        Total Amount
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var accountingReport in Model)
             {
                 <tr>
                     <td>@accountingReport.Number</td>
@@ -207,99 +133,7 @@
                     </td>
                 </tr>
             }
-            </tbody>
-        </table>
-        <div class="row">
-            <div class="col-10">
-                @{
-                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-                }
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link btn btn-default @prevDisabled" style="color:black"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-pageNumber="@(Model.PageIndex - 1)"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            Previous
-                        </a>
-                    </li>
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                {
-                    @if (@i == Model.PageIndex)
-                    {
-                    <li class="page-item active">
-                        <a class="page-link"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-pageNumber="@i"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            @i <span class="sr-only">(current)</span>
-                        </a>
-                    </li>
-                    }
-                    else
-                    {
-                    <li class="page-item">
-                        <a class="page-link"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-pageNumber="@i"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            @i
-                        </a>
-                    </li>
-                    }
-                }
-                    <li class="page-item">
-                        <a class="page-link btn btn-default @nextDisabled" style="color:black"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-pageNumber="@(Model.PageIndex + 1)"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            Next
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-2">
-                <div class="btn-group">
-                    <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Rows per page
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item-text" style="font-size:small"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-pageNumber="1"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="5">
-                            5 per page
-                        </a>
-                        <a class="dropdown-item-text"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-pageNumber="1"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="10">
-                            10 per page
-                        </a>
-                        <a class="dropdown-item-text"
-                           asp-action="All"
-                           asp-route-sortOrder="@ViewData["CurrentSort"]"
-                           asp-route-pageNumber="1"
-                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                           asp-route-rowsPerPage="All">
-                            All
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        </tbody>
+    </table>
+    <partial name="_PaginationPartial" />
 </div>

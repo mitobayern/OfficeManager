@@ -1,36 +1,21 @@
 ﻿@using OfficeManager.Areas.Administration.ViewModels.Dashboard
 @model DashboardOutputViewModel
 
-<h1>Total area: @Model.TotalArea</h1>
-
-@{
-    var dataChart = new decimal[2] { Model.AvailableArea, Model.RentedArea };
-    var labelsChart = new string[2] { "AvailableArea", "RentedArea" };
-
-}
-
-
-
-
-
-
-
-
 <!DOCTYPE HTML>
 <html>
 <head>
-
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js" integrity="sha256-TQq84xX6vkwR0Qs1qH5ADkP+MvH0W+9E7TdHJsoIQiM=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
 
 </head>
-
 <body>
+    @{
+        var dataChart = new decimal[2] { Model.AvailableArea, Model.RentedArea };
+        var labelsChart = new string[2] { "AvailableArea", "RentedArea" };
+    }
     <div style="padding: 5%;">
-
+        <h1 class="display-4 text-center mb-5">Total area: @Model.TotalArea meters<sup>2</sup></h1>
         <canvas id="myChart"></canvas>
-        @*<canvas id="myChart" width="400" height="400"></canvas>*@
     </div>
     <script>
         var ctx = document.getElementById('myChart').getContext('2d');
@@ -54,6 +39,5 @@
         );
 
     </script>
-
 </body>
 </html>
