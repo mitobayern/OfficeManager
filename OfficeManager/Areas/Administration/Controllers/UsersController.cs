@@ -53,6 +53,7 @@
                 {
                     UserName = identityUser,
                     Role = roleName,
+                    Email = user.Email,
                 };
                 userList.Add(userViewModel);
             }
