@@ -27,7 +27,6 @@
     <div class="wrapper">
 
         <partial name="_LoginPartialLTE" />
-        <!-- /.navbar -->
         <!-- Main Sidebar Container -->
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper @(IsNotAdmin ? "no-sidebar-margin" : "")">
@@ -35,7 +34,6 @@
             @RenderBody()
 
         </div>
-        <!-- /.content-wrapper -->
         <!-- Main Footer -->
         <footer class="border-top main-footer text-muted @(IsNotAdmin ? "no-sidebar-margin" : "")">
             <div class="container-fluid">

@@ -505,13 +505,16 @@
                 officesToReturn.Add(officeWithValues);
             }
 
+            var lastPeriodMeasurement = this.dbContext.ElectricityMeasurements.FirstOrDefault(x => x.EndOfPeriod == startOfPeriod.AddDays(-1));
+            var initialPeriod = this.dbContext.ElectricityMeasurements.FirstOrDefault(x => x.Period.Contains("Starting")).Period;
+
             CreateMeasurementsInputViewModel result = new CreateMeasurementsInputViewModel
             {
                 StartOfPeriod = startOfPeriod,
                 EndOfPeriod = this.dbContext.ElectricityMeasurements.FirstOrDefault(x => x.StartOfPeriod == startOfPeriod && !x.Period.Contains("Starting")).EndOfPeriod,
                 EndOfLastPeriod = startOfPeriod.AddDays(-1),
                 Offices = officesToReturn,
-                LastPeriod = this.dbContext.ElectricityMeasurements.FirstOrDefault(x => x.EndOfPeriod == startOfPeriod.AddDays(-1)).Period,
+                LastPeriod = lastPeriodMeasurement != null ? lastPeriodMeasurement.Period : initialPeriod,
             };
 
             return result;

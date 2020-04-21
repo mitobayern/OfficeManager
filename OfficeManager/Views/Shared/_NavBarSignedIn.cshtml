@@ -3,7 +3,8 @@
 @inject UserManager<IdentityUser> UserManager
 
 @{ 
-     var IsNotAdmin = (SignInManager.IsSignedIn(User) && !this.User.IsInRole("Admin")) || !SignInManager.IsSignedIn(User);
+    var IsNotAdmin = (SignInManager.IsSignedIn(User) && !this.User.IsInRole("Admin")) || !SignInManager.IsSignedIn(User);
+    
 }
 
     <ul class="navbar-nav">

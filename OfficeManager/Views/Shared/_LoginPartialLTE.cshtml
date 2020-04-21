@@ -3,8 +3,13 @@
 @inject UserManager<IdentityUser> UserManager
 
 @{
-    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
-    var actionName = ViewContext.RouteData.Values["action"].ToString();
+    string controllerName = "";
+    string actionName = "";
+    if (ViewContext.RouteData.Values["controller"] != null)
+    {
+        controllerName = ViewContext.RouteData.Values["controller"].ToString();
+        actionName = ViewContext.RouteData.Values["action"].ToString();
+    }
     var IsNotAdmin = (SignInManager.IsSignedIn(User) && !this.User.IsInRole("Admin")) || !SignInManager.IsSignedIn(User);
 }
 
@@ -47,8 +52,7 @@ else
             <!-- Sidebar Menu -->
             <nav class="mt-2 overflow-hidden">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    <!-- Add icons to the links using the .nav-icon class
-    with font-awesome or any other icon font library -->
+
                     <!-- DASHBOARD -->
                     <li class="nav-item">
                         <a href="/Administration/Dashboard/Index" class="nav-link @(controllerName =="Dashboard" && actionName == "Index" ? "active":"")">
@@ -213,7 +217,7 @@ else
                         <ul class="nav nav-treeview pl-2">
                             <partial name="_TenantsPartitial" />
                         </ul>
-                    </li>
+                    </li>  
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->

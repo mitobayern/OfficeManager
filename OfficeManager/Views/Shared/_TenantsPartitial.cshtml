@@ -3,8 +3,13 @@
 
 
 @{
-    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
-    var actionName = ViewContext.RouteData.Values["action"].ToString();
+    string controllerName = "";
+    string actionName = "";
+    if (ViewContext.RouteData.Values["controller"] != null)
+    {
+        controllerName = ViewContext.RouteData.Values["controller"].ToString();
+        actionName = ViewContext.RouteData.Values["action"].ToString();
+    }
     var tenants = @tenantsService.GetAllTenants().ToList();
 }
 <!-- Charts -->
