@@ -5,7 +5,7 @@
 }
 
 <div style="padding: 5%;">
-    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">Office Details</h1>
+    <h1 class="display-4 text-center mb-5">Office Details</h1>
     <form asp-area="Administration" asp-controller="Offices" asp-action="Edit" method="post">
         <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
         <div class="row" style="margin-bottom:20px">
@@ -49,12 +49,12 @@
     }
     @if (Model.ElectricityMeter == "No electricity meter available")
     {
-        <a href="/Administration/Offices/AddElectricityMeter?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
+        <a href="/Administration/Offices/AddElectricityMeter?id=@Model.Id" class="btn btn-success" style="width:250px">Add Electricity Meter</a>
         <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
     }
     else
     {
-        <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Electricity Meter</a>
+        <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-success" style="width:250px">Add Electricity Meter</a>
         <a href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
     }
     <br />
@@ -76,7 +76,7 @@
         </div>
     }
 
-    <a href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id" class="btn btn-primary" style="width:250px">Add Temperature Meters</a>
+    <a href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id" class="btn btn-success" style="width:250px">Add Temperature Meters</a>
 
     <a href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Temperature Meters</a>
 

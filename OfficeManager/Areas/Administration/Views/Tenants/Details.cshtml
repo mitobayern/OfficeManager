@@ -6,7 +6,7 @@
 }
 
 <div style="padding: 5%;">
-    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">Tenant Details</h1>
+    <h1 class="display-4 text-center mb-5">Tenant Details</h1>
     <form asp-area="Administration" asp-controller="Tenants" asp-action="Details" method="post">
         <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
         <div class="row" style="margin-bottom:20px">
@@ -60,6 +60,6 @@
             <h5><i>Rented Offices: <b style="color:brown">@String.Join(", ", Model.Offices)</b></i></h5>
         </div>
     </div>
-    <a href="/Administration/Tenants/AddOffices?id=@Model.Id" class="btn btn-primary" style="width:195px">Add Offices</a>
+    <a href="/Administration/Tenants/AddOffices?id=@Model.Id" class="btn btn-success" style="width:195px">Add Offices</a>
     <a href="/Administration/Tenants/RemoveOffices?id=@Model.Id" class="btn btn-danger" style="width:195px">Remove Offices</a>
 </div>

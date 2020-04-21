@@ -6,7 +6,7 @@
 }
 
 <div style="padding: 5%;">
-<h1 class="display-4" style="margin-bottom: 100px; text-align: center;">All Offices</h1>
+    <h1 class="display-4 text-center mb-5">All Offices</h1>
     <form asp-action="All" method="get">
         <div class="form-actions no-color">
             <h5>
@@ -82,96 +82,5 @@
             }
         </tbody>
     </table>
-    <div class="row">
-        <div class="col-10">
-            @{
-                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-            }
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link btn btn-default @prevDisabled" style="color:black"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="@(Model.PageIndex - 1)"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Previous
-                    </a>
-                </li>
-                @for (int i = 1; i <= Model.TotalPages; i++)
-                {
-                    @if (@i == Model.PageIndex)
-                    {
-                        <li class="page-item active">
-                            <a class="page-link"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-pageNumber="@i"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @i <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="page-item">
-                            <a class="page-link"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-pageNumber="@i"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @i
-                            </a>
-                        </li>
-                    }
-                }
-                <li class="page-item">
-                    <a class="page-link btn btn-default @nextDisabled" style="color:black"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="@(Model.PageIndex + 1)"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Next
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-2">
-            <div class="btn-group">
-                <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Rows per page
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item-text"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="1"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="5">
-                        5 per page
-                    </a>
-                    <a class="dropdown-item-text"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="1"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="10">
-                        10 per page
-                    </a>
-                    <a class="dropdown-item-text"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="1"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="All">
-                        All
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <partial name="_PaginationPartial" />
 </div>

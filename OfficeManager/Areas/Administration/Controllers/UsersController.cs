@@ -1,22 +1,22 @@
 ﻿namespace OfficeManager.Areas.Administration.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using OfficeManager.Data;
-    using System.Threading.Tasks;
     using OfficeManager.Areas.Administration.ViewModels.Users;
-    using System.Collections.Generic;
+    using OfficeManager.Data;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext dbContext;
-        private readonly IServiceProvider serviceProvider;
         private readonly UserManager<IdentityUser> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
 
@@ -63,15 +63,32 @@
         public async Task<IActionResult> Promote(string userName)
         {
             var user = await this.userManager.FindByNameAsync(userName);
+            await this.userManager.AddToRoleAsync(user, "Admin");
+
+            return this.Redirect("/Administration/Users/All");
+        }
+
+        public async Task<IActionResult> Demote(string userName)
+        {
+
+            var user = await this.userManager.FindByNameAsync(userName);
+            await this.userManager.RemoveFromRoleAsync(user, "Admin");
+
+            return this.Redirect("/Administration/Users/All");
+        }
+
+        public async Task<IActionResult> Delete(string userName)
+        {
+            var user = await this.userManager.FindByNameAsync(userName);
             var role = await this.roleManager.FindByNameAsync("Admin");
 
-
-            this.dbContext.UserRoles.Add(new IdentityUserRole<string>
+            var userRole = await this.dbContext.UserRoles.FirstOrDefaultAsync(x => x.UserId == user.Id && x.RoleId == role.Id);
+            if (userRole != null)
             {
-                RoleId = role.Id,
-                UserId = user.Id,
-            });
+                this.dbContext.Remove(userRole);
+            }
 
+            this.dbContext.Users.Remove(user);
             await this.dbContext.SaveChangesAsync();
 
             return this.Redirect("/Administration/Users/All");

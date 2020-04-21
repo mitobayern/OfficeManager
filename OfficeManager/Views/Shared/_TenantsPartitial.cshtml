@@ -3,13 +3,15 @@
 
 
 @{
+    var controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    var actionName = ViewContext.RouteData.Values["action"].ToString();
     var tenants = @tenantsService.GetAllTenants().ToList();
 }
 <!-- Charts -->
 @foreach (var tenant in tenants.OrderBy(x => x.CompanyName))
 {
     <li class="nav-item">
-        <a href="/Administration/Charts/Index?id=@tenant.Id" class="nav-link">
+        <a href="/Administration/Charts/Index?id=@tenant.Id" class="nav-link @(controllerName =="Charts" && actionName == "Index" ? "active":"")">
             <i class="fas fa-chart-pie nav-icon"></i>
             <p>@tenant.CompanyName</p>
         </a>

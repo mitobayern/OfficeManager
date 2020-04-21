@@ -11,7 +11,7 @@
     }
 </style>
 <div style="padding: 5%;">
-<h1 class="display-4" style="margin-bottom: 100px; text-align: center;">All Users</h1>
+    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">All Users</h1>
     <table class="table table-striped" align="center" width="600">
         <thead class="thead-dark">
             <tr>
@@ -34,18 +34,18 @@
                     <td>@user.Role</td>
                     <td>
                         @if (@user.UserName != User.Identity.Name)
-                        {
-                            <input data-style="slow" type="checkbox" checked data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="primary" data-offstyle="dark">
-                            
+                        { 
+                            <input data-style="slow" type="checkbox" checked data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="primary" data-offstyle="secondary">
                         }
                         else
                         {
-                            <input data-style="slow" type="checkbox" disabled checked data-toggle="toggle" data-on="Enabled" data-off="Disabled" data-onstyle="primary" data-offstyle="dark">
+                            <input data-style="slow" type="checkbox" disabled checked data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="primary" data-offstyle="dark">
 
                         }
                     </td>
 
-                    @*@if (@user.Role != "Admin")
+                    @{
+                        if (@user.Role != "Admin")
                         {
                             <td>
                                 <div class="button-holder text-right">
@@ -56,7 +56,20 @@
                                     </a>
                                 </div>
                             </td>
-                        }*@
+                        }
+                        else
+                        {
+                            <td>
+                                <div class="button-holder text-right">
+                                    <a style="font-size:small"
+                                       asp-action="Demote"
+                                       asp-route-userName="@user.UserName">
+                                        Make User
+                                    </a>
+                                </div>
+                            </td>
+                        }
+                    }
 
                 </tr>
             }

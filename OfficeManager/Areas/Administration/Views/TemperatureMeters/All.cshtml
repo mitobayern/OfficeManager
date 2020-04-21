@@ -5,136 +5,45 @@
     ViewData["Title"] = "All Temperature Meters";
 }
 
-<div style="padding: 5%;">    
-<h1 class="display-4" style="margin-bottom: 100px; text-align: center;">All Temperature Meters</h1>
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["TemperatureMeterSortParam"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Temperature Meter Number
-                    </a>
-                </th>
-                <th scope="col" colspan="2">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["OfficeNameSortParm"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Office Number
-                    </a>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var temperatureMeter in Model)
-            {
+    <div style="padding: 5%;">
+        <h1 class="display-4 text-center mb-5">All Temperature Meters</h1>
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@temperatureMeter.Name</td>
-                    <td>@temperatureMeter.OfficeNumber</td>
-                    <td>
-                        <div class="button-holder text-right">
-                            <a href="/Administration/TemperatureMeters/Edit?id=@temperatureMeter.Id" class="btn btn-primary">Edit</a>
-                        </div>
-                    </td>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["TemperatureMeterSortParam"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Temperature Meter Number
+                        </a>
+                    </th>
+                    <th scope="col" colspan="2">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["OfficeNameSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Office Number
+                        </a>
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
-    <div class="row">
-        <div class="col-10">
-            @{
-                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-            }
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link btn btn-default @prevDisabled" style="color:black"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="@(Model.PageIndex - 1)"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Previous
-                    </a>
-                </li>
-                @for (int i = 1; i <= Model.TotalPages; i++)
+            </thead>
+            <tbody>
+                @foreach (var temperatureMeter in Model)
                 {
-                    @if (@i == Model.PageIndex)
-                    {
-                        <li class="page-item active">
-                            <a class="page-link"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-pageNumber="@i"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @i <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="page-item">
-                            <a class="page-link"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-pageNumber="@i"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @i
-                            </a>
-                        </li>
-                    }
+                    <tr>
+                        <td>@temperatureMeter.Name</td>
+                        <td>@temperatureMeter.OfficeNumber</td>
+                        <td>
+                            <div class="button-holder text-right">
+                                <a href="/Administration/TemperatureMeters/Edit?id=@temperatureMeter.Id" class="btn btn-primary">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
                 }
-                <li class="page-item">
-                    <a class="page-link btn btn-default @nextDisabled" style="color:black"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="@(Model.PageIndex + 1)"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Next
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-2">
-            <div class="btn-group">
-                <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Rows per page
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item-text"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="1"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="5">
-                        5 per page
-                    </a>
-                    <a class="dropdown-item-text"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="1"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="10">
-                        10 per page
-                    </a>
-                    <a class="dropdown-item-text"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CurrentSort"]"
-                       asp-route-pageNumber="1"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="All">
-                        All
-                    </a>
-                </div>
-            </div>
-        </div>
+            </tbody>
+        </table>
+        <partial name="_PaginationPartial" />
     </div>
-</div>
