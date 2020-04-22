@@ -17,6 +17,8 @@
 
     const createMeasurement = document.getElementById('createMeasurement');
     if (createMeasurement) {
-        createMeasurement.querySelectorAll('input[type="text"]').forEach(el => el.value = '');
+        createMeasurement.querySelectorAll('input[type="text"]').forEach(function (el) {
+            el.value = ''
+        });
     }
 });

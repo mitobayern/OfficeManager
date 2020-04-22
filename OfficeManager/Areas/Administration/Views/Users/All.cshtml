@@ -11,74 +11,92 @@
     }
 </style>
 <div style="padding: 5%;">
-    <h1 class="display-4" style="margin-bottom: 100px; text-align: center;">All Users</h1>
-    <table class="table table-striped" align="center" width="600">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">
-                    User Name
-                </th>
-                <th scope="col">
-                    Email
-                </th>
-                <th scope="col">
-                    Role
-                </th>
-                <th scope="col" colspan="2" style="text-align:right">
-
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model)
-            {
+    <h1 class="display-4 mb-5 text-center">All Users</h1>
+    <div class="table-responsive">
+        <table class="table table-striped" align="center" width="600">
+            <thead class="thead-dark">
                 <tr>
-                    <td><b><i>@user.UserName</i></b></td>
-                    <td><b><i>@user.Email</i></b></td>
-                    <td><b><i>@user.Role</i></b></td>
-                    <td>
+                    <th scope="col">
+                        User Name
+                    </th>
+                    <th scope="col">
+                        Email
+                    </th>
+                    <th scope="col">
+                        Role
+                    </th>
+                    <th scope="col" colspan="2" style="text-align:right">
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td><b><i>@user.UserName</i></b></td>
+                        <td><b><i>@user.Email</i></b></td>
+                        <td><b><i>@user.Role</i></b></td>
+                        <td>
                             @if (@user.UserName != User.Identity.Name)
                             {
-                                <input data-style="slow" type="checkbox" class="switch-input" @(user.Role=="Admin"? "checked" : "") data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="primary" data-offstyle="secondary">
+                                <input data-style="slow" type="checkbox" class="switch-input" @(user.Role == "Admin" ? "checked" : "") data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="primary" data-offstyle="secondary">
                             }
                             else
                             {
-                                <input data-style="slow" type="checkbox" disabled @(user.Role=="Admin"? "checked" : "") data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="primary" data-offstyle="dark">
-
+                                <input data-style="slow" type="checkbox" disabled @(user.Role == "Admin" ? "checked" : "") data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="primary" data-offstyle="dark">
                             }
                         </td>
-                    @{
-                        if (@user.UserName != User.Identity.Name)
-                        {
-                            if (@user.Role != "Admin")
+                        @{
+                            if (@user.UserName != User.Identity.Name)
                             {
-                                <td style="text-align:right">
-                                    <a style="font-size:small"
-                                       class="btn btn-primary"
-                                       asp-action="Promote"
-                                       asp-route-userName="@user.UserName">
-                                        Make Admin
-                                    </a>
-                                    <a style="font-size:small"
-                                       class="btn btn-danger"
-                                       asp-action="Delete"
-                                       asp-route-userName="@user.UserName">
-                                        Delete User
-                                    </a>
+                                if (@user.Role != "Admin")
+                                {
+                                    <td style="text-align:right">
+                                        <a style="font-size:small"
+                                           class="btn btn-primary"
+                                           asp-action="Promote"
+                                           asp-route-userName="@user.UserName">
+                                            Make Admin
+                                        </a>
+                                        <a style="font-size:small"
+                                           class="btn btn-danger"
+                                           asp-action="Delete"
+                                           asp-route-userName="@user.UserName">
+                                            Delete User
+                                        </a>
 
-                                </td>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td style="text-align:right">
+                                        <a style="font-size:small; width:90px"
+                                           class="btn btn-secondary"
+                                           asp-action="Demote"
+                                           asp-route-userName="@user.UserName">
+                                            Make User
+                                        </a>
+                                        <a style="font-size:small"
+                                           class="btn btn-danger"
+                                           asp-action="Delete"
+                                           asp-route-userName="@user.UserName">
+                                            Delete User
+                                        </a>
+                                    </td>
+                                }
                             }
                             else
                             {
                                 <td style="text-align:right">
                                     <a style="font-size:small; width:90px"
-                                       class="btn btn-secondary"
+                                       class="btn btn-secondary disabled"
                                        asp-action="Demote"
                                        asp-route-userName="@user.UserName">
                                         Make User
                                     </a>
                                     <a style="font-size:small"
-                                       class="btn btn-danger"
+                                       class="btn btn-danger disabled"
                                        asp-action="Delete"
                                        asp-route-userName="@user.UserName">
                                         Delete User
@@ -86,26 +104,9 @@
                                 </td>
                             }
                         }
-                        else
-                        {
-                            <td style="text-align:right">
-                                <a style="font-size:small; width:90px"
-                                   class="btn btn-secondary disabled"
-                                   asp-action="Demote"
-                                   asp-route-userName="@user.UserName">
-                                    Make User
-                                </a>
-                                <a style="font-size:small"
-                                   class="btn btn-danger disabled"
-                                   asp-action="Delete"
-                                   asp-route-userName="@user.UserName">
-                                    Delete User
-                                </a>
-                            </td>
-                        }
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

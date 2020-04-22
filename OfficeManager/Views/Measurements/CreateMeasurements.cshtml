@@ -5,10 +5,9 @@
 }
 <div style="padding: 5%;">
     <h1 class="display-4 text-center mb-5">Create Measurements</h1>
-    <br />
-    <i style="color:orangered;"><b>Last period: @Model.LastPeriod</b></i>
-    <br />
-    <form id="createMeasurement" asp-controller="Measurements" asp-action="CreateMeasurements" method="post">
+    
+    <em class="text-danger"><b>Last period: @Model.LastPeriod</b></em>
+    <form id="createMeasurement" class="mt-3" asp-controller="Measurements" asp-action="CreateMeasurements" method="post">
         <partial name="_MeasurementsPartitial" />
     </form>
 </div>

@@ -4,21 +4,28 @@
     ViewData["Title"] = "Remove Offices";
 }
 
-<div style="padding: 5%;">
-    <h1 class="display-4 text-center mb-5">Remove Offices from Tenant</h1>
-    <h5 style="margin-top:50px; margin-bottom:20px" ; text-align:left;"><i>Curent Tennant Offices</i></h5>
-    <form asp-area="Administration" asp-controller="Tenants" asp-action="RemoveOffices" method="post" class="form">
-        <input type="hidden" name="id" value="@Model.Id" />
-        
-        @{var tenantOffices = Model.CurrentOffices.OrderBy(x => x.Name).ToList(); }
-        @for (var i = 0; i < tenantOffices.Count(); i++)
-        {
-            <div>
-                <input name="AreChecked" type="checkbox" value="@tenantOffices[i].Name" /> @tenantOffices[i].Name<br />
+    <div style="padding: 5%;">
+        <h1 class="display-4 text-center mb-5">Remove Offices from Tenant</h1>
+        <h5><i>Curent Tennant Offices</i></h5>
+
+        @*<h5 style="margin-top:50px; margin-bottom:20px" ; text-align:left;"><i>Curent Tennant Offices</i></h5>*@
+        <form asp-area="Administration" asp-controller="Tenants" asp-action="RemoveOffices" method="post" class="form">
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            @{var tenantOffices = Model.CurrentOffices.OrderBy(x => x.Name).ToList(); }
+            @for (var i = 0; i < tenantOffices.Count(); i++)
+            {
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="AreChecked" id="customCheck@(i)" value="@tenantOffices[i].Name">
+                    <label class="custom-control-label" for="customCheck@(i)">@tenantOffices[i].Name</label>
+                </div>
+            }
+            <div class="mt-4">
+                <button type="submit" class="btn btn-danger mr-2">Remove</button>
+                <a class="btn btn-dark" href="/Administration/Tenants/Details?id=@Model.Id">Back</a>
             </div>
-        }
-        <br />
-        <button type="submit" class="btn btn-primary" style="width:195px">Remove</button>
-        <a class="btn btn-dark" href="/Administration/Tenants/Details?id=@Model.Id" role="button" style="width:195px">Back</a>
-    </form>
-</div>
+            @*<br />
+            <button type="submit" class="btn btn-primary" style="width:195px">Remove</button>
+            <a class="btn btn-dark" href="/Administration/Tenants/Details?id=@Model.Id" role="button" style="width:195px">Back</a>*@
+        </form>
+    </div>

@@ -7,80 +7,93 @@
 
 <div style="padding: 5%;">
     <h1 class="display-4 text-center mb-5">All Offices</h1>
-    <form asp-action="All" method="get">
-        <div class="form-actions no-color">
-            <h5>
-                <i>Find by name: </i><input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
-                <input type="submit" value="Search" class="btn btn-primary" /> |
-                <a asp-action="All" class="btn btn-dark">Back to Full List</a>
-            </h5>
+    <div class="row align-items-center mb-3">
+        <div class="col-12 col-sm-6 col-lg-8 mb-3 mb-sm-0">
+            <form asp-action="All" method="get">
+                <div class="row form-group mb-0">
+                    <div class="col-8 col-sm-8 col-lg-6">
+                        <input type="text" class="form-control form-control-sm" name="SearchString" value="@ViewData["currentFilter"]" placeholder="Find" />
+                    </div>
+                    <div class="col-4 col-sm-4 col-lg-6">
+                        <button type="submit" class="btn btn-primary btn-sm mr-2">
+                            <i class="fas fa-search fa-fw mr-1"></i>
+                            <span class="d-none d-lg-inline-block">Search</span>
+                        </button>
+                        <a asp-action="All" class="btn btn-dark btn-sm">
+                            <i class="fas fa-chevron-left fa-fw mr-1"></i>
+                            <span class="d-none d-lg-inline-block">Back to Full List</span>
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
-    <br />
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["OfficeNameSortParm"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Office Number
-                    </a>
-                </th>
-                <th scope="col" colspan="1">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["TenantSortParam"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Tenant
-                    </a>
-                </th>
-                <th scope="col" colspan="1">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["AreaSortParam"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Office Area
-                    </a>
-                </th>
-                <th scope="col" colspan="2">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["RentSortParam"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Rent/SqMeter
-                    </a>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var office in Model)
-            {
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@office.Name</td>
-                    @if (@office.TenantName == "Свободен")
-                    {
-                        <td><font size="3"><i style="color:blue"><b>@office.TenantName</b></i></font></td>
-                    }
-                    else
-                    {
-                        <td><i><b>@office.TenantName</b></i></td>
-                    }
-                    <td>@office.Area m<sup>2</sup></td>
-                    <td>&euro; @office.RentPerSqMeter </td>
-                    <td>
-                        <div class="button-holder text-right">
-                            <a href="/Administration/Offices/Edit?id=@office.Id" class="btn btn-primary">Edit</a>
-                        </div>
-                    </td>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["OfficeNameSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Office Number
+                        </a>
+                    </th>
+                    <th scope="col" colspan="1">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["TenantSortParam"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Tenant
+                        </a>
+                    </th>
+                    <th scope="col" colspan="1">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["AreaSortParam"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Office Area
+                        </a>
+                    </th>
+                    <th scope="col" colspan="2">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["RentSortParam"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Rent/SqMeter
+                        </a>
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var office in Model)
+                {
+                    <tr>
+                        <td>@office.Name</td>
+                        @if (@office.TenantName == "Свободен")
+                        {
+                            <td><font size="3"><i style="color:blue"><b>@office.TenantName</b></i></font></td>
+                        }
+                        else
+                        {
+                            <td><i><b>@office.TenantName</b></i></td>
+                        }
+                        <td>@office.Area m<sup>2</sup></td>
+                        <td>&euro; @office.RentPerSqMeter </td>
+                        <td>
+                            <div class="button-holder text-right">
+                                <a href="/Administration/Offices/Edit?id=@office.Id" class="btn btn-primary">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
     <partial name="_PaginationPartial" />
 </div>

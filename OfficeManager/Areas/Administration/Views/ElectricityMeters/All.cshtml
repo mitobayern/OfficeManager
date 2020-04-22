@@ -7,53 +7,56 @@
 
 <div style="padding: 5%;">
     <h1 class="display-4 text-center mb-5">All Electricity Meters</h1>
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["ElectricityMeterSortParam"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Electricity Meter Number
-                    </a>
-                </th>
-                <th scope="col">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["OfficeNameSortParm"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Office Number
-                    </a>
-                </th>
-                <th scope="col" colspan="2">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["PowerSupplySortParm"]"
-                       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Power Supply
-                    </a>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var electricityMeter in Model)
-            {
+    <div class="table-responsive">
+
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@electricityMeter.Name</td>
-                    <td>@electricityMeter.OfficeNumber</td>
-                    <td>@electricityMeter.PowerSupply</td>
-                    <td>
-                        <div class="button-holder text-right">
-                            <a href="/Administration/ElectricityMeters/Edit?id=@electricityMeter.Id" class="btn btn-primary">Edit</a>
-                        </div>
-                    </td>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["ElectricityMeterSortParam"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Electricity Meter Number
+                        </a>
+                    </th>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["OfficeNameSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Office Number
+                        </a>
+                    </th>
+                    <th scope="col" colspan="2">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["PowerSupplySortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Power Supply
+                        </a>
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var electricityMeter in Model)
+                {
+                    <tr>
+                        <td>@electricityMeter.Name</td>
+                        <td>@electricityMeter.OfficeNumber</td>
+                        <td>@electricityMeter.PowerSupply</td>
+                        <td>
+                            <div class="button-holder text-right">
+                                <a href="/Administration/ElectricityMeters/Edit?id=@electricityMeter.Id" class="btn btn-primary">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
     <partial name="_PaginationPartial" />
 </div>

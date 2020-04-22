@@ -7,55 +7,68 @@
 
 <div style="padding: 5%;">
     <h1 class="display-4 text-center mb-5">All Tenants</h1>
-    <form asp-action="All" method="get">
-        <div class="form-actions no-color">
-            <h5>
-                <i>Find by name: </i><input type="text" name="SearchString" value="@ViewData["currentFilter"]" />
-                <input type="submit" value="Search" class="btn btn-primary" /> |
-                <a asp-action="All" class="btn btn-dark">Back to Full List</a>
-            </h5>
+    <div class="row align-items-center mb-3">
+        <div class="col-12 col-sm-6 col-lg-8 mb-3 mb-sm-0">
+            <form asp-action="All" method="get">
+                <div class="row form-group mb-0">
+                    <div class="col-8 col-sm-8 col-lg-6">
+                        <input type="text" class="form-control form-control-sm" name="SearchString" value="@ViewData["currentFilter"]" placeholder="Find" />
+                    </div>
+                    <div class="col-4 col-sm-4 col-lg-6">
+                        <button type="submit" class="btn btn-primary btn-sm mr-2">
+                            <i class="fas fa-search fa-fw mr-1"></i>
+                            <span class="d-none d-lg-inline-block">Search</span>
+                        </button>
+                        <a asp-action="All" class="btn btn-dark btn-sm">
+                            <i class="fas fa-chevron-left fa-fw mr-1"></i>
+                            <span class="d-none d-lg-inline-block">Back to Full List</span>
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
-    <br />
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["CompanyNameSortParm"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Company Name
-                    </a>
-                </th>
-                <th scope="col">
-                    <a style="color:white"
-                       asp-action="All"
-                       asp-route-sortOrder="@ViewData["OwnerSortParam"]"
-                       asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                        Company Owner
-                    </a>
-                </th>
-                <th scope="col">Bulstat</th>
-                <th scope="col" colspan="2">Address</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var tenant in Model)
-            {
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@tenant.CompanyName</td>
-                    <td>@tenant.CompanyOwner</td>
-                    <td>@tenant.Bulstat</td>
-                    <td>@tenant.Address</td>
-                    <td>
-                        <div class="button-holder text-right">
-                            <a href="/Administration/Tenants/Details?id=@tenant.Id" class="btn btn-primary">Details</a>
-                        </div>
-                    </td>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["CompanyNameSortParm"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Company Name
+                        </a>
+                    </th>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["OwnerSortParam"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Company Owner
+                        </a>
+                    </th>
+                    <th scope="col">Bulstat</th>
+                    <th scope="col" colspan="2">Address</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var tenant in Model)
+                {
+                    <tr>
+                        <td>@tenant.CompanyName</td>
+                        <td>@tenant.CompanyOwner</td>
+                        <td>@tenant.Bulstat</td>
+                        <td>@tenant.Address</td>
+                        <td>
+                            <div class="button-holder text-right">
+                                <a href="/Administration/Tenants/Details?id=@tenant.Id" class="btn btn-primary">Details</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
     <partial name="_PaginationPartial" />
 </div>

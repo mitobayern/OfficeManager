@@ -5,20 +5,22 @@
 }
 
 <div style="padding: 5%;">
-    <h1 class="display-4 text-center mb-5">Remove Temperature Meters from Office</h1>
-    <h5 style="margin-top:50px; margin-bottom:20px; text-align:left;"><i>Curent Temperature Meters</i></h5>
+    <h1 class="display-4 text-center mb-5">Remove Temperature Meters</h1>
+    <h5><i>Curent Temperature Meters</i></h5>
     <form asp-controller="Offices" asp-action="RemoveTemperatureMeters" method="post" class="form">
-        <input type="hidden" name="id" value="@Model.Id" />       
+        <input type="hidden" name="id" value="@Model.Id" />
 
         @{var temperatureMeters = Model.CurrentTemperatureMeters.ToList(); }
         @for (var i = 0; i < temperatureMeters.Count(); i++)
         {
-            <div>
-                <input name="AreChecked" type="checkbox" value="@temperatureMeters[i].Name" /> @temperatureMeters[i].Name<br />
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="AreChecked" id="customCheck@(i)" value="@temperatureMeters[i].Name">
+                <label class="custom-control-label" for="customCheck@(i)"> @temperatureMeters[i].Name</label>
             </div>
         }
-        <br />
-        <button type="submit" class="btn btn-primary" style="width:195px">Remove</button>
-        <a class="btn btn-dark" href="/Administration/Offices/Edit?id=@Model.Id" role="button" style="width:195px">Back</a>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-danger mr-2">Remove</button>
+            <a class="btn btn-dark" href="/Administration/Offices/Edit?id=@Model.Id">Back</a>
+        </div>
     </form>
 </div>

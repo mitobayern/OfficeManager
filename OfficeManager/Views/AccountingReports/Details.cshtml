@@ -50,65 +50,69 @@
         <br />
         <br />
         <p><i>Консумация на електрическа енергия</i></p>
-        <table>
-            <tr>
-                <th>Наименование</th>
-                <th style="text-align:center">Количество</th>
-                <th style="text-align:center">Мярка</th>
-                <th style="text-align:center">Ед. Цена <br /> без ДДС</th>
-                <th style="text-align:center">Стойност в лева</th>
-            </tr>
-            <tr>
-                <td>Консумирана ел. енергия - дневна тарифа</td>
-                <td style="text-align:center">@Model.DayTimeElectricityConsummation</td>
-                <td style="text-align:center">кВтч</td>
-                <td style="text-align:center">@Model.PricesInformation.ElectricityPerKWh</td>
-                <td style="text-align:right">@((Model.DayTimeElectricityConsummation * Model.PricesInformation.ElectricityPerKWh).ToString("F2")) лв.</td>
-            </tr>
-            <tr>
-                <td>Консумирана ел. енергия - нощна тарифа</td>
-                <td style="text-align:center">@Model.NightTimeElectricityConsummation</td>
-                <td style="text-align:center">кВтч</td>
-                <td style="text-align:center">@Model.PricesInformation.ElectricityPerKWh</td>
-                <td style="text-align:right">@((Model.NightTimeElectricityConsummation * Model.PricesInformation.ElectricityPerKWh).ToString("F2")) лв.</td>
-            </tr>
-            <tr>
-                <td>Акциз</td>
-                <td style="text-align:center">@(Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation)</td>
-                <td style="text-align:center">кВтч</td>
-                <td style="text-align:center">@Model.PricesInformation.Excise</td>
-                <td style="text-align:right">@(((Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation) * Model.PricesInformation.Excise).ToString("F2")) лв.</td>
-            </tr>
-            <tr>
-                <td>Мрежови такси и услуги</td>
-                <td style="text-align:center">@(Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation)</td>
-                <td style="text-align:center">кВтч</td>
-                <td style="text-align:center">@(Model.PricesInformation.AccessToDistributionGrid + Model.PricesInformation.NetworkTaxesAndUtilities)</td>
-                <td style="text-align:right">@(((Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation) * (Model.PricesInformation.AccessToDistributionGrid + Model.PricesInformation.NetworkTaxesAndUtilities)).ToString("F2")) лв.</td>
-            </tr>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>Наименование</th>
+                    <th style="text-align:center">Количество</th>
+                    <th style="text-align:center">Мярка</th>
+                    <th style="text-align:center">Ед. Цена <br /> без ДДС</th>
+                    <th style="text-align:center">Стойност в лева</th>
+                </tr>
+                <tr>
+                    <td>Консумирана ел. енергия - дневна тарифа</td>
+                    <td style="text-align:center">@Model.DayTimeElectricityConsummation</td>
+                    <td style="text-align:center">кВтч</td>
+                    <td style="text-align:center">@Model.PricesInformation.ElectricityPerKWh</td>
+                    <td style="text-align:right">@((Model.DayTimeElectricityConsummation * Model.PricesInformation.ElectricityPerKWh).ToString("F2")) лв.</td>
+                </tr>
+                <tr>
+                    <td>Консумирана ел. енергия - нощна тарифа</td>
+                    <td style="text-align:center">@Model.NightTimeElectricityConsummation</td>
+                    <td style="text-align:center">кВтч</td>
+                    <td style="text-align:center">@Model.PricesInformation.ElectricityPerKWh</td>
+                    <td style="text-align:right">@((Model.NightTimeElectricityConsummation * Model.PricesInformation.ElectricityPerKWh).ToString("F2")) лв.</td>
+                </tr>
+                <tr>
+                    <td>Акциз</td>
+                    <td style="text-align:center">@(Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation)</td>
+                    <td style="text-align:center">кВтч</td>
+                    <td style="text-align:center">@Model.PricesInformation.Excise</td>
+                    <td style="text-align:right">@(((Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation) * Model.PricesInformation.Excise).ToString("F2")) лв.</td>
+                </tr>
+                <tr>
+                    <td>Мрежови такси и услуги</td>
+                    <td style="text-align:center">@(Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation)</td>
+                    <td style="text-align:center">кВтч</td>
+                    <td style="text-align:center">@(Model.PricesInformation.AccessToDistributionGrid + Model.PricesInformation.NetworkTaxesAndUtilities)</td>
+                    <td style="text-align:right">@(((Model.DayTimeElectricityConsummation + Model.NightTimeElectricityConsummation) * (Model.PricesInformation.AccessToDistributionGrid + Model.PricesInformation.NetworkTaxesAndUtilities)).ToString("F2")) лв.</td>
+                </tr>
+            </table>
+        </div>
         <br />
         <p style="text-align:right"><i>Стойност за консумация на електрическа енергия:   <b>@(Model.AmountForElectricity.ToString("F2")) лв.</b></i></p>
         <br />
         @if (Model.HeatingConsummation > 0)
     {
         <p><i>Снабдяване с енергия за отопление</i></p>
-        <table>
-            <tr>
-                <th>Наименование</th>
-                <th style="text-align:center">Количество</th>
-                <th style="text-align:center">Мярка</th>
-                <th style="text-align:center">Ед. Цена <br /> без ДДС</th>
-                <th style="text-align:center">Стойност в лева</th>
-            </tr>
-            <tr>
-                <td>Консумирана енергия за отопление</td>
-                <td style="text-align:center">@Model.HeatingConsummation</td>
-                <td style="text-align:center">кВтч</td>
-                <td style="text-align:center">@Model.PricesInformation.HeatingPerKWh</td>
-                <td style="text-align:right">@(Model.AmountForHeating.ToString("F2")) лв.</td>
-            </tr>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>Наименование</th>
+                    <th style="text-align:center">Количество</th>
+                    <th style="text-align:center">Мярка</th>
+                    <th style="text-align:center">Ед. Цена <br /> без ДДС</th>
+                    <th style="text-align:center">Стойност в лева</th>
+                </tr>
+                <tr>
+                    <td>Консумирана енергия за отопление</td>
+                    <td style="text-align:center">@Model.HeatingConsummation</td>
+                    <td style="text-align:center">кВтч</td>
+                    <td style="text-align:center">@Model.PricesInformation.HeatingPerKWh</td>
+                    <td style="text-align:right">@(Model.AmountForHeating.ToString("F2")) лв.</td>
+                </tr>
+            </table>
+        </div>
         <br />
         <p style="text-align:right"><i>Стойност за консумация на енергия за отопление:   <b>@((Model.AmountForHeating).ToString("F2")) лв.</b></i></p>
         <br />
@@ -116,22 +120,24 @@
         @if (Model.CoolingConsummation > 0)
     {
         <p><i>Снабдяване с енергия за охлаждане</i></p>
-        <table>
-            <tr>
-                <th>Наименование</th>
-                <th style="text-align:center">Количество</th>
-                <th style="text-align:center">Мярка</th>
-                <th style="text-align:center">Ед. Цена <br /> без ДДС</th>
-                <th style="text-align:center">Стойност в лева</th>
-            </tr>
-            <tr>
-                <td>Консумирана енергия за охлаждане</td>
-                <td style="text-align:center">@Model.CoolingConsummation</td>
-                <td style="text-align:center">кВтч</td>
-                <td style="text-align:center">@Model.PricesInformation.CoolingPerKWh</td>
-                <td style="text-align:right">@(Model.AmountForCooling.ToString("F2")) лв.</td>
-            </tr>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <tr>
+                    <th>Наименование</th>
+                    <th style="text-align:center">Количество</th>
+                    <th style="text-align:center">Мярка</th>
+                    <th style="text-align:center">Ед. Цена <br /> без ДДС</th>
+                    <th style="text-align:center">Стойност в лева</th>
+                </tr>
+                <tr>
+                    <td>Консумирана енергия за охлаждане</td>
+                    <td style="text-align:center">@Model.CoolingConsummation</td>
+                    <td style="text-align:center">кВтч</td>
+                    <td style="text-align:center">@Model.PricesInformation.CoolingPerKWh</td>
+                    <td style="text-align:right">@(Model.AmountForCooling.ToString("F2")) лв.</td>
+                </tr>
+            </table>
+        </div>
         <br />
         <p style="text-align:right"><i>Стойност за консумация на енергия за охлаждане:   <b>@((Model.AmountForCooling).ToString("F2")) лв.</b></i></p>
         <br />
@@ -144,13 +150,13 @@
         <br />
         <br />
         <div class="row">
-            <div class="col-9">
+            <div class="col-12 col-sm-9">
                 <p>
                     Дата: <b>@Model.CreatedOn.ToString("d.MM.yyyy") г.</b><br>
                     гр. София
                 </p>
             </div>
-            <div class="col-3">
+            <div class="col-12 col-sm-3">
                 <p>
                     Съставил: ......................................<br>
                     (Теодор Опренов)

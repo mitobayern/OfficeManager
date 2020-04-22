@@ -4,80 +4,84 @@
     ViewData["Title"] = "Office Details";
 }
 
-<div style="padding: 5%;">
-    <h1 class="display-4 text-center mb-5">Office Details</h1>
-    <form asp-area="Administration" asp-controller="Offices" asp-action="Edit" method="post">
-        <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
-        <div class="row" style="margin-bottom:20px">
-            <div class="col">
-                <label asp-for="Name"><i>Office Number</i></label>
-                <input asp-for="Name" class="form-control" placeholder="Office number">
-                <span asp-validation-for="Name" class="text-danger"></span>
+    <div style="padding: 5%;">
+        <h1 class="display-4 text-center mb-5">Office Details</h1>
+        <form asp-area="Administration" asp-controller="Offices" asp-action="Edit" method="post">
+            <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
+            <div class="row" style="margin-bottom:20px">
+                <div class="col">
+                    <label asp-for="Name"><i>Office Number</i></label>
+                    <input asp-for="Name" class="form-control" placeholder="Office number">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <label asp-for="Area"><i>Office Area</i></label>
+                    <input asp-for="Area" class="form-control" placeholder="Office area">
+                    <span asp-validation-for="Area" class="text-danger"></span>
+                </div>
+                <div class="col">
+                    <label asp-for="RentPerSqMeter"><i>Rent per m<sup>2</sup></i></label>
+                    <input asp-for="RentPerSqMeter" class="form-control" placeholder="Rent Per Suqre Meter">
+                    <span asp-validation-for="RentPerSqMeter" class="text-danger"></span>
+                </div>
             </div>
-            <div class="col">
-                <label asp-for="Area"><i>Office Area</i></label>
-                <input asp-for="Area" class="form-control" placeholder="Office area">
-                <span asp-validation-for="Area" class="text-danger"></span>
+            <div class="text-center text-sm-left">
+                <button type="submit" class="btn btn-primary mr-2">Save Changes</button>
+                <a href="/Administration/Offices/All" class="btn btn-dark">Back</a>
             </div>
-            <div class="col">
-                <label asp-for="RentPerSqMeter"><i>Rent per Square Meter</i></label>
-                <input asp-for="RentPerSqMeter" class="form-control" placeholder="Rent Per Suqre Meter">
-                <span asp-validation-for="RentPerSqMeter" class="text-danger"></span>
-            </div>
-        </div>
+        </form>
         <br />
-        <button type="submit" class="btn btn-primary" style="width:195px">Save Changes</button>
-        <a class="btn btn-dark" href="/Administration/Offices/All" role="button" style="width:195px">Back</a>
-    </form>
-    <br />
-    <br />
-    @if (Model.ElectricityMeter == "No electricity meter available")
-    {
-        <div class="row" style="margin-bottom:20px">
-            <div class="col-8">
-                <h5><i>Electricity meter: <b style="color:brown">No electricity meter available.</b></i></h5>
+        <br />
+        @if (Model.ElectricityMeter == "No electricity meter available")
+        {
+            <div class="row" style="margin-bottom:20px">
+                <div class="col-8">
+                    <h5><i>Electricity meter: <b style="color:brown">No electricity meter available.</b></i></h5>
+                </div>
             </div>
-        </div>
-    }
-    else
-    {
-        <div class="row" style="margin-bottom:20px">
-            <div class="col-8">
-                <h5><i>Electricity meter: <b style="color:brown">@Model.ElectricityMeter</b></i></h5>
+        }
+        else
+        {
+            <div class="row" style="margin-bottom:20px">
+                <div class="col-8">
+                    <h5><i>Electricity meter: <b style="color:brown">@Model.ElectricityMeter</b></i></h5>
+                </div>
             </div>
-        </div>
-    }
-    @if (Model.ElectricityMeter == "No electricity meter available")
-    {
-        <a href="/Administration/Offices/AddElectricityMeter?id=@Model.Id" class="btn btn-success" style="width:250px">Add Electricity Meter</a>
-        <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
-    }
-    else
-    {
-        <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-success" style="width:250px">Add Electricity Meter</a>
-        <a href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Electricity Meter</a>
-    }
-    <br />
-    <br />
-    @if (Model.TemperatureMeters.Count() == 0)
-    {
-        <div class="row" style="margin-bottom:20px">
-            <div class="col-8">
-                <h5><i>Temperature meters: <b style="color:brown">No temperature meters available.</b></i></h5>
+        }
+        @if (Model.ElectricityMeter == "No electricity meter available")
+        {
+            <div class="text-center text-sm-left">
+                <a href="/Administration/Offices/AddElectricityMeter?id=@Model.Id" class="btn btn-success mr-2">Add Offices</a>
+                <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-danger">Remove Electricity Meter</a>
             </div>
-        </div>
-    }
-    else
-    {
-        <div class="row" style="margin-bottom:20px">
-            <div class="col-8">
-                <h5><i>Temperature meters: <b style="color:brown">@String.Join(", ", Model.TemperatureMeters)</b></i></h5>
+        }
+        else
+        {
+            <div class="text-center text-sm-left">
+                <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-success mr-2">Add Electricity Meter</a>
+                <a href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id" class="btn btn-danger">Remove Electricity Meter</a>
             </div>
+        }
+        <br />
+        <br />
+        @if (Model.TemperatureMeters.Count() == 0)
+        {
+            <div class="row" style="margin-bottom:20px">
+                <div class="col-8">
+                    <h5><i>Temperature meters: <b style="color:brown">No temperature meters available.</b></i></h5>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row" style="margin-bottom:20px">
+                <div class="col-8">
+                    <h5><i>Temperature meters: <b style="color:brown">@String.Join(", ", Model.TemperatureMeters)</b></i></h5>
+                </div>
+            </div>
+        }
+        <div class="text-center text-sm-left">
+            <a href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id" class="btn btn-success mr-2">Add Temperature Meters</a>
+            <a href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id" class="btn btn-danger">Remove Temperature Meters</a>
         </div>
-    }
-
-    <a href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id" class="btn btn-success" style="width:250px">Add Temperature Meters</a>
-
-    <a href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id" class="btn btn-danger" style="width:250px">Remove Temperature Meters</a>
-
-</div>
+    </div>

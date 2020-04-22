@@ -6,18 +6,23 @@
 }
 
 <div style="padding: 5%;">
-<h1 class="display-4 text-center mb-5">Edit Temperature Meter</h1>
+    <h1 class="display-4 text-center mb-5">Edit Temperature Meter</h1>
     <form asp-area="Administration" asp-controller="TemperatureMeters" asp-action="Edit" method="post">
         <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
         <div class="row" style="margin-bottom:20px">
-            <div class="col-5">
+            <div class="form-group col-5">
                 <label asp-for="Name"><i>Temperature Meter Name</i></label>
                 <input asp-for="Name" class="form-control">
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
         </div>
-        <br />
-        <button type="submit" class="btn btn-primary" style="width:195px">Save Changes</button>
-        <a class="btn btn-dark" href="/Administration/TemperatureMeters/All" role="button" style="width:195px">Back</a>
+        <div class="row mt-2">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <a class="btn btn-dark btn-block" href="/Administration/TemperatureMeters/All">Back</a>
+            </div>
+        </div>
     </form>
 </div>

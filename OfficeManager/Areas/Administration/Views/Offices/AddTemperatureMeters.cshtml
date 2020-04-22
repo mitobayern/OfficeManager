@@ -6,19 +6,21 @@
 
 <div style="padding: 5%;">
     <h1 class="display-4 text-center mb-5">Add Temperature Meters to Office</h1>
-    <h5 style="margin-top:50px; margin-bottom:20px; text-align:left;"><i>Available Temperature Meters</i></h5>
+    <h5><i>Available Temperature Meters</i></h5>
     <form asp-area="Administration" asp-controller="Offices" asp-action="AddTemperatureMeters" method="post" class="form">
         <input type="hidden" name="id" value="@Model.Id" />
 
         @{var availaleTemperatureMeters = Model.AvailavleTemperatureMeters.OrderBy(x => x.Name).ToList(); }
         @for (var i = 0; i < availaleTemperatureMeters.Count(); i++)
         {
-            <div>
-                <input name="AreChecked" type="checkbox" value="@availaleTemperatureMeters[i].Name" /> @availaleTemperatureMeters[i].Name<br />
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="AreChecked" id="customCheck@(i)" value="@availaleTemperatureMeters[i].Name">
+                <label class="custom-control-label" for="customCheck@(i)">@availaleTemperatureMeters[i].Name</label>
             </div>
         }
-        <br />
-        <button type="submit" class="btn btn-primary" style="width:195px">Add</button>
-        <a class="btn btn-dark" href="/Administration/Offices/Edit?id=@Model.Id" role="button" style="width:195px">Back</a>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary mr-2">Add</button>
+            <a class="btn btn-dark" href="/Administration/Offices/Edit?id=@Model.Id">Back</a>
+        </div>
     </form>
 </div>
