@@ -4,148 +4,153 @@
 @{
     ViewData["Title"] = "All Accounting Reports";
 }
-    <div style="padding: 5%;">
-        <h1 class="display-4 text-center mb-5">All Accounting Reports</h1>
+<div style="padding: 5%;">
+    <h1 class="display-4 text-center mb-5">All Accounting Reports</h1>
 
-        <div class="row align-items-center mb-3">
-            <div class="col-12 col-sm-6 col-lg-8 mb-3 mb-sm-0">
-                <form asp-action="All" method="get">
-                    <div class="row form-group mb-0">
-                        <div class="col-8 col-sm-8 col-lg-6">
-                            <input type="text" class="form-control form-control-sm" name="SearchString" value="@ViewData["currentFilter"]" placeholder="Find" />
-                        </div>
-                        <div class="col-4 col-sm-4 col-lg-6">
-                            <button type="submit" class="btn btn-primary btn-sm mr-2">
-                                <i class="fas fa-search fa-fw mr-1"></i>
-                                <span class="d-none d-lg-inline-block">Search</span>
-                            </button>
-                            <a asp-action="All" class="btn btn-dark btn-sm">
-                                <i class="fas fa-chevron-left fa-fw mr-1"></i>
-                                <span class="d-none d-lg-inline-block">Back to Full List</span>
-                            </a>
-                        </div>
+    <div class="row align-items-center mb-3">
+        <div class="col-12 col-sm-6 col-lg-8 mb-3 mb-sm-0">
+            <form asp-action="All" method="get">
+                <div class="row form-group mb-0">
+                    <div class="col-8 col-sm-8 col-lg-6">
+                        <input type="text" class="form-control form-control-sm" name="SearchString" value="@ViewData["currentFilter"]" placeholder="Find" />
                     </div>
-                </form>
-            </div>
-            <div class="col-12 col-sm-6 col-lg-4 text-sm-right">
-                <div class="dropdown mr-2 d-inline-block">
-                    <button class="btn btn-dark btn-sm dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Filter by Tenant
-                    </button>
-
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        @foreach (var tenant in (List<string>)ViewData["AllTenants"])
-                        {
-                            <a class="dropdown-item"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-currentFilter="@tenant"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @tenant
-                            </a>
-                        }
-
-                    </div>
-                </div>
-                <div class="dropdown d-inline-block">
-                    <button class="btn btn-dark btn-sm dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Filter by Period
-                    </button>
-
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        @foreach (var period in (List<string>)ViewData["AllPeriods"])
-                        {
-                            <a class="dropdown-item"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["CurrentSort"]"
-                               asp-route-currentFilter="@period"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                @period
-                            </a>
+                    <div class="col-4 col-sm-4 col-lg-6">
+                        <button type="submit" class="btn btn-primary btn-sm mr-2">
+                            <i class="fas fa-search fa-fw mr-1"></i>
+                            <span class="d-none d-lg-inline-block">Search</span>
+                        </button>
+                        @{
+                            if ((string)ViewData["currentFilter"] != null)
+                            {
+                                <a asp-action="All" class="btn btn-dark btn-sm">
+                                    <i class="fas fa-chevron-left fa-fw mr-1"></i>
+                                    <span class="d-none d-lg-inline-block">Back to Full List</span>
+                                </a>
+                            }
                         }
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
+        <div class="col-12 col-sm-6 col-lg-4 text-sm-right">
+            <div class="dropdown mr-2 d-inline-block">
+                <button class="btn btn-dark btn-sm dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Filter by Tenant
+                </button>
 
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">
-                            <a style="color:white"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["NumberSortParm"]"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                Number
-                            </a>
-                        </th>
-                        <th scope="col">
-                            <a style="color:white"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["DateSortParam"]"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                Created On
-                            </a>
-                        </th>
-                        <th scope="col">
-                            <a style="color:white"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["TenantSortParam"]"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                Company Name
-                            </a>
-                        </th>
-                        <th scope="col">
-                            <a style="color:white"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["PeriodSortParam"]"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                Period
-                            </a>
-                        </th>
-                        <th scope="col" colspan="2">
-                            <a style="color:white"
-                               asp-action="All"
-                               asp-route-sortOrder="@ViewData["TotalAmountSortParam"]"
-                               asp-route-currentFilter="@ViewData["CurrentFilter"]"
-                               asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                                Total Amount
-                            </a>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var accountingReport in Model)
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    @foreach (var tenant in (List<string>)ViewData["AllTenants"])
                     {
-                        <tr>
-                            <td>@accountingReport.Number</td>
-                            <td>@(accountingReport.CreatedOn.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG")) + " г.")</td>
-                            <td>@accountingReport.CompanyName</td>
-                            <td>@accountingReport.Period</td>
-                            <td>@(accountingReport.TotalAmount.ToString("F2") + " лв.")</td>
-                            <td>
-                                <div class="button-holder text-right d-inline-block mr-lg-2 mb-2 mb--0">
-                                    <a href="/AccountingReports/Details?id=@accountingReport.Id" class="btn btn-light btn-sm">
-                                        <i class="fas fa-eye fa-fw mr-1"></i>
-                                        <span class="d-none d-lg-inline-block">View</span>
-                                    </a>
-                                </div>
-                                <div class="button-holder text-right d-inline-block">
-                                    <button asp-action="GetPdf" asp-route-id="@accountingReport.Id" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-file-pdf fa-fw mr-1"></i>
-                                        <span class="d-none d-lg-inline-block">GetPDF</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                        <a class="dropdown-item"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-currentFilter="@tenant"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            @tenant
+                        </a>
                     }
-                </tbody>
-            </table>
+
+                </div>
+            </div>
+            <div class="dropdown d-inline-block">
+                <button class="btn btn-dark btn-sm dropdown-toggle" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Filter by Period
+                </button>
+
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    @foreach (var period in (List<string>)ViewData["AllPeriods"])
+                    {
+                        <a class="dropdown-item"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-currentFilter="@period"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            @period
+                        </a>
+                    }
+                </div>
+            </div>
         </div>
-        <partial name="_PaginationPartial" />
     </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["NumberSortParm"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Number
+                        </a>
+                    </th>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["DateSortParam"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Created On
+                        </a>
+                    </th>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["TenantSortParam"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Company Name
+                        </a>
+                    </th>
+                    <th scope="col">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["PeriodSortParam"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Period
+                        </a>
+                    </th>
+                    <th scope="col" colspan="2">
+                        <a style="color:white"
+                           asp-action="All"
+                           asp-route-sortOrder="@ViewData["TotalAmountSortParam"]"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                           asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                            Total Amount
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var accountingReport in Model)
+                {
+                    <tr>
+                        <td>@accountingReport.Number</td>
+                        <td>@(accountingReport.CreatedOn.ToString("d MMMM yyyy", new System.Globalization.CultureInfo("bg-BG")) + " г.")</td>
+                        <td>@accountingReport.CompanyName</td>
+                        <td>@accountingReport.Period</td>
+                        <td>@(accountingReport.TotalAmount.ToString("F2") + " лв.")</td>
+                        <td>
+                            <div class="button-holder text-right d-inline-block mr-lg-2 mb-2 mb--0">
+                                <a href="/AccountingReports/Details?id=@accountingReport.Id" class="btn btn-light btn-sm">
+                                    <i class="fas fa-eye fa-fw mr-1"></i>
+                                    <span class="d-none d-lg-inline-block">View</span>
+                                </a>
+                            </div>
+                            <div class="button-holder text-right d-inline-block">
+                                <button asp-action="GetPdf" asp-route-id="@accountingReport.Id" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-file-pdf fa-fw mr-1"></i>
+                                    <span class="d-none d-lg-inline-block">GetPDF</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_PaginationPartial" />
+</div>

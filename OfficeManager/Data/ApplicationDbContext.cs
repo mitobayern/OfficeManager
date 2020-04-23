@@ -10,7 +10,7 @@
             : base(options)
         {
         }
-
+        
         public DbSet<Office> Offices { get; set; }
 
         public DbSet<Tenant> Tenants { get; set; }

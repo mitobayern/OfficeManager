@@ -9,13 +9,29 @@
                 <a class="page-link btn btn-default @prevDisabled" style="color:black"
                    asp-action="All"
                    asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-pageNumber=1
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                    <i class="fas fa-angle-double-left"></i>
+                    @*<span class="d-none d-lg-inline-block">Back to Full List</span>*@
+                    @*First*@
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link btn btn-default @prevDisabled" style="color:black"
+                   asp-action="All"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
                    asp-route-pageNumber="@(Model.PageIndex - 1)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
                    asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                    Previous
+                    <i class="fas fa-angle-left"></i>
                 </a>
             </li>
-            @for (int i = 1; i <= Model.TotalPages; i++)
+            @{
+                var startOfPagination = Math.Max(1, Model.PageIndex - 2);
+                var endOfPagination = Math.Min(startOfPagination + 4, Model.TotalPages);
+            }
+            @for (int i = startOfPagination; i <= endOfPagination; i++)
             {
                 @if (@i == Model.PageIndex)
                 {
@@ -26,7 +42,8 @@
                            asp-route-pageNumber="@i"
                            asp-route-currentFilter="@ViewData["CurrentFilter"]"
                            asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                            @i <span class="sr-only">(current)</span>
+                            @i
+                            <span class="sr-only">(current)</span>
                         </a>
                     </li>
                 }
@@ -51,11 +68,22 @@
                    asp-route-pageNumber="@(Model.PageIndex + 1)"
                    asp-route-currentFilter="@ViewData["CurrentFilter"]"
                    asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
-                    Next
+                    <i class="fas fa-angle-right"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link btn btn-default @nextDisabled" style="color:black"
+                   asp-action="All"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-pageNumber="@(Model.TotalPages)"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+                   asp-route-rowsPerPage="@ViewData["RowsPerPage"]">
+                    <i class="fas fa-angle-double-right"></i>
                 </a>
             </li>
         </ul>
     </div>
+
     <div class="col-12 col-md-4 mb-3 mb-sm-0 text-center text-md-right order-0 order-md-1">
         <div class="btn-group">
             <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
