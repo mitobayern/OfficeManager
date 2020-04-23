@@ -33,6 +33,7 @@
                 Email = input.Email,
                 Phone = input.Phone,
                 StartOfContract = input.StartOfContract,
+                HasContract = true,
             };
 
             await this.dbContext.Tenants.AddAsync(tenant);
@@ -71,6 +72,7 @@
                 StartOfContract = currentTenant.StartOfContract,
                 Offices = tenantOffices,
                 AllOffices = allOffices,
+                HasContract = currentTenant.HasContract,
             };
 
             return tenantToEdit;
@@ -162,8 +164,33 @@
                 CompanyOwner = x.CompanyOwner,
                 Bulstat = x.Bulstat,
                 Address = x.Address,
+                HasContract = x.HasContract,
             });
             return allTenants;
+        }
+
+        public async Task DeleteTenantAsync(int id)
+        {
+            var tenant = this.GetTenantById(id);
+            var offices = tenant.Offices.ToList();
+            tenant.Offices.Clear();
+
+            foreach (var office in offices)
+            {
+                office.IsAvailable = true;
+            }
+
+            tenant.HasContract = false;
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
+        public async Task SignContract(int id)
+        {
+            var tenant = this.GetTenantById(id);
+            tenant.HasContract = true;
+
+            await this.dbContext.SaveChangesAsync();
         }
     }
 }

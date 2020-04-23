@@ -15,5 +15,7 @@
         public string Address { get; set; }
 
         public DateTime StartOfContract { get; set; }
+
+        public bool HasContract { get; set; }
     }
 }

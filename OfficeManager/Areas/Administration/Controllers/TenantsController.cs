@@ -48,7 +48,19 @@
 
         public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
-            var allTenants = this.tenantsService.GetAllTenants();
+            var allTenants = this.tenantsService.GetAllTenants().Where(x => x.HasContract == true);
+
+            allTenants = this.OrderTenantsAsync(sortOrder, currentFilter, searchString, pageNumber, allTenants);
+            int pageSize = GetPageSize(rowsPerPage, allTenants);
+
+            this.ViewData["RowsPerPage"] = pageSize;
+
+            return this.View(await PaginatedList<TenantOutputViewModel>.CreateAsync(allTenants.AsNoTracking(), pageNumber ?? 1, pageSize));
+        }
+
+        public async Task<ViewResult> AllNoContract(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
+        {
+            var allTenants = this.tenantsService.GetAllTenants().Where(x => x.HasContract == false);
 
             allTenants = this.OrderTenantsAsync(sortOrder, currentFilter, searchString, pageNumber, allTenants);
             int pageSize = GetPageSize(rowsPerPage, allTenants);
@@ -74,15 +86,19 @@
         [HttpPost]
         public async Task<IActionResult> Details(TenantToEditViewModel input)
         {
+            var currentTenant = this.tenantsService.GetTenantById(input.Id);
             if (!this.ModelState.IsValid)
             {
-                var currentTenant = this.tenantsService.GetTenantById(input.Id);
                 var tenantToEdit = this.tenantsService.EditTenant(currentTenant);
                 input.Offices = tenantToEdit.Offices;
                 return this.View(input);
             }
 
             await this.tenantsService.UpdateTenantAsync(input);
+            if (!currentTenant.HasContract)
+            {
+                return this.Redirect("/Administration/Tenants/AllNoContract");
+            }
 
             return this.Redirect("/Administration/Tenants/All");
         }
@@ -130,6 +146,32 @@
             await this.officesService.RemoveOfficesFromTenantAsync(input.Id, input.AreChecked);
 
             return this.Redirect("/Administration/Tenants/Details?id=" + input.Id.ToString());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(TenantIdViewModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            await this.tenantsService.DeleteTenantAsync(input.Id);
+
+            return this.Redirect("/Administration/Tenants/All");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SignContract(TenantIdViewModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            await this.tenantsService.SignContract(input.Id);
+
+            return this.Redirect("/Administration/Tenants/All");
         }
 
         private static int GetPageSize(string rowsPerPage, IQueryable<TenantOutputViewModel> allTenants)

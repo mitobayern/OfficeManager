@@ -11,6 +11,8 @@
 
         Task UpdateElectricityMeterAsync(int id, string name, decimal powerSupply);
 
+        Task DeleteElectricityMeterAsync(int id);
+
         ElectricityMeter GetElectricityMeterById(int id);
 
         ElectricityMeter GetElectricityMeterByName(string name);

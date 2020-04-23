@@ -68,5 +68,12 @@
 
             return electricityMeteres;
         }
+
+        public async Task DeleteElectricityMeterAsync(int id)
+        {
+            var electricityMeter = this.GetElectricityMeterById(id);
+            this.dbContext.Remove(electricityMeter);
+            await this.dbContext.SaveChangesAsync();
+        }
     }
 }

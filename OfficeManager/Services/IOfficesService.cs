@@ -27,6 +27,8 @@
 
         Task RemoveElectricityMeterFromOfficeAsync(int id);
 
+        Task DeleteOfficeAsync(int id);
+
         Office GetOfficeById(int id);
 
         Office GetOfficeByName(string name);

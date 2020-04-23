@@ -79,6 +79,14 @@
             return this.View(await PaginatedList<TemperatureMeterOutputViewModel>.CreateAsync(allTemperatureMeters.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete(TemperatureMeterIdViewModel input)
+        {
+            await this.temperatureMetersService.DeleteTemperatureMeterAsync(input.Id);
+
+            return this.Redirect("/Administration/TemperatureMeters/All");
+        }
+
         private static int GetPageSize(string rowsPerPage, IQueryable<TemperatureMeterOutputViewModel> allTemperatureMeters)
         {
             int pageSize;

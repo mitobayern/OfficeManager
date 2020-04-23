@@ -188,6 +188,14 @@
             return this.Redirect("/Administration/Offices/Edit?id=" + input.Id.ToString());
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete(OfficeIdViewModel input)
+        {
+            await this.officesService.DeleteOfficeAsync(input.Id);
+
+            return this.Redirect("/Administration/Offices/All");
+        }
+
         private static int GetPageSize(string rowsPerPage, IQueryable<OfficeOutputViewModel> allOffices)
         {
             int pageSize;

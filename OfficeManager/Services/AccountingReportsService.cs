@@ -64,7 +64,7 @@
 
         public List<SelectListItem> GetAllTenantsSelectList()
         {
-            var allTenants = this.dbContext.Tenants.Select(x => x.CompanyName).ToList();
+            var allTenants = this.dbContext.Tenants.Where(x => x.HasContract == true).Select(x => x.CompanyName).ToList();
 
             List<SelectListItem> tenantsViewModel = new List<SelectListItem>();
 

@@ -228,5 +228,12 @@
 
             return officeTemperatureMeters;
         }
+
+        public async Task DeleteOfficeAsync(int id)
+        {
+            var office = this.GetOfficeById(id);
+            this.dbContext.Offices.Remove(office);
+            await this.dbContext.SaveChangesAsync();
+        }
     }
 }

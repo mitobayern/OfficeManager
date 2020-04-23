@@ -4,107 +4,110 @@
     ViewData["Title"] = "Office Details";
 }
 
-    <div style="padding: 5%;">
-        <h1 class="display-4 text-center mb-5">Office Details</h1>
-        <form asp-area="Administration" asp-controller="Offices" asp-action="Edit" method="post">
-            <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
-            <div class="row" style="margin-bottom:20px">
-                <div class="col">
-                    <label asp-for="Name"><i>Office Number</i></label>
-                    <input asp-for="Name" class="form-control" placeholder="Office number">
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="col">
-                    <label asp-for="Area"><i>Office Area</i></label>
-                    <input asp-for="Area" class="form-control" placeholder="Office area">
-                    <span asp-validation-for="Area" class="text-danger"></span>
-                </div>
-                <div class="col">
-                    <label asp-for="RentPerSqMeter"><i>Rent per m<sup>2</sup></i></label>
-                    <input asp-for="RentPerSqMeter" class="form-control" placeholder="Rent Per Suqre Meter">
-                    <span asp-validation-for="RentPerSqMeter" class="text-danger"></span>
-                </div>
+<div style="padding: 5%;">
+    <h1 class="display-4 text-center mb-5">Office Details</h1>
+    <form asp-area="Administration" asp-controller="Offices" asp-action="Edit" method="post">
+        <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
+        <div class="row" style="margin-bottom:20px">
+            <div class="col">
+                <label asp-for="Name"><i>Office Number</i></label>
+                <input asp-for="Name" class="form-control" placeholder="Office number">
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="row mt-4">
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
-                    <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <a class="btn btn-dark btn-block" href="/Administration/Offices/All">Back</a>
-                </div>
+            <div class="col">
+                <label asp-for="Area"><i>Office Area</i></label>
+                <input asp-for="Area" class="form-control" placeholder="Office area">
+                <span asp-validation-for="Area" class="text-danger"></span>
             </div>
-        </form>
-
-        <br />
-        <br />
-        @if (Model.ElectricityMeter == "No electricity meter available")
-        {
-            <div class="row" style="margin-bottom:20px">
-                <div class="col-8">
-                    <h5><i>Electricity meter: <b style="color:brown">No electricity meter available.</b></i></h5>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="row" style="margin-bottom:20px">
-                <div class="col-8">
-                    <h5><i>Electricity meter: <b style="color:brown">@Model.ElectricityMeter</b></i></h5>
-                </div>
-            </div>
-        }
-        @if (Model.ElectricityMeter == "No electricity meter available")
-        {
-            <div class="row mt-2">
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
-                    <a class="btn btn-success btn-block" href="/Administration/Offices/AddElectricityMeter?id=@Model.Id">Add Electricity Meter</a>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <a class="btn btn-danger btn-block" href="/Administration/Offices/Edit?id=@Model.Id">Remove Electricity Meter</a>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="row mt-2">
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
-                    <a class="btn btn-success btn-block" href="/Administration/Offices/Edit?id=@Model.Id">Add Electricity Meter</a>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <a class="btn btn-danger btn-block" href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id">Remove Electricity Meter</a>
-                </div>
-            </div>
-        }
-        <br />
-        <br />
-        @if (Model.TemperatureMeters.Count() == 0)
-        {
-            <div class="row" style="margin-bottom:20px">
-                <div class="col-8">
-                    <h5><i>Temperature meters: <b style="color:brown">No temperature meters available.</b></i></h5>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="row" style="margin-bottom:20px">
-                <div class="col-8">
-                    <h5><i>Temperature meters: <b style="color:brown">@String.Join(", ", Model.TemperatureMeters)</b></i></h5>
-                </div>
-            </div>
-        }
-        <div class="row mt-2">
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
-                <a class="btn btn-success btn-block" href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id">Add Temperature Meters</a>
-            </div>
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <a class="btn btn-danger btn-block" href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id">Remove Temperature Meters</a>
+            <div class="col">
+                <label asp-for="RentPerSqMeter"><i>Rent per m<sup>2</sup></i></label>
+                <input asp-for="RentPerSqMeter" class="form-control" placeholder="Rent Per Suqre Meter">
+                <span asp-validation-for="RentPerSqMeter" class="text-danger"></span>
             </div>
         </div>
-        <hr class="mt-5" />
         <div class="row mt-4">
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
-                <a href=# class="btn btn-danger btn-block">Delete Office</a>
+                <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <a class="btn btn-dark btn-block" href="/Administration/Offices/All">Back</a>
             </div>
         </div>
+    </form>
+
+    <br />
+    <br />
+    @if (Model.ElectricityMeter == "No electricity meter available")
+    {
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-8">
+                <h5><i>Electricity meter: <b style="color:brown">No electricity meter available.</b></i></h5>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-8">
+                <h5><i>Electricity meter: <b style="color:brown">@Model.ElectricityMeter</b></i></h5>
+            </div>
+        </div>
+    }
+    @if (Model.ElectricityMeter == "No electricity meter available")
+    {
+        <div class="row mt-2">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                <a class="btn btn-success btn-block" href="/Administration/Offices/AddElectricityMeter?id=@Model.Id">Add Electricity Meter</a>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <a class="btn btn-danger btn-block" href="/Administration/Offices/Edit?id=@Model.Id">Remove Electricity Meter</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row mt-2">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                <a class="btn btn-success btn-block" href="/Administration/Offices/Edit?id=@Model.Id">Add Electricity Meter</a>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <a class="btn btn-danger btn-block" href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id">Remove Electricity Meter</a>
+            </div>
+        </div>
+    }
+    <br />
+    <br />
+    @if (Model.TemperatureMeters.Count() == 0)
+    {
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-8">
+                <h5><i>Temperature meters: <b style="color:brown">No temperature meters available.</b></i></h5>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row" style="margin-bottom:20px">
+            <div class="col-8">
+                <h5><i>Temperature meters: <b style="color:brown">@String.Join(", ", Model.TemperatureMeters)</b></i></h5>
+            </div>
+        </div>
+    }
+    <div class="row mt-2">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+            <a class="btn btn-success btn-block" href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id">Add Temperature Meters</a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <a class="btn btn-danger btn-block" href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id">Remove Temperature Meters</a>
+        </div>
     </div>
+    <hr class="mt-5" />
+    <form id="deleteOffice" asp-area="Administration" asp-controller="Offices" asp-action="Delete" method="post">
+        <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
+        <div class="row mt-4">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                <button type="submit" class="btn btn-danger btn-block">Delete</button>
+            </div>
+        </div>
+    </form>
+</div>

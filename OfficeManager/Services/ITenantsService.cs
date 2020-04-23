@@ -13,6 +13,10 @@
 
         Task UpdateTenantAsync(TenantToEditViewModel input);
 
+        Task DeleteTenantAsync(int id);
+
+        Task SignContract(int id);
+
         TenantToEditViewModel EditTenant(Tenant tenant);
 
         Tenant GetTenantById(int id);

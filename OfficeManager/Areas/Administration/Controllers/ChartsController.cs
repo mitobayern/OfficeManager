@@ -59,6 +59,8 @@
                 AmountsForCooling = JsonConvert.SerializeObject(amountsForCooling, Formatting.Indented),
             };
 
+            this.ViewData["TenantId"] = id;
+
             this.ViewData["Title"] = companyName;
 
             return this.View(result);

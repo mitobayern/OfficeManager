@@ -21,6 +21,8 @@
         [EmailAddress]
         public string Email { get; set; }
 
+        public bool HasContract { get; set; }
+
         [Required]
         public string Address { get; set; }
 

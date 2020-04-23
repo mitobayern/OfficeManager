@@ -57,7 +57,6 @@
     </form>
     <h5><i>Rented Offices: <b style="color:brown">@String.Join(", ", Model.Offices)</b></i></h5>
 
-
     <div class="row mt-2">
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
             <a class="btn btn-success btn-block" href="/Administration/Tenants/AddOffices?id=@Model.Id">Add Offices</a>
@@ -67,9 +66,28 @@
         </div>
     </div>
     <hr class="mt-5" />
-    <div class="row mt-4">
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
-            <a href=# class="btn btn-danger btn-block">Delete Tenant</a>
-        </div>
-    </div>
+    @{
+        if (Model.HasContract)
+        {
+            <form id="deleteTenant" asp-area="Administration" asp-controller="Tenants" asp-action="Delete" method="post">
+                <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
+                <div class="row mt-4">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                        <button type="submit" class="btn btn-danger btn-block">Delete</button>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <form id="restartTenant" asp-area="Administration" asp-controller="Tenants" asp-action="SignContract" method="post">
+                <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
+                <div class="row mt-4">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                        <button type="submit" class="btn btn-primary btn-block">Sign new contract</button>
+                    </div>
+                </div>
+            </form>
+        }
+    }
 </div>

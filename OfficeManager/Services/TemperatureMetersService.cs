@@ -78,5 +78,12 @@
 
             return allTemperatureMeters;
         }
+
+        public async Task DeleteTemperatureMeterAsync(int id)
+        {
+            var temperatureMeter = this.GetTemperatureMeterById(id);
+            this.dbContext.TemperatureMeters.Remove(temperatureMeter);
+            await this.dbContext.SaveChangesAsync();
+        }
     }
 }

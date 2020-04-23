@@ -87,6 +87,19 @@
             return this.View(await PaginatedList<ElectricityMeterOutputViewModel>.CreateAsync(allElectricityMeters.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete(ElectricityMeterIdViewModel input)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return this.View(input);
+            }
+
+            await this.electricityMetersService.DeleteElectricityMeterAsync(input.Id);
+
+            return this.Redirect("/Administration/ElectricityMeters/All");
+        }
+
         private static int GetPageSize(string rowsPerPage, IQueryable<ElectricityMeterOutputViewModel> allElectricityMeters)
         {
             int pageSize;

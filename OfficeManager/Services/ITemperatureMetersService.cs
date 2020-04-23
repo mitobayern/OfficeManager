@@ -11,6 +11,8 @@
 
         Task UpdateTemperatureMeterAsync(int id, string name);
 
+        Task DeleteTemperatureMeterAsync(int id);
+
         EditTemperatreMeterViewModel EditTemperatureMeter(int id);
 
         TemperatureMeter GetTemperatureMeterById(int id);
