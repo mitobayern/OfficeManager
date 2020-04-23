@@ -10,23 +10,29 @@
     <form asp-area="Administration" asp-controller="ElectricityMeters" asp-action="Edit" method="post">
         <input asp-for="@Model.Id" type="hidden" name="id" value="@Model.Id" />
         <div class="row" style="margin-bottom:20px">
-            <div class="form-control col-4">
-                <label asp-for="Name"><i>Electricity Meter Number</i></label>
+            <div class="form-group col-md-4">
+                <label asp-for="Name"><i>Meter Number</i></label>
                 <input asp-for="Name" class="form-control">
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-control col-4">
+            <div class="form-group col-md-4">
                 <label asp-for="PowerSupply"><i>Power Supply</i></label>
                 <input asp-for="PowerSupply" class="form-control">
                 <span asp-validation-for="PowerSupply" class="text-danger"></span>
             </div>
         </div>
-        <div class="row mt-2">
+        <div class="row mt-4">
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
                 <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
             </div>
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <a class="btn btn-dark btn-block" href="/Administration/ElectricityMeters/All">Back</a>
+            </div>
+        </div>
+        <hr class="mt-5" />
+        <div class="row mt-4">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                <a href=# class="btn btn-danger btn-block">Delete</a>
             </div>
         </div>
     </form>

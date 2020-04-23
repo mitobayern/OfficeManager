@@ -8,7 +8,6 @@
         <h1 class="display-4 text-center mb-5">Remove Offices from Tenant</h1>
         <h5><i>Curent Tennant Offices</i></h5>
 
-        @*<h5 style="margin-top:50px; margin-bottom:20px" ; text-align:left;"><i>Curent Tennant Offices</i></h5>*@
         <form asp-area="Administration" asp-controller="Tenants" asp-action="RemoveOffices" method="post" class="form">
             <input type="hidden" name="id" value="@Model.Id" />
 
@@ -20,12 +19,13 @@
                     <label class="custom-control-label" for="customCheck@(i)">@tenantOffices[i].Name</label>
                 </div>
             }
-            <div class="mt-4">
-                <button type="submit" class="btn btn-danger mr-2">Remove</button>
-                <a class="btn btn-dark" href="/Administration/Tenants/Details?id=@Model.Id">Back</a>
-            </div>
-            @*<br />
-            <button type="submit" class="btn btn-primary" style="width:195px">Remove</button>
-            <a class="btn btn-dark" href="/Administration/Tenants/Details?id=@Model.Id" role="button" style="width:195px">Back</a>*@
+            <div class="row mt-4">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                    <button type="submit" class="btn btn-danger btn-block">Remove</button>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <a class="btn btn-dark btn-block" href="/Administration/Tenants/Details?id=@Model.Id">Back</a>
+                </div>
+            </div>            
         </form>
     </div>

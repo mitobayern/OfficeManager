@@ -25,11 +25,16 @@
                     <span asp-validation-for="RentPerSqMeter" class="text-danger"></span>
                 </div>
             </div>
-            <div class="text-center text-sm-left">
-                <button type="submit" class="btn btn-primary mr-2">Save Changes</button>
-                <a href="/Administration/Offices/All" class="btn btn-dark">Back</a>
+            <div class="row mt-4">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                    <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <a class="btn btn-dark btn-block" href="/Administration/Offices/All">Back</a>
+                </div>
             </div>
         </form>
+
         <br />
         <br />
         @if (Model.ElectricityMeter == "No electricity meter available")
@@ -50,16 +55,24 @@
         }
         @if (Model.ElectricityMeter == "No electricity meter available")
         {
-            <div class="text-center text-sm-left">
-                <a href="/Administration/Offices/AddElectricityMeter?id=@Model.Id" class="btn btn-success mr-2">Add Offices</a>
-                <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-danger">Remove Electricity Meter</a>
+            <div class="row mt-2">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                    <a class="btn btn-success btn-block" href="/Administration/Offices/AddElectricityMeter?id=@Model.Id">Add Electricity Meter</a>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <a class="btn btn-danger btn-block" href="/Administration/Offices/Edit?id=@Model.Id">Remove Electricity Meter</a>
+                </div>
             </div>
         }
         else
         {
-            <div class="text-center text-sm-left">
-                <a href="/Administration/Offices/Edit?id=@Model.Id" class="btn btn-success mr-2">Add Electricity Meter</a>
-                <a href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id" class="btn btn-danger">Remove Electricity Meter</a>
+            <div class="row mt-2">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                    <a class="btn btn-success btn-block" href="/Administration/Offices/Edit?id=@Model.Id">Add Electricity Meter</a>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <a class="btn btn-danger btn-block" href="/Administration/Offices/RemoveElectricityMeter?id=@Model.Id">Remove Electricity Meter</a>
+                </div>
             </div>
         }
         <br />
@@ -80,8 +93,18 @@
                 </div>
             </div>
         }
-        <div class="text-center text-sm-left">
-            <a href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id" class="btn btn-success mr-2">Add Temperature Meters</a>
-            <a href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id" class="btn btn-danger">Remove Temperature Meters</a>
+        <div class="row mt-2">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                <a class="btn btn-success btn-block" href="/Administration/Offices/AddTemperatureMeters?id=@Model.Id">Add Temperature Meters</a>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <a class="btn btn-danger btn-block" href="/Administration/Offices/RemoveTemperatureMeters?id=@Model.Id">Remove Temperature Meters</a>
+            </div>
+        </div>
+        <hr class="mt-5" />
+        <div class="row mt-4">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                <a href=# class="btn btn-danger btn-block">Delete Office</a>
+            </div>
         </div>
     </div>

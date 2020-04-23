@@ -46,15 +46,30 @@
                 <span asp-validation-for="StartOfContract" class="text-danger"></span>
             </div>
         </div>
-        <div class="text-center text-sm-left">
-            <button type="submit" class="btn btn-primary mr-2">Save Changes</button>
-            <a href="/Administration/Tenants/All" class="btn btn-dark">Back</a>
+        <div class="row mt-4">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <a class="btn btn-dark btn-block" href="/Administration/Tenants/All">Back</a>
+            </div>
         </div>
     </form>
-
     <h5><i>Rented Offices: <b style="color:brown">@String.Join(", ", Model.Offices)</b></i></h5>
-    <div class="text-center text-sm-left">
-        <a href="/Administration/Tenants/AddOffices?id=@Model.Id" class="btn btn-success mr-2">Add Offices</a>
-        <a href="/Administration/Tenants/RemoveOffices?id=@Model.Id" class="btn btn-danger">Remove Offices</a>
+
+
+    <div class="row mt-2">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+            <a class="btn btn-success btn-block" href="/Administration/Tenants/AddOffices?id=@Model.Id">Add Offices</a>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <a class="btn btn-danger btn-block" href="/Administration/Tenants/RemoveOffices?id=@Model.Id">Remove Offices</a>
+        </div>
+    </div>
+    <hr class="mt-5" />
+    <div class="row mt-4">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+            <a href=# class="btn btn-danger btn-block">Delete Tenant</a>
+        </div>
     </div>
 </div>

@@ -18,9 +18,13 @@
                 <label class="custom-control-label" for="customCheck@(i)">@availaleTemperatureMeters[i].Name</label>
             </div>
         }
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary mr-2">Add</button>
-            <a class="btn btn-dark" href="/Administration/Offices/Edit?id=@Model.Id">Back</a>
+        <div class="row mt-4">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+                <button type="submit" class="btn btn-success btn-block">Add</button>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <a class="btn btn-dark btn-block" href="/Administration/Offices/Edit?id=@Model.Id">Back</a>
+            </div>
         </div>
     </form>
 </div>

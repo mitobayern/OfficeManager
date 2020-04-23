@@ -7,35 +7,35 @@
 
 <div style="padding: 5%;">
 <h1 class="display-4 text-center mb-5">Create Accounting Report</h1>
-    <form asp-controller="AccountingReports" asp-action="Create" method="post">
-        @for (int i = 0; i < Model.AccountingReports.Count; i++)
-        {
-            <input class="form-control" type="hidden" asp-for="AccountingReports[i].CompanyName" value="@Model.AccountingReports[i].CompanyName" />
-            <input class="form-control" type="hidden" asp-for="AccountingReports[i].Period" value="@Model.AccountingReports[i].Period" />
-        }
-        <div class="row">
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label for="Model.Tenant"><i>Select Tenant</i></label>
-                    @Html.DropDownListFor(Model => Model.Tenant, Model.Tenants, "--  Select Tenant  --", new { @class = "form-control custom-select" })
-                    <span asp-validation-for="Tenant" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="col-12 col-sm-6">
-                <div class="form-group">
-                    <label for="Model.Period"><i>Select Period</i></label>
-                    @Html.DropDownListFor(Model => Model.Period, Model.Periods, "--  Select Period  --", new { @class = "form-control custom-select" })
-                    <span asp-validation-for="Period" class="text-danger"></span>
-                </div>
+<form asp-controller="AccountingReports" asp-action="Create" method="post">
+    @for (int i = 0; i < Model.AccountingReports.Count; i++)
+    {
+        <input class="form-control" type="hidden" asp-for="AccountingReports[i].CompanyName" value="@Model.AccountingReports[i].CompanyName" />
+        <input class="form-control" type="hidden" asp-for="AccountingReports[i].Period" value="@Model.AccountingReports[i].Period" />
+    }
+    <div class="row">
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="Model.Tenant"><i>Select Tenant</i></label>
+                @Html.DropDownListFor(Model => Model.Tenant, Model.Tenants, "--  Select Tenant  --", new { @class = "form-control custom-select" })
+                <span asp-validation-for="Tenant" class="text-danger"></span>
             </div>
         </div>
-        <div class="row text-center text-sm-left mt-2">
-            <div class="col-12 col-6 mb-2 mb-sm-0">
-                <button type="submit" class="btn btn-primary" style="width:210px">Create Acounting Report</button>
-            </div>
-            <div class="col-12 col-sm-6">
-                <a class="btn btn-dark" href="/AccountingReports/All" role="button" style="width:210px">Back</a>
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="Model.Period"><i>Select Period</i></label>
+                @Html.DropDownListFor(Model => Model.Period, Model.Periods, "--  Select Period  --", new { @class = "form-control custom-select" })
+                <span asp-validation-for="Period" class="text-danger"></span>
             </div>
         </div>
-    </form>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-2 mb-sm-0 mr-sm-2">
+            <button type="submit" class="btn btn-primary btn-block">Create</button>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <a class="btn btn-dark btn-block" href="/AccountingReports/All">Back</a>
+        </div>
+    </div>
+</form>
 </div>
