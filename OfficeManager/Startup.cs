@@ -9,6 +9,7 @@ namespace OfficeManager
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using OfficeManager.Data;
+    using OfficeManager.Models;
     using OfficeManager.SeedData;
     using OfficeManager.Services;
 
@@ -34,7 +35,7 @@ namespace OfficeManager
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                 });
 
-            services.AddDefaultIdentity<IdentityUser>(options =>
+            services.AddDefaultIdentity<User>(options =>
                 {
                     options.Password.RequiredUniqueChars = 0;
                     options.Password.RequiredLength = 6;
