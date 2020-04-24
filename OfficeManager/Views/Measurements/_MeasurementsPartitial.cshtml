@@ -27,13 +27,13 @@
             <div class="col-12">
                 <h6><i>Electricity Meter: <b class="text-indigo">@Model.Offices[i].ElectricityMeter.Name</b></i></h6>
                 <div class="row">
-                    <div class="col-6 col-md-4">
+                    <div class="col-6 col-md-2">
                         <input class="form-control" type="hidden" asp-for="Offices[i].ElectricityMeter.DayTimeMinValue" value="@Model.Offices[i].ElectricityMeter.DayTimeMinValue" />
                         <label asp-for="Offices[i].ElectricityMeter.DayTimeMeasurement"><i>DayTime</i></label>
                         <input asp-for="Offices[i].ElectricityMeter.DayTimeMeasurement" class="form-control" size="10" />
                         <span asp-validation-for="Offices[i].ElectricityMeter.DayTimeMeasurement" class="text-danger"></span>
                     </div>
-                    <div class="col-6 col-md-4">
+                    <div class="col-6 col-md-2">
                         <input class="form-control" type="hidden" asp-for="Offices[i].ElectricityMeter.NightTimeMinValue" value="@Model.Offices[i].ElectricityMeter.NightTimeMinValue" />
                         <label asp-for="Offices[i].ElectricityMeter.NightTimeMeasurement"><i>NightTime</i></label>
                         <input asp-for="Offices[i].ElectricityMeter.NightTimeMeasurement" class="form-control" size="10" />

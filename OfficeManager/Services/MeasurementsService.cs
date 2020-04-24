@@ -295,7 +295,7 @@
                     office.ElectricityMeter.Name,
                     office.ElectricityMeter.DayTimeMeasurement,
                     office.ElectricityMeter.NightTimeMeasurement);
-
+                ;
                 foreach (var temperatureMeter in office.TemperatureMeters)
                 {
                     await this.EditTemperatureMeasurementAsync(
@@ -485,21 +485,47 @@
 
             var allOffices = this.dbContext.Offices.ToList();
 
-            foreach (var office in allOffices)
+
+            foreach (var office in allOffices.OrderBy(x => x.Name))
             {
+                var blankElectricityMeasurement = new ElectricityMeasurementInputViewModel
+                {
+                    Name = office.ElectricityMeter.Name,
+                    DayTimeMeasurement = 0M,
+                    NightTimeMeasurement = 0M,
+                    DayTimeMinValue = 0M,
+                    NightTimeMinValue = 0M,
+                };
+
+
                 var temperatureMeters = new List<TemperatureMeasurementInputViewModel>();
                 var electricityMeasurement = electricityMeasurements.FirstOrDefault(x => x.Name == office.ElectricityMeter.Name);
 
                 foreach (var temperatureMeter in office.TemperatureMeters)
                 {
+                    var blankTemperatureMeasurement = new TemperatureMeasurementInputViewModel
+                    {
+                        Name = temperatureMeter.Name,
+                        CoolingMeasurement = 0M,
+                        HeatingMeasurement = 0M,
+                        CoolingMinValue = 0M,
+                        HeatingMinValue = 0M,
+                    };
+
                     var temperatureMeasurement = temperatureMeasurements.FirstOrDefault(x => x.Name == temperatureMeter.Name);
+
+                    if (temperatureMeasurement == null)
+                    {
+                        temperatureMeasurement = blankTemperatureMeasurement;
+                    }
+
                     temperatureMeters.Add(temperatureMeasurement);
                 }
 
                 var officeWithValues = new OfficeMeasurementsInputViewModel
                 {
                     Name = office.Name,
-                    ElectricityMeter = electricityMeasurement,
+                    ElectricityMeter = electricityMeasurement != null ? electricityMeasurement : blankElectricityMeasurement,
                     TemperatureMeters = temperatureMeters,
                 };
                 officesToReturn.Add(officeWithValues);

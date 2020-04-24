@@ -1,5 +1,6 @@
 ﻿namespace OfficeManager.Services
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
@@ -69,7 +70,7 @@
 
         public IQueryable<TemperatureMeterOutputViewModel> GetAllTemperatureMeters()
         {
-            var allTemperatureMeters = this.dbContext.TemperatureMeters.Select(x => new TemperatureMeterOutputViewModel
+            var allTemperatureMeters = this.dbContext.TemperatureMeters.Where(x => x.IsDeleted == false).Select(x => new TemperatureMeterOutputViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -82,7 +83,13 @@
         public async Task DeleteTemperatureMeterAsync(int id)
         {
             var temperatureMeter = this.GetTemperatureMeterById(id);
-            this.dbContext.TemperatureMeters.Remove(temperatureMeter);
+            if (temperatureMeter.OfficeId != null)
+            {
+                var office = temperatureMeter.Office;
+                office.TemperatureMeters.Remove(temperatureMeter);
+            }
+
+            temperatureMeter.IsDeleted = true;
             await this.dbContext.SaveChangesAsync();
         }
     }

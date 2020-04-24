@@ -15,6 +15,9 @@
         [Required]
         public string Name { get; set; }
 
+        public bool IsDeleted { get; set; }
+
+
         public int? OfficeId { get; set; }
 
         public virtual Office Office { get; set; }

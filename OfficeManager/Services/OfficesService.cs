@@ -41,6 +41,7 @@
                 Area = area,
                 IsAvailable = true,
                 RentPerSqMeter = rentPerSqMeter,
+                IsDeleted = false,
             };
 
             await this.dbContext.Offices.AddAsync(office);
@@ -191,7 +192,7 @@
 
         public IQueryable<EditOfficeViewModel> GetAllAvailableOffices()
         {
-            var availavleOffices = this.dbContext.Offices.Where(x => x.IsAvailable == true).Select(x => new EditOfficeViewModel
+            var availavleOffices = this.dbContext.Offices.Where(x => x.IsAvailable == true && x.IsDeleted == false).Select(x => new EditOfficeViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -204,7 +205,7 @@
 
         public IQueryable<OfficeOutputViewModel> GetAllOffices()
         {
-            var offices = this.dbContext.Offices.Select(x => new OfficeOutputViewModel
+            var offices = this.dbContext.Offices.Where(x => x.IsDeleted == false).Select(x => new OfficeOutputViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -232,7 +233,13 @@
         public async Task DeleteOfficeAsync(int id)
         {
             var office = this.GetOfficeById(id);
-            this.dbContext.Offices.Remove(office);
+            var tenant = office.Tenant;
+            var officesToRemove = new List<string> { office.Name };
+            await this.RemoveOfficesFromTenantAsync(tenant.Id, officesToRemove);
+            await this.RemoveElectricityMeterFromOfficeAsync(id);
+            office.TemperatureMeters.Clear();
+            office.IsDeleted = true;
+            office.IsAvailable = true;
             await this.dbContext.SaveChangesAsync();
         }
     }
