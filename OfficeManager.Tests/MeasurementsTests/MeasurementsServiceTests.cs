@@ -160,6 +160,7 @@
 
             var result = measurementsService.GetOfficesWithLastMeasurements().FirstOrDefault();
 
+
             Assert.Equal("TestOfficeName", result.Name);
             Assert.Equal(this.electricityMeterName, result.ElectricityMeter.Name);
             Assert.Equal(this.dayTimeMeasurement, result.ElectricityMeter.DayTimeMinValue);
@@ -194,6 +195,9 @@
             };
 
             await measurementsService.CreateAllMeasurementsAsync(input);
+
+            Assert.Single(measurementsService.GetAllMeasurements());
+            var result = measurementsService.GetMeasurementsByStartingPeriod(this.periodStartTime);
 
             Assert.Equal("1 януари - 31 януари 2020 г.", measurementsService.GetLastPeriodAsText());
             Assert.Equal(new DateTime(2020, 2, 1), measurementsService.GetStartOfNewPeroid());

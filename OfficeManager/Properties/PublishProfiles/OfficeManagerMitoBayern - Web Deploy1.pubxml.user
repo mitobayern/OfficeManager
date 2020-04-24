@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAMfpSiIgBUUup77eOAMdLwgAAAAACAAAAAAAQZgAAAAEAACAAAABKt7wDZWrIwVi3bnkfSGnNU6NYJ6YjX8T7XTtWCzdrWwAAAAAOgAAAAAIAACAAAAAHUu52A1Ult5JhI2hDWG486U+ah2WATplA83N4WFi9sIAAAADUQEddlIGBcUKac5npW30rDXZLw7LtisUrGtIKeKwi40G0bwIq4qGcFyJv92dWKjt4lG3A4HW/6YLwbsXZ9tWw/NhKDhTzMXtH/fA21oSxOLuFGmhrvxDxn/gJngsxJrmViiQ/00I5AjYgsO8b0Gf7F0q5n0CPX7grCLOhYNFqKEAAAACKRvQVTxplyiQqaedAwYU7iexofOLhbquYQB2WAJJ/6c3Cvx2JDZqwtJHXz4HS1wXV5hkRqZxeDvEXZ63r1QMH</EncryptedPassword>
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Data Source=tcp:officemanagersqlserver.database.windows.net,1433%3bInitial Catalog=OfficeManager20200424031424_db%3bUser Id=OfficeManagerUser%40officemanagersqlserver%3bPassword=Dimitar123!</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

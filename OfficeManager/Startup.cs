@@ -73,6 +73,7 @@ namespace OfficeManager
                 {
                     dbContext.Database.Migrate();
                 }
+                //dbContext.Database.Migrate();
 
                 new ApplicationDbContextSeeder(dbContext, scopedService.ServiceProvider)
                     .SeedDataAsync()

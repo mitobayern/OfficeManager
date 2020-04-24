@@ -138,6 +138,21 @@
             Assert.Equal("Test2", temperatureMeterToEdit.Name);
         }
 
+        [Fact]
+        public async Task TestIfTemperatureMeterIsDeletedCorrectrlyAsync()
+        {
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITemperatureMetersService temperatureMetersService = new TemperatureMetersService(dbContext);
+
+            for (int i = 1; i < 4; i++)
+            {
+                await temperatureMetersService.CreateTemperatureMeterAsync("Test" + i.ToString());
+            }
+
+            await temperatureMetersService.DeleteTemperatureMeterAsync(2);
+            Assert.Equal("Test1", temperatureMetersService.GetTemperatureMeterById(1).Name);
+        }
+
         private DbContextOptions<ApplicationDbContext> GetInMemoryDadabaseOptions()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()

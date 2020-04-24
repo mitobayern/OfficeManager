@@ -130,6 +130,22 @@
             Assert.Equal(20M, electricityMeterPowerSupply);
         }
 
+        [Fact]
+        public async Task TestIfElectricityMeterIsDeletedCorrectrlyAsync()
+        {
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            IElectricityMetersService electricityMetersService = new ElectricityMetersService(dbContext);
+
+            for (int i = 0; i < 3; i++)
+            {
+                await electricityMetersService.CreateElectricityMeterAsync(this.name + i.ToString(), this.powerSupply);
+            }
+
+            await electricityMetersService.DeleteElectricityMeterAsync(1);
+            Assert.Equal(2, electricityMetersService.GetAllElectricityMeters().Count());
+            Assert.Equal("Test1", electricityMetersService.GetElectricityMeterById(2).Name);
+        }
+
         private DbContextOptions<ApplicationDbContext> GetInMemoryDadabaseOptions()
         {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()

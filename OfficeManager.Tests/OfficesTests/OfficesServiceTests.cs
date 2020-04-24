@@ -9,6 +9,7 @@
     using OfficeManager.Areas.Administration.ViewModels.Offices;
     using OfficeManager.Areas.Administration.ViewModels.Tenants;
     using OfficeManager.Data;
+    using OfficeManager.Models;
     using OfficeManager.Services;
     using Xunit;
 
@@ -101,6 +102,8 @@
             Assert.Equal("No electricity meter available", officesService.EditOffice(1).ElectricityMeter);
             Assert.Equal(50M, officesService.EditOffice(1).Area);
             Assert.Equal(7.2M, officesService.EditOffice(1).RentPerSqMeter);
+            Assert.Equal(this.officeName, officesService.EditOffice(1).Name);
+            Assert.Equal(1, officesService.EditOffice(1).Id);
         }
 
         [Fact]
@@ -277,9 +280,37 @@
                 await officesService.AddTemperatureMetersToOfficeAsync(1, temperatureMetersToAdd);
                 await officesService.RemoveTemperatureMetersFromOfficeAsync(1, temperatureMetersToRemove);
                 temperatureMetersCount = officesService.GetOfficeTemperatureMeters(1).ToList().Count();
+                Assert.Equal(2, officesService.EditOffice(1).TemperatureMeters.Count());
+
             }
 
             Assert.Equal(2, temperatureMetersCount);
+        }
+
+        [Fact]
+        public async Task TestIfOfficeIsDeletedCorrectlyAsync()
+        {
+            int actualOfficesCount;
+
+            using (var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions()))
+            {
+                IOfficesService officesService = new OfficesService(
+                    dbContext,
+                    this.tenantsService.Object,
+                    this.electricityMetersService.Object,
+                    this.temperatureMetersService.Object);
+
+                for (int i = 1; i <= 3; i++)
+                {
+                    await officesService.CreateOfficeAsync("OfficeName" + i.ToString(), 50M, 7.2M);
+                }
+
+                await officesService.DeleteOfficeAsync(2);
+
+                actualOfficesCount = dbContext.Offices.Count();
+            }
+
+            Assert.Equal(2, actualOfficesCount);
         }
 
         private static async Task AddOfficesToTenantAsync(CreateTenantViewModel inputTenant, ITenantsService tenants, IOfficesService officesService)

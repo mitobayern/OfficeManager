@@ -6,6 +6,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
+    using Moq;
     using OfficeManager.Areas.Administration.ViewModels.Tenants;
     using OfficeManager.Data;
     using OfficeManager.Models;
@@ -15,6 +16,8 @@
     public class TenantsServiceTests
     {
         private readonly CreateTenantViewModel tenantViewModel;
+        private Mock<IElectricityMetersService> electricityMetersService;
+        private Mock<ITemperatureMetersService> temperatureMetersService;
 
         public TenantsServiceTests()
         {
@@ -28,6 +31,9 @@
                 Phone = "0888888888",
                 StartOfContract = DateTime.UtcNow,
             };
+
+            this.electricityMetersService = new Mock<IElectricityMetersService>();
+            this.temperatureMetersService = new Mock<ITemperatureMetersService>();
         }
 
         [Fact]
@@ -299,21 +305,67 @@
         }
 
         [Fact]
-        public void TestIfTenantIReturnedForEditionCorrectrly()
+        public async Task TestIfTenantIsDeletedCorrectrlyAsync()
+        {
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITenantsService tenantsService = new TenantsService(dbContext);
+            IOfficesService officesService = new OfficesService(
+                dbContext,
+                tenantsService,
+                this.electricityMetersService.Object,
+                this.temperatureMetersService.Object);
+
+            await officesService.CreateOfficeAsync("Office", 10M, 10M);
+            await tenantsService.CreateTenantAsync(this.tenantViewModel);
+            await officesService.AddOfficesToTenantAsync(1, new List<string> { "Office"});
+            await dbContext.SaveChangesAsync();
+            Assert.Single(tenantsService.GetTenantById(1).Offices);
+            await tenantsService.DeleteTenantAsync(1);
+            Assert.False(tenantsService.GetTenantByCompanyName("TestCompanyName").HasContract);
+            Assert.Empty(tenantsService.GetTenantById(1).Offices);
+        }
+
+        [Fact]
+        public async Task TestIfSignNewContractWorksCorrectrlyAsync()
+        {
+            using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
+            ITenantsService tenantsService = new TenantsService(dbContext);
+            IOfficesService officesService = new OfficesService(
+                dbContext,
+                tenantsService,
+                this.electricityMetersService.Object,
+                this.temperatureMetersService.Object);
+
+            await officesService.CreateOfficeAsync("Office", 10M, 10M);
+            await tenantsService.CreateTenantAsync(this.tenantViewModel);
+            await officesService.AddOfficesToTenantAsync(1, new List<string> { "Office" });
+            await dbContext.SaveChangesAsync();
+            Assert.Single(tenantsService.GetTenantById(1).Offices);
+            await tenantsService.DeleteTenantAsync(1);
+            Assert.False(tenantsService.GetTenantByCompanyName("TestCompanyName").HasContract);
+            Assert.Empty(tenantsService.GetTenantById(1).Offices);
+            await tenantsService.SignContract(1);
+            Assert.True(tenantsService.GetTenantByCompanyName("TestCompanyName").HasContract);
+
+        }
+
+        [Fact]
+        public async Task TestIfTenantIReturnedForEditionCorrectrlyAsync()
         {
             using var dbContext = new ApplicationDbContext(this.GetInMemoryDadabaseOptions());
             ITenantsService tenantsService = new TenantsService(dbContext);
             {
-                var tenantToEdit = tenantsService.EditTenant(new Tenant
-                {
-                    CompanyName = "TestCompanyName",
-                    CompanyOwner = "TestCompanyOwner",
-                    Bulstat = "123456789",
-                    Address = "TestAddress",
-                    Email = "test@email.com",
-                    Phone = "0888888888",
-                    StartOfContract = DateTime.UtcNow,
-                });
+                IOfficesService officesService = new OfficesService(
+                dbContext,
+                tenantsService,
+                this.electricityMetersService.Object,
+                this.temperatureMetersService.Object);
+
+                await tenantsService.CreateTenantAsync(this.tenantViewModel);
+                await officesService.CreateOfficeAsync("Office", 10M, 10M);
+                await officesService.AddOfficesToTenantAsync(1, new List<string> { "Office" });
+                var tenant = tenantsService.GetTenantById(1);
+                var tenantToEdit = tenantsService.EditTenant(tenant);
 
                 Assert.Equal("TestCompanyName", tenantToEdit.CompanyName);
                 Assert.Equal("TestCompanyOwner", tenantToEdit.CompanyOwner);
@@ -321,6 +373,7 @@
                 Assert.Equal("TestAddress", tenantToEdit.Address);
                 Assert.Equal("test@email.com", tenantToEdit.Email);
                 Assert.Equal("0888888888", tenantToEdit.Phone);
+                Assert.Single(tenantToEdit.Offices.ToList());
             }
         }
 

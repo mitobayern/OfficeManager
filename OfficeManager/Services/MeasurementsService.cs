@@ -506,6 +506,7 @@
             }
 
             var lastPeriodMeasurement = this.dbContext.ElectricityMeasurements.FirstOrDefault(x => x.EndOfPeriod == startOfPeriod.AddDays(-1));
+
             var initialPeriod = this.dbContext.ElectricityMeasurements.FirstOrDefault(x => x.Period.Contains("Starting")).Period;
 
             CreateMeasurementsInputViewModel result = new CreateMeasurementsInputViewModel
