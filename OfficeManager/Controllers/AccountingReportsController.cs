@@ -43,12 +43,11 @@
 
         public IActionResult Create()
         {
-            
-            if( dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null )
+            if (!this.ValidateUser(this.User.Identity.Name))
             {
-                return View("~/Views/Shared/Locked.cshtml");
+                return this.View("~/Views/Shared/Locked.cshtml");
             }
-            
+
             var tenantsAndPeriods = new TenantsAndPeriodsViewModel
             {
                 Tenants = this.accountingReportsService.GetAllTenantsSelectList(),
@@ -87,9 +86,9 @@
 
         public IActionResult Generate(AccountingReportInputViewModel input)
         {
-            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            if (!this.ValidateUser(this.User.Identity.Name))
             {
-                return View("~/Views/Shared/Locked.cshtml");
+                return this.View("~/Views/Shared/Locked.cshtml");
             }
 
             if (!this.ValidateTenantAndPeriod(input.Tenant, input.Period))
@@ -114,9 +113,9 @@
 
         public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
-            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            if (!this.ValidateUser(this.User.Identity.Name))
             {
-                return View("~/Views/Shared/Locked.cshtml");
+                return this.View("~/Views/Shared/Locked.cshtml");
             }
 
             var allAccountingReports = this.accountingReportsService.GetAllAccountingReports();
@@ -134,9 +133,9 @@
 
         public IActionResult Details(AccountingReportIdViewModel input)
         {
-            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            if (!this.ValidateUser(this.User.Identity.Name))
             {
-                return View("~/Views/Shared/Locked.cshtml");
+                return this.View("~/Views/Shared/Locked.cshtml");
             }
 
             var accountingReport = this.accountingReportsService.GetAccountingReportById(input.Id);
@@ -144,12 +143,11 @@
             return this.View(accountingReport);
         }
 
-        [HttpGet]
         public async Task<IActionResult> GetPdf(int id)
         {
-            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            if (!this.ValidateUser(this.User.Identity.Name))
             {
-                return View("~/Views/Shared/Locked.cshtml");
+                return this.View("~/Views/Shared/Locked.cshtml");
             }
 
             var accountingReport = this.accountingReportsService.GetAccountingReportById(id);
@@ -234,6 +232,16 @@
                 {
                     return false;
                 }
+            }
+
+            return true;
+        }
+
+        private bool ValidateUser(string userName)
+        {
+            if (this.dbContext.Users.First(d => d.UserName == userName).IsEnabled == null)
+            {
+                return false;
             }
 
             return true;

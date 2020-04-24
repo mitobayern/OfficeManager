@@ -85,7 +85,7 @@
                 userList.Add(userViewModel);
             }
 
-            return userList;
+            return userList.OrderBy(x => x.UserName).ToList();
         }
 
         public async Task EnableUserAsync(string userName)

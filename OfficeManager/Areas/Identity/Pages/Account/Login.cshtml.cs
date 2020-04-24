@@ -85,7 +85,7 @@ namespace OfficeManager.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     this._logger.LogInformation("User logged in.");
-                    if( this._db.Users.First(d => d.UserName == this.Input.Username).IsEnabled == true )
+                    if (this._db.Users.First(d => d.UserName == this.Input.Username).IsEnabled == true)
                     {
                         return this.LocalRedirect(returnUrl);
                     }

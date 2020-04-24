@@ -38,14 +38,14 @@
                         <td><b><i>@user.Email</i></b></td>
                         <td><b><i>@user.Role</i></b></td>
                         <td>
-                            @if (@user.UserName != User.Identity.Name)
+                            @*@if (@user.UserName != User.Identity.Name)
                             {
                                 <input data-style="slow" type="checkbox" class="switch-input" @(user.Role == "Admin" ? "checked" : "") data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="primary" data-offstyle="secondary">
                             }
                             else
                             {
                                 <input data-style="slow" type="checkbox" disabled @(user.Role == "Admin" ? "checked" : "") data-toggle="toggle" data-on="Admin" data-off="User" data-onstyle="primary" data-offstyle="dark">
-                            }
+                            }*@
                         </td>
                         @{
                             if (@user.UserName != User.Identity.Name)
@@ -56,7 +56,7 @@
                                         @if (!user.IsEnabled)
                                         {
                                             <a style="font-size:small"
-                                               class="btn btn-primary"
+                                               class="btn btn-success"
                                                asp-action="Enable"
                                                asp-route-userName="@user.UserName">
                                                 Enable User

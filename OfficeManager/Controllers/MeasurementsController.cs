@@ -24,9 +24,9 @@
 
         public IActionResult CreateMeasurements()
         {
-            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            if (!this.ValidateUser(this.User.Identity.Name))
             {
-                return View("~/Views/Shared/Locked.cshtml");
+                return this.View("~/Views/Shared/Locked.cshtml");
             }
 
             if (this.dbContext.ElectricityMeasurements.Count() == 0)
@@ -65,9 +65,9 @@
 
         public IActionResult InitialMeasurements()
         {
-            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            if (!this.ValidateUser(this.User.Identity.Name))
             {
-                return View("~/Views/Shared/Locked.cshtml");
+                return this.View("~/Views/Shared/Locked.cshtml");
             }
 
             var resultViewModel = new CreateInitialMeasurementsInputViewModel
@@ -93,9 +93,9 @@
 
         public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
-            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            if (!this.ValidateUser(this.User.Identity.Name))
             {
-                return View("~/Views/Shared/Locked.cshtml");
+                return this.View("~/Views/Shared/Locked.cshtml");
             }
 
             var allMeasurements = this.measurementsService.GetAllMeasurements();
@@ -109,9 +109,9 @@
 
         public IActionResult Edit(DateTime period)
         {
-            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            if (!this.ValidateUser(this.User.Identity.Name))
             {
-                return View("~/Views/Shared/Locked.cshtml");
+                return this.View("~/Views/Shared/Locked.cshtml");
             }
 
             var measurementsToEdit = this.measurementsService.GetMeasurementsByStartingPeriod(period);
@@ -225,6 +225,16 @@
                         return false;
                     }
                 }
+            }
+
+            return true;
+        }
+
+        private bool ValidateUser(string userName)
+        {
+            if (this.dbContext.Users.First(d => d.UserName == userName).IsEnabled == null)
+            {
+                return false;
             }
 
             return true;
