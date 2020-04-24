@@ -1,6 +1,5 @@
 ﻿namespace OfficeManager.Services
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using OfficeManager.Areas.Administration.ViewModels.TemperatureMeters;
@@ -21,6 +20,7 @@
             var temperatureMeter = new TemperatureMeter
             {
                 Name = name,
+                IsDeleted = false,
             };
 
             if (this.dbContext.TemperatureMeters.Any(x => x.Name == temperatureMeter.Name))

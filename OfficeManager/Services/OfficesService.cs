@@ -233,10 +233,18 @@
         public async Task DeleteOfficeAsync(int id)
         {
             var office = this.GetOfficeById(id);
-            var tenant = office.Tenant;
-            var officesToRemove = new List<string> { office.Name };
-            await this.RemoveOfficesFromTenantAsync(tenant.Id, officesToRemove);
-            await this.RemoveElectricityMeterFromOfficeAsync(id);
+            if (office.Tenant != null)
+            {
+                var tenant = office.Tenant;
+                var officesToRemove = new List<string> { office.Name };
+                await this.RemoveOfficesFromTenantAsync(tenant.Id, officesToRemove);
+            }
+
+            if (office.ElectricityMeter != null)
+            {
+                await this.RemoveElectricityMeterFromOfficeAsync(id);
+            }
+
             office.TemperatureMeters.Clear();
             office.IsDeleted = true;
             office.IsAvailable = true;

@@ -21,6 +21,7 @@
             {
                 Name = name,
                 PowerSupply = powerSupply,
+                IsDeleted = false,
             };
 
             if (this.dbContext.ElectricityMeters.Any(x => x.Name == electricityMeter.Name))
@@ -58,7 +59,7 @@
 
         public IQueryable<ElectricityMeterOutputViewModel> GetAllElectricityMeters()
         {
-            var electricityMeteres = this.dbContext.ElectricityMeters.Select(x => new ElectricityMeterOutputViewModel
+            var electricityMeteres = this.dbContext.ElectricityMeters.Where(x => x.IsDeleted == false).Select(x => new ElectricityMeterOutputViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -72,7 +73,13 @@
         public async Task DeleteElectricityMeterAsync(int id)
         {
             var electricityMeter = this.GetElectricityMeterById(id);
-            this.dbContext.Remove(electricityMeter);
+            if (electricityMeter.OfficeId != null)
+            {
+                var office = electricityMeter.Office;
+                office.ElectricityMeter = null;
+            }
+
+            electricityMeter.IsDeleted = true;
             await this.dbContext.SaveChangesAsync();
         }
     }

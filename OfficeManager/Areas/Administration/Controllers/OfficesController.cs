@@ -151,7 +151,7 @@
             var office = this.dbContext.Offices.FirstOrDefault(x => x.Id == input.Id);
 
             var elMeters = this.dbContext.ElectricityMeters
-                .Where(x => x.Office == null)
+                .Where(x => x.Office == null && x.IsDeleted == false)
                 .Select(x => new ElectricityMeterOutputViewModel
                 {
                     Id = x.Id,
