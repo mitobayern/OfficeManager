@@ -35,9 +35,9 @@
             string roleName = string.Empty;
             List<UserViewModel> userList = new List<UserViewModel>();
 
-            foreach (var identityUser in allUsers)
+            foreach (var User in allUsers)
             {
-                var user = await this.userManager.FindByNameAsync(identityUser);
+                var user = await this.userManager.FindByNameAsync(User);
                 var role = this.dbContext.UserRoles.FirstOrDefault(x => x.UserId == user.Id);
 
                 if (user != null && role != null)
@@ -52,7 +52,7 @@
 
                 var userViewModel = new UserViewModel
                 {
-                    UserName = identityUser,
+                    UserName = User,
                     Role = roleName,
                     Email = user.Email,
                 };

@@ -1,4 +1,4 @@
-﻿namespace OfficeManager.Areas.Identity.Pages.Account
+namespace OfficeManager.Areas.Identity.Pages.Account
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;

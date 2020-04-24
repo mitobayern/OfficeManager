@@ -1,5 +1,6 @@
-﻿@using OfficeManager.Models
+@using OfficeManager.Models
 @inject SignInManager<User> SignInManager
+  
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
