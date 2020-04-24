@@ -24,6 +24,11 @@
 
         public IActionResult CreateMeasurements()
         {
+            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            {
+                return View("~/Views/Shared/Locked.cshtml");
+            }
+
             if (this.dbContext.ElectricityMeasurements.Count() == 0)
             {
                 return this.Redirect("/Measurements/InitialMeasurements");
@@ -60,6 +65,11 @@
 
         public IActionResult InitialMeasurements()
         {
+            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            {
+                return View("~/Views/Shared/Locked.cshtml");
+            }
+
             var resultViewModel = new CreateInitialMeasurementsInputViewModel
             {
                 Offices = this.measurementsService.GetOfficesWithLastMeasurements(),
@@ -83,6 +93,11 @@
 
         public async Task<ViewResult> All(string sortOrder, string currentFilter, string searchString, int? pageNumber, string rowsPerPage)
         {
+            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            {
+                return View("~/Views/Shared/Locked.cshtml");
+            }
+
             var allMeasurements = this.measurementsService.GetAllMeasurements();
             allMeasurements = this.OrderMeasurements(sortOrder, currentFilter, searchString, pageNumber, allMeasurements);
             int pageSize = GetPageSize(rowsPerPage, allMeasurements);
@@ -94,6 +109,11 @@
 
         public IActionResult Edit(DateTime period)
         {
+            if (dbContext.Users.First(d => d.UserName == User.Identity.Name).IsEnabled == null)
+            {
+                return View("~/Views/Shared/Locked.cshtml");
+            }
+
             var measurementsToEdit = this.measurementsService.GetMeasurementsByStartingPeriod(period);
 
             return this.View(measurementsToEdit);
@@ -114,6 +134,7 @@
 
         private static int GetPageSize(string rowsPerPage, IQueryable<AllMeasurementsOutputViewModel> allElectricityMeters)
         {
+
             int pageSize;
 
             if (string.IsNullOrEmpty(rowsPerPage))

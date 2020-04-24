@@ -4,13 +4,13 @@
     using Microsoft.EntityFrameworkCore;
     using OfficeManager.Models;
 
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
-        
+
         public DbSet<Office> Offices { get; set; }
 
         public DbSet<Tenant> Tenants { get; set; }

@@ -102,8 +102,9 @@
                     }
                     else
                     {
-                        await this._signInManager.SignInAsync(user, isPersistent: false);
-                        return this.LocalRedirect(returnUrl);
+                        //await this._signInManager.SignInAsync(user, isPersistent: false);
+                        //return this.LocalRedirect(returnUrl);
+                        return this.RedirectToPage("./Lockout");
                     }
                 }
 

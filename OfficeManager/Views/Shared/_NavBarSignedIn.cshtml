@@ -1,56 +1,57 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
+@using OfficeManager.Models
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-@{ 
+@{
     var IsNotAdmin = (SignInManager.IsSignedIn(User) && !this.User.IsInRole("Admin")) || !SignInManager.IsSignedIn(User);
-    
+
 }
 
-    <ul class="navbar-nav">
-        <li class="nav-item @(IsNotAdmin ? "d-none" : "")">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-        </li>
-        <!-- ACCOUNTING REPORTS -->
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarLandlordsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-file-invoice mr-1"></i>
-                <span class="d-none d-sm-inline-block">Accounting</span>
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/AccountingReports/Create">Create Accounting Report</a>
-                <a class="dropdown-item" href="/AccountingReports/All">All Accounting Reports</a>
-            </div>
-        </li>
+<ul class="navbar-nav">
+    <li class="nav-item @(IsNotAdmin ? "d-none" : "")">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+    </li>
+    <!-- ACCOUNTING REPORTS -->
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarLandlordsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-file-invoice mr-1"></i>
+            <span class="d-none d-sm-inline-block">Accounting</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="/AccountingReports/Create">Create Accounting Report</a>
+            <a class="dropdown-item" href="/AccountingReports/All">All Accounting Reports</a>
+        </div>
+    </li>
 
-        <!-- MEASUREMENTS -->
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarMeasurementsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-tachometer-alt mr-1"></i>
-                <span class="d-none d-sm-inline-block">Measurements</span>
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/Measurements/CreateMeasurements">Create Measurements</a>
-                <a class="dropdown-item" href="/Measurements/All">All Measurements</a>
-            </div>
-        </li>
-    </ul>
-    <ul class="navbar-nav float-right">
-        <!-- GREETINGS -->
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-                <i class="fas fa-user mr-1"></i>
-                <span class="d-none d-sm-inline-block">Hello @User.Identity.Name!</span>
-            </a>
-        </li>
+    <!-- MEASUREMENTS -->
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarMeasurementsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-tachometer-alt mr-1"></i>
+            <span class="d-none d-sm-inline-block">Measurements</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="/Measurements/CreateMeasurements">Create Measurements</a>
+            <a class="dropdown-item" href="/Measurements/All">All Measurements</a>
+        </div>
+    </li>
+</ul>
+<ul class="navbar-nav float-right">
+    <!-- GREETINGS -->
+    <li class="nav-item">
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+            <i class="fas fa-user mr-1"></i>
+            <span class="d-none d-sm-inline-block">Hello @User.Identity.Name!</span>
+        </a>
+    </li>
 
-        <!-- LOGOUT -->
-        <li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link">
-                    <i class="fas fa-sign-out-alt mr-1"></i>
-                    <span class="d-none d-sm-inline-block">Logout</span>
-                </button>
-            </form>
-        </li>
-    </ul>
+    <!-- LOGOUT -->
+    <li class="nav-item">
+        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="submit" class="nav-link btn btn-link">
+                <i class="fas fa-sign-out-alt mr-1"></i>
+                <span class="d-none d-sm-inline-block">Logout</span>
+            </button>
+        </form>
+    </li>
+</ul>

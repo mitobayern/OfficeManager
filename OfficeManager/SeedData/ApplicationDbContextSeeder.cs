@@ -47,6 +47,7 @@
                     UserName = InitialUserName,
                     Email = InitialUserEmail,
                     EmailConfirmed = true,
+                    IsEnabled = true,
                 },
                 InitialUserPassword);
         }
