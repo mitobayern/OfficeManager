@@ -49,12 +49,13 @@ namespace OfficeManager
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITenantsService, TenantsService>();
             services.AddTransient<IOfficesService, OfficesService>();
             services.AddTransient<ILandlordsService, LandlordsService>();
+            services.AddTransient<IMeasurementsService, MeasurementsService>();
             services.AddTransient<IElectricityMetersService, ElectricityMetersService>();
             services.AddTransient<ITemperatureMetersService, TemperatureMetersService>();
-            services.AddTransient<IMeasurementsService, MeasurementsService>();
             services.AddTransient<IPricesInformationService, PricesInformationService>();
             services.AddTransient<IAccountingReportsService, AccountingReportsService>();
             services.AddScoped<IViewRenderService, ViewRenderService>();

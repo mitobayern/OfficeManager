@@ -53,6 +53,16 @@
                                 if (@user.Role != "Admin")
                                 {
                                     <td style="text-align:right">
+                                        @if (!user.IsEnabled)
+                                        {
+                                            <a style="font-size:small"
+                                               class="btn btn-primary"
+                                               asp-action="Enable"
+                                               asp-route-userName="@user.UserName">
+                                                Enable User
+                                            </a>
+                                        }
+
                                         <a style="font-size:small"
                                            class="btn btn-primary"
                                            asp-action="Promote"
