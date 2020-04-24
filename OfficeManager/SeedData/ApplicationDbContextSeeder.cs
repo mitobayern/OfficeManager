@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.DependencyInjection;
     using OfficeManager.Data;
+    using OfficeManager.Models;
 
     public class ApplicationDbContextSeeder
     {
@@ -14,13 +15,13 @@
         private const string InitialUserPassword = "Administrati0n";
         private const string InitialUserEmail = "Admin@gmail.com";
         private readonly ApplicationDbContext dbContext;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<User> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
 
         public ApplicationDbContextSeeder(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
         {
             this.dbContext = dbContext;
-            this.userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+            this.userManager = serviceProvider.GetService<UserManager<User>>();
             this.roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
         }
 
@@ -41,11 +42,12 @@
             }
 
             await this.userManager.CreateAsync(
-                new IdentityUser
+                new User
                 {
                     UserName = InitialUserName,
                     Email = InitialUserEmail,
                     EmailConfirmed = true,
+                    IsEnabled = true,
                 },
                 InitialUserPassword);
         }

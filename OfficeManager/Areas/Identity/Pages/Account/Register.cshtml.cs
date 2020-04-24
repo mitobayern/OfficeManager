@@ -15,18 +15,19 @@
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.AspNetCore.WebUtilities;
     using Microsoft.Extensions.Logging;
+    using OfficeManager.Models;
 
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -78,7 +79,7 @@
             this.ExternalLogins = (await this._signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (this.ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = this.Input.Username, Email = this.Input.Email };
+                var user = new User { UserName = this.Input.Username, Email = this.Input.Email };
                 var result = await this._userManager.CreateAsync(user, this.Input.Password);
                 if (result.Succeeded)
                 {
@@ -101,8 +102,9 @@
                     }
                     else
                     {
-                        await this._signInManager.SignInAsync(user, isPersistent: false);
-                        return this.LocalRedirect(returnUrl);
+                        //await this._signInManager.SignInAsync(user, isPersistent: false);
+                        //return this.LocalRedirect(returnUrl);
+                        return this.RedirectToPage("./Lockout");
                     }
                 }
 

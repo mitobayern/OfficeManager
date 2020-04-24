@@ -10,19 +10,24 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.RazorPages;
     using Microsoft.Extensions.Logging;
+    using OfficeManager.Data;
+    using OfficeManager.Models;
 
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly ApplicationDbContext _db;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
         public LoginModel(
-            SignInManager<IdentityUser> signInManager,
+            SignInManager<User> signInManager,
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<User> userManager,
+            ApplicationDbContext db)
         {
+            this._db = db;
             this._userManager = userManager;
             this._signInManager = signInManager;
             this._logger = logger;
@@ -80,7 +85,14 @@
                 if (result.Succeeded)
                 {
                     this._logger.LogInformation("User logged in.");
-                    return this.LocalRedirect(returnUrl);
+                    if( this._db.Users.First(d => d.UserName == this.Input.Username).IsEnabled == true )
+                    {
+                        return this.LocalRedirect(returnUrl);
+                    }
+                    else
+                    {
+                        return this.RedirectToPage("./Lockout");
+                    }
                 }
 
                 if (result.RequiresTwoFactor)

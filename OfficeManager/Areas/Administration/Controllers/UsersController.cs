@@ -11,19 +11,20 @@
     using Microsoft.Extensions.DependencyInjection;
     using OfficeManager.Areas.Administration.ViewModels.Users;
     using OfficeManager.Data;
+    using OfficeManager.Models;
 
     [Area("Administration")]
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext dbContext;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<User> userManager;
         private readonly RoleManager<IdentityRole> roleManager;
 
         public UsersController(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
         {
             this.dbContext = dbContext;
-            this.userManager = serviceProvider.GetService<UserManager<IdentityUser>>();
+            this.userManager = serviceProvider.GetService<UserManager<User>>();
             this.roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
         }
 
