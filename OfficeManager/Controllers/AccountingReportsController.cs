@@ -145,6 +145,8 @@
 
         public async Task<IActionResult> GetPdf(int id)
         {
+            return this.View("All");
+
             if (!this.ValidateUser(this.User.Identity.Name))
             {
                 return this.View("~/Views/Shared/Locked.cshtml");

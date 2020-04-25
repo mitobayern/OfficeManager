@@ -10,11 +10,12 @@
     <form asp-area="Administration" asp-controller="Offices" asp-action="AddElectricityMeter" method="post" class="form">
         <input type="hidden" name="id" value="@Model.Id" />
 
+        @{ var counter = 0; }
         @foreach (var electricityMeter in Model.AvailavleElectricityMeters.OrderBy(x => x.Name))
         {
             <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" name="IsChecked" id="customCheck" value="@electricityMeter.Name">
-                <label class="custom-control-label" for="customCheck">@electricityMeter.Name</label>
+                <input type="radio" class="custom-control-input" name="IsChecked" id="customCheck@(counter)" value="@electricityMeter.Name">
+                <label class="custom-control-label" for="customCheck@(counter++)">@electricityMeter.Name</label>
             </div>
         }
         <div class="row mt-4">
