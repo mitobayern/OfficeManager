@@ -232,6 +232,11 @@
 
         public async Task DeleteOfficeAsync(int id)
         {
+            if (this.dbContext.ElectricityMeasurements.Count() > 0)
+            {
+                return;
+            }
+
             var office = this.GetOfficeById(id);
             if (office.Tenant != null)
             {
@@ -246,8 +251,9 @@
             }
 
             office.TemperatureMeters.Clear();
-            office.IsDeleted = true;
-            office.IsAvailable = true;
+            //office.IsAvailable = true;
+            //office.IsDeleted = true;
+            this.dbContext.Offices.Remove(office);
             await this.dbContext.SaveChangesAsync();
         }
     }

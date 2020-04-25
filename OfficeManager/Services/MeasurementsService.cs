@@ -189,7 +189,7 @@
             var currentTemperatureMeter = this.temperatureMetersService.GetTemperatureMeterByName(tempMeterName);
             var currentTemperatureMeasurement = this.dbContext
                 .TemperatureMeasurements
-                .FirstOrDefault(x => x.TemperatureMeter.Name == tempMeterName && x.StartOfPeriod == startOfPeriod);
+                .FirstOrDefault(x => x.TemperatureMeter.Name == tempMeterName && x.StartOfPeriod == startOfPeriod && !x.Period.Contains("Starting"));
 
             currentTemperatureMeasurement.StartOfPeriod = startOfPeriod.Date;
             currentTemperatureMeasurement.EndOfPeriod = endOfPeriod.Date;
@@ -198,7 +198,6 @@
             currentTemperatureMeasurement.Period = period;
             currentTemperatureMeasurement.TemperatureMeter = currentTemperatureMeter;
             currentTemperatureMeasurement.TemperatureMeterId = currentTemperatureMeter.Id;
-
             await this.dbContext.SaveChangesAsync();
         }
 
@@ -208,7 +207,6 @@
             DateTime endOfPeriod = periodEndTime;
 
             string period;
-
             if (startOfPeriod.Year == endOfPeriod.Year)
             {
                 period = startOfPeriod.ToString("d MMMM", new System.Globalization.CultureInfo("bg-BG"))
@@ -227,7 +225,7 @@
             var currentElectricityMeter = this.electricityMetersService.GetElectricityMeterByName(elMeterName);
             var currentElectricityMeasurement = this.dbContext
                 .ElectricityMeasurements
-                .FirstOrDefault(x => x.ElectricityMeter.Name == elMeterName && x.StartOfPeriod == startOfPeriod);
+                .FirstOrDefault(x => x.ElectricityMeter.Name == elMeterName && x.StartOfPeriod == startOfPeriod && !x.Period.Contains("Starting"));
 
             currentElectricityMeasurement.StartOfPeriod = startOfPeriod.Date;
             currentElectricityMeasurement.EndOfPeriod = endOfPeriod.Date;
@@ -295,15 +293,18 @@
                     office.ElectricityMeter.Name,
                     office.ElectricityMeter.DayTimeMeasurement,
                     office.ElectricityMeter.NightTimeMeasurement);
-                ;
-                foreach (var temperatureMeter in office.TemperatureMeters)
+
+                if (office.TemperatureMeters != null)
                 {
-                    await this.EditTemperatureMeasurementAsync(
-                        input.StartOfPeriod,
-                        input.EndOfPeriod,
-                        temperatureMeter.Name,
-                        temperatureMeter.HeatingMeasurement,
-                        temperatureMeter.CoolingMeasurement);
+                    foreach (var temperatureMeter in office.TemperatureMeters)
+                    {
+                        await this.EditTemperatureMeasurementAsync(
+                            input.StartOfPeriod,
+                            input.EndOfPeriod,
+                            temperatureMeter.Name,
+                            temperatureMeter.HeatingMeasurement,
+                            temperatureMeter.CoolingMeasurement);
+                    }
                 }
             }
         }
@@ -378,22 +379,22 @@
 
         public List<OfficeMeasurementsInputViewModel> GetOfficesWithLastMeasurements()
         {
-            var offices = this.dbContext.Offices.Select(x => new OfficeMeasurementsInputViewModel
+            var offices = this.dbContext.Offices.Where(x => x.IsDeleted == false).Select(x => new OfficeMeasurementsInputViewModel
             {
                 Name = x.Name,
                 ElectricityMeter = new ElectricityMeasurementInputViewModel
                 {
                     Name = x.ElectricityMeter.Name,
                     DayTimeMinValue = x.ElectricityMeter
-                                                   .ElectricityMeasurements
-                                                   .OrderByDescending(x => x.EndOfPeriod)
-                                                   .FirstOrDefault()
-                                                   .DayTimeMeasurement,
+                                                     .ElectricityMeasurements
+                                                     .OrderByDescending(x => x.EndOfPeriod)
+                                                     .FirstOrDefault()
+                                                     .DayTimeMeasurement,
                     NightTimeMinValue = x.ElectricityMeter
-                                                   .ElectricityMeasurements
-                                                   .OrderByDescending(x => x.EndOfPeriod)
-                                                   .FirstOrDefault()
-                                                   .NightTimeMeasurement,
+                                                     .ElectricityMeasurements
+                                                     .OrderByDescending(x => x.EndOfPeriod)
+                                                     .FirstOrDefault()
+                                                     .NightTimeMeasurement,
                 },
                 TemperatureMeters = x.TemperatureMeters.Select(y => new TemperatureMeasurementInputViewModel
                 {
@@ -407,8 +408,8 @@
                                       .FirstOrDefault()
                                       .CoolingMeasurement,
                 })
-                .OrderBy(x => x.Name)
-                .ToList(),
+                  .OrderBy(x => x.Name)
+                  .ToList(),
             })
             .OrderBy(x => x.Name)
             .ToList();
@@ -483,49 +484,23 @@
 
             List<OfficeMeasurementsInputViewModel> officesToReturn = new List<OfficeMeasurementsInputViewModel>();
 
-            var allOffices = this.dbContext.Offices.ToList();
-
+            var allOffices = this.dbContext.Offices.Where(x => x.IsDeleted == false).ToList();
 
             foreach (var office in allOffices.OrderBy(x => x.Name))
             {
-                var blankElectricityMeasurement = new ElectricityMeasurementInputViewModel
-                {
-                    Name = office.ElectricityMeter.Name,
-                    DayTimeMeasurement = 0M,
-                    NightTimeMeasurement = 0M,
-                    DayTimeMinValue = 0M,
-                    NightTimeMinValue = 0M,
-                };
-
-
                 var temperatureMeters = new List<TemperatureMeasurementInputViewModel>();
                 var electricityMeasurement = electricityMeasurements.FirstOrDefault(x => x.Name == office.ElectricityMeter.Name);
 
                 foreach (var temperatureMeter in office.TemperatureMeters)
                 {
-                    var blankTemperatureMeasurement = new TemperatureMeasurementInputViewModel
-                    {
-                        Name = temperatureMeter.Name,
-                        CoolingMeasurement = 0M,
-                        HeatingMeasurement = 0M,
-                        CoolingMinValue = 0M,
-                        HeatingMinValue = 0M,
-                    };
-
                     var temperatureMeasurement = temperatureMeasurements.FirstOrDefault(x => x.Name == temperatureMeter.Name);
-
-                    if (temperatureMeasurement == null)
-                    {
-                        temperatureMeasurement = blankTemperatureMeasurement;
-                    }
-
                     temperatureMeters.Add(temperatureMeasurement);
                 }
 
                 var officeWithValues = new OfficeMeasurementsInputViewModel
                 {
                     Name = office.Name,
-                    ElectricityMeter = electricityMeasurement != null ? electricityMeasurement : blankElectricityMeasurement,
+                    ElectricityMeter = electricityMeasurement,
                     TemperatureMeters = temperatureMeters,
                 };
                 officesToReturn.Add(officeWithValues);

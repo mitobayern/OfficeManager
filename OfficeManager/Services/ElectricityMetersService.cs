@@ -73,13 +73,19 @@
         public async Task DeleteElectricityMeterAsync(int id)
         {
             var electricityMeter = this.GetElectricityMeterById(id);
+            if (electricityMeter.ElectricityMeasurements.Count > 0)
+            {
+                return;
+            }
+
             if (electricityMeter.OfficeId != null)
             {
                 var office = electricityMeter.Office;
                 office.ElectricityMeter = null;
             }
 
-            electricityMeter.IsDeleted = true;
+            //electricityMeter.IsDeleted = true;
+            this.dbContext.ElectricityMeters.Remove(electricityMeter);
             await this.dbContext.SaveChangesAsync();
         }
     }

@@ -83,13 +83,19 @@
         public async Task DeleteTemperatureMeterAsync(int id)
         {
             var temperatureMeter = this.GetTemperatureMeterById(id);
+            if (temperatureMeter.TemperatureMeasurements.Count > 0)
+            {
+                return;
+            }
+
             if (temperatureMeter.OfficeId != null)
             {
                 var office = temperatureMeter.Office;
                 office.TemperatureMeters.Remove(temperatureMeter);
             }
 
-            temperatureMeter.IsDeleted = true;
+            //temperatureMeter.IsDeleted = true;
+            this.dbContext.TemperatureMeters.Remove(temperatureMeter);
             await this.dbContext.SaveChangesAsync();
         }
     }
